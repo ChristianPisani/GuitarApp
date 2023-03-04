@@ -1,7 +1,8 @@
 @import "ui/Fretboard/Fretboard.scss";
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Amatic SC', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 45px;
   line-height: 1.5;
   font-weight: 400;
 
@@ -27,8 +28,33 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--theme-color);
+}
+
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--color-grey);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: white;
 }
