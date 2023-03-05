@@ -2,7 +2,7 @@
 
 :root {
   font-family: 'Amatic SC', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 45px;
+  font-size: 35px;
   line-height: 1.5;
   font-weight: 400;
 
@@ -28,8 +28,7 @@ a:hover {
 
 body {
   margin: 0;
-  display: grid;
-  grid-template-columns: 1fr;
+  
   place-items: center;
   min-width: 320px;
   min-height: 100vh;

@@ -141,13 +141,15 @@ export const FretBoard = (props: any) => {
 
   return (
     <FretboardContext.Provider value={{ setSelectedNote, selectedNote }}>
-      <div className="fretboard">
-        <String startingNote={{ name: "E", sharp: false }} />
-        <String startingNote={{ name: "B", sharp: false }} />
-        <String startingNote={{ name: "G", sharp: false }} />
-        <String startingNote={{ name: "D", sharp: false }} />
-        <String startingNote={{ name: "A", sharp: false }} />
-        <String startingNote={{ name: "E", sharp: false }} />
+      <div className="fretboard-container">
+        <div className="fretboard">
+          <String startingNote={{ name: "E", sharp: false }} />
+          <String startingNote={{ name: "B", sharp: false }} />
+          <String startingNote={{ name: "G", sharp: false }} />
+          <String startingNote={{ name: "D", sharp: false }} />
+          <String startingNote={{ name: "A", sharp: false }} />
+          <String startingNote={{ name: "E", sharp: false }} />
+        </div>
       </div>
     </FretboardContext.Provider>
   );

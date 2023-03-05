@@ -1,18 +1,11 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
-import {
-  FretBoard
-} from "./ui/Fretboard/Fretboard";
+import { useState } from "react";
+import "./App.css";
+import { AppRoutes } from "./routes/AppRoutes";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
-  return (
-    <div className="App">
-      <FretBoard></FretBoard>
-    </div>
-  )
+  return <AppRoutes></AppRoutes>;
 }
 
-export default App
+export default App;
