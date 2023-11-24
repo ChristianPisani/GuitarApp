@@ -1,4 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Covered+By+Your+Grace&display=swap');
+
+@import "scss/animations.scss";
 @import "ui/Fretboard/Fretboard.scss";
+@import "scss/icons.scss";
 
 :root {
   font-family: 'Amatic SC', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -15,6 +19,10 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+}
+
+p {
+  font-family: "Covered By Your Grace";
 }
 
 a {
@@ -49,11 +57,19 @@ body {
 
 
 /* Handle */
-::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb { 
   background: var(--color-grey);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: white;
+}
+
+select {
+  padding: 0.35rem 0.45rem;
+  border-radius: 1rem;
+  background-color: var(--green-400);
+  color: white;
+  outline: 1px solid white;
 }

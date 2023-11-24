@@ -1,0 +1,16 @@
+﻿.guitar-dude-container {
+  display: grid;
+  position: relative;
+  
+  align-items: center;
+  justify-content: center;
+}
+
+.guitar-dude {
+  margin-top: 120px;
+}
+
+.guitar-dude-container svg {
+  grid-row: 1;
+  grid-column: 1
+}
