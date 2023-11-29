@@ -7,9 +7,21 @@ export const HomePage = () => {
   return (
     <div className={"home-container"}>
       <ol>
-        <li><Link className={"button"} to={"/visualizer"}>Visialize fretboard</Link></li>
-        <li><Link className={"button"} to={"/memorize"}>Memorize fretboard</Link></li>
-        <li><Link className={"button"} to={"/info"}>Info</Link></li>
+        <li>
+          <Link className={"button"} to={"/visualizer"}>
+            Visualize fretboard
+          </Link>
+        </li>
+        <li>
+          <Link className={"button"} to={"/memorize"}>
+            Memorize fretboard
+          </Link>
+        </li>
+        <li>
+          <Link className={"button"} to={"/articles/"}>
+            Articles
+          </Link>
+        </li>
       </ol>
       <div className={"guitar-dude-container"}>
         <BackgroundBlobSVG></BackgroundBlobSVG>

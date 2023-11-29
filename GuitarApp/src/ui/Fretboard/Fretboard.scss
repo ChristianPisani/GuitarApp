@@ -6,6 +6,8 @@
   --color-bronze: #f4ae50;
   --color-string: var(--color-grey);
 
+  --string-shadow: 0px 10px 3px 0px rgba(0, 0, 0, 0.2);
+
   counter-reset: fretnumber -1;
 }
 
@@ -29,11 +31,13 @@
   flex-direction: row;
   position: relative;
   
-  counter-reset: fretnumber;
+  counter-reset: fretnumber -1;
 }
 
 .string:hover .fret::before {
-  box-shadow: 0px 0px 2px 2px var(--color-string);
+  --string-glow: 0px 0px 0px 2px var(--color-string);
+  
+  box-shadow: var(--string-shadow), var(--string-glow);
 }
 .string:active .fret::before {
   filter: brightness(2) saturate(2);
@@ -129,7 +133,7 @@
 
   transition: 100ms ease-in-out;
   
-  box-shadow: 0px 10px 3px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--string-shadow);
 }
 
 .fret:last-child {
@@ -204,10 +208,26 @@
   animation: fade-out ease-in 250ms forwards;
 }
 
+.note.second {
+  --color-active: var(--interval-2);
+}
+
 .note.third {
-  --color-active: #FFDC24;
+  --color-active: var(--interval-3);
+}
+
+.note.fourth {
+  --color-active: var(--interval-4);
 }
 
 .note.fifth {
-  --color-active: #FF6F66;
+  --color-active: var(--interval-5);
+}
+
+.note.sixth {
+  --color-active: var(--interval-6);
+}
+
+.note.seventh {
+  --color-active: var(--interval-7);
 }

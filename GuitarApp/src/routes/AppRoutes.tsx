@@ -1,21 +1,39 @@
 ﻿import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import { HomePage } from "./Home";
 import { FretboardVisualization } from "./fretboard-visualization/FretboardVisualization";
-import {
-  InfoSections
-} from "./info-sections/InfoSections";
+import { ArticlesPage } from "./articles-page/articles-page";
+import { articlesLoader } from "./articles-page/articles-loader";
+import { ArticlePage } from "./article-page/article-page";
+import { articleLoader } from "./article-page/article-loader";
 
 export const AppRoutes = () => {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/">
-          <Route index element={<HomePage />} />
-          <Route path="visualizer" element={<FretboardVisualization />} />
-          <Route path={"info"} element={<InfoSections/>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  );
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Outlet />,
+      children: [
+        {
+          path: "",
+          element: <HomePage />,
+        },
+        {
+          path: "articles",
+          element: <ArticlesPage />,
+          loader: articlesLoader,
+        },
+        {
+          path: "articles/:slug",
+          element: <ArticlePage />,
+          loader: ({ params }) => articleLoader(params.slug ?? ""),
+        },
+        {
+          path: "visualizer",
+          element: <FretboardVisualization />,
+        },
+      ],
+    },
+  ]);
+
+  return <RouterProvider router={router} />;
 };

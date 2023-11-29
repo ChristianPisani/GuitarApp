@@ -4,16 +4,29 @@ import { Note } from "../../interface/Note";
 import {
   getNote,
   getStringNotes,
-  isScaleInterval
+  isScaleInterval,
 } from "../../utility/noteFunctions";
 
 export const Fret = ({ note }: { note: Note }) => {
   const { selectedNote, setSelectedNote } = useContext(FretboardContext);
 
+  const isMajorSecond = isScaleInterval(selectedNote, note, 2);
   const isMajorThird = isScaleInterval(selectedNote, note, 4);
+  const isMajorFourth = isScaleInterval(selectedNote, note, 5);
   const isMajorFifth = isScaleInterval(selectedNote, note, 7);
+  const isMajorSixth = isScaleInterval(selectedNote, note, 9);
+  const isMajorSeventh = isScaleInterval(selectedNote, note, 11);
 
-  const highLighted = selectedNote === note || isMajorThird || isMajorFifth;
+  const activeNotes = [1, 3, 5, 7];
+
+  const highLighted =
+    selectedNote === note ||
+    //isMajorSecond ||
+    isMajorThird ||
+    //isMajorFourth ||
+    isMajorFifth ||
+    //isMajorSixth ||
+    isMajorSeventh;
 
   return (
     <div className="fret">
@@ -21,14 +34,17 @@ export const Fret = ({ note }: { note: Note }) => {
         className={`
           note 
           ${highLighted ? "active" : ""}
+          ${isMajorSecond ? "second" : ""}
           ${isMajorThird ? "third" : ""}
-          ${isMajorFifth ? "fifth" : ""}`}
+          ${isMajorFourth ? "fourth" : ""}
+          ${isMajorFifth ? "fifth" : ""}
+          ${isMajorSixth ? "sixth" : ""}
+          ${isMajorSeventh ? "seventh" : ""}`}
         onClick={() => {
           setSelectedNote?.(note);
         }}
       >
-        {(!note?.sharp || highLighted) &&
-          `${note?.name}${note.sharp ? "#" : ""}`}
+        {highLighted && `${note?.name}${note.sharp ? "#" : ""}`}
       </div>
     </div>
   );

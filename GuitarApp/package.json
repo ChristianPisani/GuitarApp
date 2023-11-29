@@ -9,6 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@portabletext/react": "^3.0.11",
+    "@portabletext/types": "^2.0.8",
+    "@sanity/client": "^6.9.1",
+    "@sanity/types": "^3.20.2",
     "prettier": "^2.8.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

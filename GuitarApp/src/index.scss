@@ -73,3 +73,32 @@ select {
   color: white;
   outline: 1px solid white;
 }
+
+#root {
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+p,ul,ol,li,h1,h2,h3,h4,h5,h6,span {
+  color: rgba(255,255,255,0.85);
+  margin: 0;
+  max-width: 750px;
+}
+
+.home-container {
+  display: grid;
+
+  ol {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    list-style-type: none;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  #root {
+    padding: 0.1rem;
+  }
+}
