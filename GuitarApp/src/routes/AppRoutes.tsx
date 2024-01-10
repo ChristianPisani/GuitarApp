@@ -6,12 +6,18 @@ import { ArticlesPage } from "./articles-page/articles-page";
 import { articlesLoader } from "./articles-page/articles-loader";
 import { ArticlePage } from "./article-page/article-page";
 import { articleLoader } from "./article-page/article-loader";
+import { Header } from "../ui/header/header";
 
 export const AppRoutes = () => {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Outlet />,
+      element: (
+        <>
+          <Header></Header>
+          <Outlet />
+        </>
+      ),
       children: [
         {
           path: "",

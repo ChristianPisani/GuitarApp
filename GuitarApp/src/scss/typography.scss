@@ -1,0 +1,85 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Covered+By+Your+Grace&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Roboto:wght@300;400&family=Signika+Negative:wght@300;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Roboto:wght@300;400&family=Signika+Negative:wght@300;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Patua+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200;0,6..12,300;0,6..12,400;0,6..12,500;0,6..12,600;0,6..12,700;0,6..12,800;0,6..12,900;0,6..12,1000;1,6..12,200;1,6..12,300;1,6..12,400;1,6..12,500;1,6..12,600;1,6..12,700;1,6..12,800;1,6..12,900;1,6..12,1000&display=swap');
+
+:root {
+  --heading-font: "Patua One", Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --regular-font: "Nunito Sans", Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  --heading-1-size: 3rem;
+  --heading-2-size: 2rem;
+  --heading-3-size: 1.5rem;
+  --heading-4-size: 1.125rem;
+  --regular-text-size: 1rem;
+}
+
+@mixin regularText {
+  font-family: var(--regular-font);
+  font-size: var(--regular-text-size);
+}
+
+@mixin heading-1 {
+  font-family: var(--heading-font);
+  font-size: var(--heading-1-size);
+  line-height: 1.6;
+}
+
+@mixin heading-2 {
+  font-family: var(--heading-font);
+  font-size: var(--heading-2-size);
+  line-height: 1.5;
+}
+
+@mixin heading-3 {
+  font-family: var(--heading-font);
+  font-size: var(--heading-3-size);
+  line-height: 1.25;
+}
+
+@mixin heading-4 {
+  font-family: var(--heading-font);
+  font-size: var(--heading-4-size);
+  line-height: 1.1;
+}
+
+h1 {
+  @include heading-1();
+}
+h2 {
+  @include heading-2();
+}
+h3 {
+  @include heading-3();
+}
+h4 {
+  @include heading-4();
+}
+
+p,span,li,ul,ol,a {
+  @include regularText();
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+.text-content {
+  * + * {
+    margin-top: var(--spacing-4);
+  }
+  
+   :is(h1,h2,h3,h4,h5,h6) + * {
+     margin-top: var(--spacing-2);
+   }
+  
+  * + :is(h1,h2,h3,h4,h5,h6) {
+    margin-top: var(--spacing-8);
+  }
+}

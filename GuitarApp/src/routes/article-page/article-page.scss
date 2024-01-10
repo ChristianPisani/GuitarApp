@@ -1,0 +1,41 @@
+.article {
+  min-width: 100svw;
+  height: 100svh;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  background-image: url(https://www.sweetwater.com/insync/media/2019/05/guitar-parts-hero-1050x550.jpg);
+  background-size: cover;
+  
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  
+  & .container {
+    grid-column: 2/6;
+    background-color: beige;
+    position: relative;
+    padding: 2rem 6rem;
+    max-width: none;
+    
+    --backdrop-width: 2.5rem;
+    
+    &::after,
+    &::before {
+      content: "";
+      position: absolute;
+      backdrop-filter: blur(10px);
+      right: calc(var(--backdrop-width) * -1);
+      width: var(--backdrop-width);
+      top: 0;
+      bottom: 0;
+    }
+    
+    &::after {
+      left: calc(var(--backdrop-width) * -1);
+    }
+  }
+  
+  & * {
+    color: black;
+  }
+}

@@ -1,16 +1,4 @@
-﻿.container {
-  display: grid;
-  grid-template-columns: 1fr;
-  place-items: center;
-  gap: .5rem;
-  width: 100%;
-}
-
-.grid-2 {
-  grid-template-columns: 1fr 1fr;
-}
-
-
-.grid-3 {
-  grid-template-columns: 1fr 1fr 1fr;
+﻿.vh-scroll {
+  max-height: 100svh;
+  overflow-y: auto;
 }
