@@ -1,11 +1,13 @@
 ﻿import { useContext, useState } from "react";
 import { FretboardContext } from "./FretboardContext";
-import { Note } from "../../interface/Note";
 import {
+  chromaticScale,
   getNote,
   getStringNotes,
   isScaleInterval,
 } from "../../utility/noteFunctions";
+import { Mode, Note, Scale } from "../../types/musical-terms";
+import { majorScale } from "../../data/scales";
 
 export const Fret = ({ note }: { note: Note }) => {
   const { selectedNote, setSelectedNote } = useContext(FretboardContext);
@@ -63,20 +65,16 @@ export const String = ({ startingNote }: { startingNote: Note }) => {
 };
 
 export const FretBoard = (props: any) => {
-  const [selectedNote, setSelectedNote] = useState<Note>();
-
   return (
-    <FretboardContext.Provider value={{ setSelectedNote, selectedNote }}>
-      <div className="fretboard-container">
-        <div className="fretboard">
-          <String startingNote={getNote("E", false)} />
-          <String startingNote={getNote("B", false)} />
-          <String startingNote={getNote("G", false)} />
-          <String startingNote={getNote("D", false)} />
-          <String startingNote={getNote("A", false)} />
-          <String startingNote={getNote("E", false)} />
-        </div>
+    <div className="fretboard-container">
+      <div className="fretboard">
+        <String startingNote={getNote("E", false)} />
+        <String startingNote={getNote("B", false)} />
+        <String startingNote={getNote("G", false)} />
+        <String startingNote={getNote("D", false)} />
+        <String startingNote={getNote("A", false)} />
+        <String startingNote={getNote("E", false)} />
       </div>
-    </FretboardContext.Provider>
+    </div>
   );
 };

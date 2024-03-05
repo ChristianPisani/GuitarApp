@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @import "scss/animations.scss";
 @import "ui/Fretboard/Fretboard.scss";
 @import "scss/icons.scss";
