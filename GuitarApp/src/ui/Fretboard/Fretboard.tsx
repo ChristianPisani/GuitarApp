@@ -3,6 +3,7 @@ import { FretboardContext } from "./FretboardContext";
 import {
   chromaticScale,
   getNote,
+  getScaleChromaticScaleIndexes,
   getStringNotes,
   isScaleInterval,
 } from "../../utility/noteFunctions";
@@ -10,7 +11,8 @@ import { Mode, Note, Scale } from "../../types/musical-terms";
 import { majorScale } from "../../data/scales";
 
 export const Fret = ({ note }: { note: Note }) => {
-  const { selectedNote, setSelectedNote } = useContext(FretboardContext);
+  const { selectedNote, setSelectedNote, selectedScale } =
+    useContext(FretboardContext);
 
   const isMajorSecond = isScaleInterval(selectedNote, note, 2);
   const isMajorThird = isScaleInterval(selectedNote, note, 4);
@@ -19,29 +21,17 @@ export const Fret = ({ note }: { note: Note }) => {
   const isMajorSixth = isScaleInterval(selectedNote, note, 9);
   const isMajorSeventh = isScaleInterval(selectedNote, note, 11);
 
-  const activeNotes = [1, 3, 5, 7];
+  const activeNotes = getScaleChromaticScaleIndexes(
+    selectedNote,
+    selectedScale
+  );
 
-  const highLighted =
-    selectedNote === note ||
-    //isMajorSecond ||
-    isMajorThird ||
-    //isMajorFourth ||
-    isMajorFifth ||
-    //isMajorSixth ||
-    isMajorSeventh;
+  const highLighted = activeNotes.includes(chromaticScale.indexOf(note));
 
   return (
     <div className="fret">
       <div
-        className={`
-          note 
-          ${highLighted ? "active" : ""}
-          ${isMajorSecond ? "second" : ""}
-          ${isMajorThird ? "third" : ""}
-          ${isMajorFourth ? "fourth" : ""}
-          ${isMajorFifth ? "fifth" : ""}
-          ${isMajorSixth ? "sixth" : ""}
-          ${isMajorSeventh ? "seventh" : ""}`}
+        className={`note`}
         onClick={() => {
           setSelectedNote?.(note);
         }}
