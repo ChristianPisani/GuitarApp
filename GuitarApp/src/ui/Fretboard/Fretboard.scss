@@ -201,30 +201,38 @@
   z-index: -2;
 }
 
-.note.active:not(:where(.third,.fifth))::before {
+.note-color {
+  background-color: var(--color-active);
+}
+
+.active:not(:where(.third,.fifth))::before {
   animation: fade-out ease-in 250ms forwards;
 }
 
-.note.second {
+.first {
+  --color-active: var(--interval-1);
+}
+
+.second {
   --color-active: var(--interval-2);
 }
 
-.note.third {
+.third {
   --color-active: var(--interval-3);
 }
 
-.note.fourth {
+.fourth {
   --color-active: var(--interval-4);
 }
 
-.note.fifth {
+.fifth {
   --color-active: var(--interval-5);
 }
 
-.note.sixth {
+.sixth {
   --color-active: var(--interval-6);
 }
 
-.note.seventh {
+.seventh {
   --color-active: var(--interval-7);
 }

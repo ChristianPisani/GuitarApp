@@ -606,6 +606,14 @@ video {
   place-items: center;
 }
 
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
 .gap-2 {
   gap: 0.5rem;
 }
@@ -651,10 +659,6 @@ video {
   background-color: rgb(254 215 170 / var(--tw-bg-opacity));
 }
 
-.p-2 {
-  padding: 0.5rem;
-}
-
 .p-3 {
   padding: 0.75rem;
 }
@@ -663,9 +667,8 @@ video {
   padding: 2rem;
 }
 
-.px-4 {
-  padding-left: 1rem;
-  padding-right: 1rem;
+.p-2 {
+  padding: 0.5rem;
 }
 
 .px-8 {

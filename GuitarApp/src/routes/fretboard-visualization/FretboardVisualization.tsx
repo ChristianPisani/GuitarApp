@@ -1,6 +1,11 @@
 ﻿import { FretBoard } from "../../ui/Fretboard/Fretboard";
 import "./fretboard-visualization.scss";
-import { chromaticScale, noteIsInScale } from "../../utility/noteFunctions";
+import {
+  chromaticScale,
+  getScaleDegree,
+  noteDegreeClasses,
+  noteIsInScale,
+} from "../../utility/noteFunctions";
 import { useContext, useState } from "react";
 import { FretboardContext } from "../../ui/Fretboard/FretboardContext";
 import { Mode, Note, Scale } from "../../types/musical-terms";
@@ -20,19 +25,27 @@ const Settings = () => {
       <p className={"font-bold mb-0"}>Select scale</p>
 
       <div className={"flex gap-2"}>
-        {chromaticScale.map((note) => (
-          <button
-            onClick={() => setSelectedNote(note)}
-            className={`w-12 h-12 rounded-full bg-gray-50 grid place-items-center ${
-              noteIsInScale(selectedNote, note, selectedScale)
-                ? "border-2 border-blue-950"
-                : ""
-            } ${note === selectedNote ? "border-fuchsia-500" : ""}`}
-          >
-            {note.name}
-            {note.sharp ? "#" : ""}
-          </button>
-        ))}
+        {chromaticScale.map((note) => {
+          const scaleDegree = getScaleDegree(selectedNote, note, selectedScale);
+          const isInScale = noteIsInScale(selectedNote, note, selectedScale);
+
+          return (
+            <div className={"flex flex-col items-center gap-2"}>
+              <button
+                onClick={() => setSelectedNote(note)}
+                className={`w-12 h-12 rounded-full bg-gray-50 grid place-items-center ${
+                  noteDegreeClasses[scaleDegree]
+                } ${isInScale ? "border-2 border-blue-950 note-color" : ""} ${
+                  note === selectedNote ? "border-fuchsia-500" : ""
+                }`}
+              >
+                {note.name}
+                {note.sharp ? "#" : ""}
+              </button>
+              {isInScale && <p>{scaleDegree + 1}</p>}
+            </div>
+          );
+        })}
         <select
           onChange={(e) =>
             setSelectedScale(availableScales[Number(e.target.value)])
@@ -125,6 +138,9 @@ export const FretboardVisualization = () => {
           <Settings></Settings>
           <div className={"main-content"}>
             <FretBoard />
+          </div>
+          <div className={"p-8"}>
+            <h2>Chords in this scale:</h2>
           </div>
         </div>
       </main>

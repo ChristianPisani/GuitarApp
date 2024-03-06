@@ -51,6 +51,16 @@ export const chromaticScale: Note[] = [
   },
 ];
 
+export const noteDegreeClasses = [
+  "first",
+  "second",
+  "third",
+  "fourth",
+  "fifth",
+  "sixth",
+  "seventh",
+];
+
 export const getNote = (name: string, sharp: boolean) => {
   return (
     chromaticScale.find((n) => n.name === name && n.sharp === sharp) ??
@@ -58,26 +68,39 @@ export const getNote = (name: string, sharp: boolean) => {
   );
 };
 
+export const chromaticScaleIndexOf = (note: Note) => {
+  const chromaticNote = chromaticScale.find(
+    (n) => n.name === note.name && n.sharp === note.sharp
+  );
+
+  if (!chromaticNote) return -1;
+
+  return chromaticScale.indexOf(chromaticNote);
+};
+
 export const isScaleInterval = (
-  rootNote: Note | undefined,
+  rootNote: Note,
   note: Note,
-  interval: number
+  interval: number,
+  scale: Scale
 ) => {
-  const noteIndex = rootNote ? chromaticScale.indexOf(rootNote) : 0;
+  const scaleIndexes = getScaleChromaticScaleIndexes(rootNote, scale);
 
-  if (noteIndex === -1) return undefined;
+  const noteChromaticScaleIndex = chromaticScaleIndexOf(note);
+  const scaleIndex = scaleIndexes.indexOf(noteChromaticScaleIndex);
 
-  const chromaticScaleNote =
-    chromaticScale[(noteIndex + interval) % chromaticScale.length];
-  const isInterval =
-    note.name === chromaticScaleNote.name &&
-    note.sharp === chromaticScaleNote.sharp;
+  return scaleIndex === interval;
+};
 
-  return isInterval;
+export const getScaleDegree = (rootNote: Note, note: Note, scale: Scale) => {
+  const scaleIndexes = getScaleChromaticScaleIndexes(rootNote, scale);
+
+  console.log({ scaleIndexes });
+  return scaleIndexes.indexOf(chromaticScaleIndexOf(note));
 };
 
 export const getStringNotes = (startingNote: Note, numberOfNotes: number) => {
-  const indexOfStartingNote = chromaticScale.indexOf(startingNote);
+  const indexOfStartingNote = chromaticScaleIndexOf(startingNote);
   const stringNotes = [];
 
   for (let i = 0; i <= numberOfNotes; i++) {
@@ -90,27 +113,27 @@ export const getStringNotes = (startingNote: Note, numberOfNotes: number) => {
 };
 
 export const getScaleChromaticScaleIndexes = (rootNote: Note, scale: Scale) => {
-  const chromaticScaleRootIndex = chromaticScale.indexOf(rootNote);
+  const chromaticScaleRootIndex = chromaticScaleIndexOf(rootNote);
   const indexes: number[] = [chromaticScaleRootIndex];
 
   let intervalIndex = 0;
   for (let i = 0; i < scale.intervals.length; i++) {
-    indexes.push(
-      (intervalIndex + chromaticScaleRootIndex) % chromaticScale.length
-    );
-
     if (scale.intervals[i] === "w") {
       intervalIndex += 2;
     } else {
       intervalIndex += 1;
     }
+
+    indexes.push(
+      (intervalIndex + chromaticScaleRootIndex) % chromaticScale.length
+    );
   }
 
   return indexes;
 };
 
 export const noteIsInScale = (rootNote: Note, note: Note, scale: Scale) => {
-  const chromaticScaleIndex = chromaticScale.indexOf(note);
+  const chromaticScaleIndex = chromaticScaleIndexOf(note);
 
   return getScaleChromaticScaleIndexes(rootNote, scale).includes(
     chromaticScaleIndex

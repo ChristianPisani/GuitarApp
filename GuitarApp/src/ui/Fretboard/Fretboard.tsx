@@ -4,22 +4,17 @@ import {
   chromaticScale,
   getNote,
   getScaleChromaticScaleIndexes,
+  getScaleDegree,
   getStringNotes,
-  isScaleInterval,
+  noteDegreeClasses,
 } from "../../utility/noteFunctions";
 import { Mode, Note, Scale } from "../../types/musical-terms";
-import { majorScale } from "../../data/scales";
 
 export const Fret = ({ note }: { note: Note }) => {
   const { selectedNote, setSelectedNote, selectedScale } =
     useContext(FretboardContext);
 
-  const isMajorSecond = isScaleInterval(selectedNote, note, 2);
-  const isMajorThird = isScaleInterval(selectedNote, note, 4);
-  const isMajorFourth = isScaleInterval(selectedNote, note, 5);
-  const isMajorFifth = isScaleInterval(selectedNote, note, 7);
-  const isMajorSixth = isScaleInterval(selectedNote, note, 9);
-  const isMajorSeventh = isScaleInterval(selectedNote, note, 11);
+  const scaleDegree = getScaleDegree(selectedNote, note, selectedScale);
 
   const activeNotes = getScaleChromaticScaleIndexes(
     selectedNote,
@@ -31,12 +26,12 @@ export const Fret = ({ note }: { note: Note }) => {
   return (
     <div className="fret">
       <div
-        className={`note`}
+        className={`note active ${noteDegreeClasses[scaleDegree]}`}
         onClick={() => {
           setSelectedNote?.(note);
         }}
       >
-        {highLighted && `${note?.name}${note.sharp ? "#" : ""}`}
+        {highLighted && `${note.name}${note.sharp ? "#" : ""}`}
       </div>
     </div>
   );
