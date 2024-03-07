@@ -10,7 +10,7 @@ export type Chord = {
   intervals: number[];
 };
 
-export type Interval = "w" | "h";
+export type Interval = "w" | "h" | "wh";
 
 export type Scale = {
   name: string;

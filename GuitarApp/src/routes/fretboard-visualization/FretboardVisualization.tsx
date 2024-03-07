@@ -14,13 +14,8 @@ import { availableScales, majorScale } from "../../data/scales";
 import { ChordVisualizer } from "../../ui/chord/chord";
 
 const Settings = () => {
-  const {
-    selectedScale,
-    selectedMode,
-    selectedNote,
-    setSelectedScale,
-    setSelectedNote,
-  } = useContext(FretboardContext);
+  const { selectedScale, selectedNote, setSelectedScale, setSelectedNote } =
+    useContext(FretboardContext);
 
   return (
     <div className={"flex flex-col gap-4 p-8"}>
@@ -57,15 +52,6 @@ const Settings = () => {
           {availableScales.map((scale, index) => (
             <option value={index}>{scale.name}</option>
           ))}
-        </select>
-        <select className={"p-3 bg-gray-100"}>
-          <option>Ionian (1st)</option>
-          <option>Dorian (2nd)</option>
-          <option>Phrygian (3rd)</option>
-          <option>Lydian (4th)</option>
-          <option>Mixolydian (5th)</option>
-          <option>Aeolian (6th)</option>
-          <option>Locrian (7th)</option>
         </select>
       </div>
 
@@ -123,6 +109,11 @@ export const FretboardVisualization = () => {
   const [selectedScale, setSelectedScale] = useState<Scale>(majorScale);
   const [selectedMode, setSelectedMode] = useState<Mode>(1);
 
+  const degrees = [];
+  for (let i = 0; i < selectedScale.intervals.length; i++) {
+    degrees.push(i);
+  }
+
   return (
     <FretboardContext.Provider
       value={{
@@ -143,7 +134,7 @@ export const FretboardVisualization = () => {
           </div>
           <div className={"p-8"}>
             <h2>Chords in this scale:</h2>
-            {[0, 1, 2, 3, 4, 5, 6].map((degree) => {
+            {degrees.map((degree) => {
               const chord = getScaleChord(
                 selectedNote,
                 selectedScale,

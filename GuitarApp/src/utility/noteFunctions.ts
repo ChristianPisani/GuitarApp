@@ -124,7 +124,9 @@ export const getScaleChromaticScaleIndexes = (rootNote: Note, scale: Scale) => {
 
   let intervalIndex = 0;
   for (let i = 0; i < scale.intervals.length - 1; i++) {
-    if (scale.intervals[i] === "w") {
+    if (scale.intervals[i] === "wh") {
+      intervalIndex += 3;
+    } else if (scale.intervals[i] === "w") {
       intervalIndex += 2;
     } else {
       intervalIndex += 1;

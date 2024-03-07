@@ -6,8 +6,6 @@ import "./article-page.scss";
 export const ArticlePage = () => {
   const { article } = useLoaderData() as { article: Article };
 
-  console.log({ article });
-
   return (
     <div className={"article"}>
       <div className={"container"}>
