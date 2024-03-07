@@ -1,7 +1,8 @@
 ﻿import { FretBoard } from "../../ui/Fretboard/Fretboard";
 import "./fretboard-visualization.scss";
 import {
-  chromaticScale,
+  allNotes,
+  getScaleChord,
   getScaleDegree,
   noteDegreeClasses,
   noteIsInScale,
@@ -10,6 +11,7 @@ import { useContext, useState } from "react";
 import { FretboardContext } from "../../ui/Fretboard/FretboardContext";
 import { Mode, Note, Scale } from "../../types/musical-terms";
 import { availableScales, majorScale } from "../../data/scales";
+import { ChordVisualizer } from "../../ui/chord/chord";
 
 const Settings = () => {
   const {
@@ -25,7 +27,7 @@ const Settings = () => {
       <p className={"font-bold mb-0"}>Select scale</p>
 
       <div className={"flex gap-2"}>
-        {chromaticScale.map((note) => {
+        {allNotes.map((note) => {
           const scaleDegree = getScaleDegree(selectedNote, note, selectedScale);
           const isInScale = noteIsInScale(selectedNote, note, selectedScale);
 
@@ -117,7 +119,7 @@ const SideBar = () => {
 };
 
 export const FretboardVisualization = () => {
-  const [selectedNote, setSelectedNote] = useState<Note>(chromaticScale[0]);
+  const [selectedNote, setSelectedNote] = useState<Note>(allNotes[0]);
   const [selectedScale, setSelectedScale] = useState<Scale>(majorScale);
   const [selectedMode, setSelectedMode] = useState<Mode>(1);
 
@@ -141,6 +143,21 @@ export const FretboardVisualization = () => {
           </div>
           <div className={"p-8"}>
             <h2>Chords in this scale:</h2>
+            {[0, 1, 2, 3, 4, 5, 6].map((degree) => {
+              const chord = getScaleChord(
+                selectedNote,
+                selectedScale,
+                degree,
+                3
+              );
+
+              return (
+                <ChordVisualizer
+                  chord={chord}
+                  strings={["E", "A", "D", "G", "B", "E"]}
+                />
+              );
+            })}
           </div>
         </div>
       </main>

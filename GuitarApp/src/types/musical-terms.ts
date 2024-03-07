@@ -1,10 +1,13 @@
-﻿export interface Note {
-  name: string;
+﻿export type NoteName = "A" | "B" | "C" | "D" | "E" | "F" | "G";
+
+export interface Note {
+  name: NoteName;
   sharp: boolean;
 }
 
 export type Chord = {
-  intervals: Number[];
+  root: Note;
+  intervals: number[];
 };
 
 export type Interval = "w" | "h";

@@ -1,7 +1,7 @@
 ﻿import { useContext, useState } from "react";
 import { FretboardContext } from "./FretboardContext";
 import {
-  chromaticScale,
+  allNotes,
   getNote,
   getScaleChromaticScaleIndexes,
   getScaleDegree,
@@ -21,7 +21,7 @@ export const Fret = ({ note }: { note: Note }) => {
     selectedScale
   );
 
-  const highLighted = activeNotes.includes(chromaticScale.indexOf(note));
+  const highLighted = activeNotes.includes(allNotes.indexOf(note));
 
   return (
     <div className="fret">

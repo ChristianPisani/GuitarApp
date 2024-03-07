@@ -1,6 +1,6 @@
 ﻿import { createContext, Dispatch, SetStateAction } from "react";
 import { Mode, Note, Scale } from "../../types/musical-terms";
-import { chromaticScale } from "../../utility/noteFunctions";
+import { allNotes } from "../../utility/noteFunctions";
 import { majorScale } from "../../data/scales";
 
 interface FretboardContextProps {
@@ -13,7 +13,7 @@ interface FretboardContextProps {
 }
 
 export const FretboardContext = createContext<FretboardContextProps>({
-  selectedNote: chromaticScale[0],
+  selectedNote: allNotes[0],
   selectedScale: majorScale,
   selectedMode: 1,
   setSelectedScale: () => null,
