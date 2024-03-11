@@ -73,6 +73,9 @@ export const getNote = (name: string, sharp: boolean) => {
   );
 };
 
+export const noteToString = (note: Note) =>
+  `${note.name}${note.sharp ? "#" : ""}`;
+
 export const notesAreEqual = (noteA: Note, noteB: Note) => {
   return noteA.name === noteB.name && noteA.sharp === noteB.sharp;
 };
@@ -167,7 +170,6 @@ export const getScaleChord = (
   length: number
 ): Chord => {
   const scaleNotes = getScaleNotes(rootNote, scale);
-  const majorScaleNotes = getScaleNotes(rootNote, majorScale);
   const relativeRoot = scaleNotes[degree];
   const chromaticScaleNotes = getScaleNotes(relativeRoot, chromaticScale);
 
