@@ -34,14 +34,15 @@ export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
   };
 
   return (
-    <>
-      <div className={"flex gap-8 my-8"}>
+    <div className={"flex flex-col w-screen p-4 md:p-8"}>
+      <div className={"flex flex-col gap-8 my-8 md:flex-row"}>
         <label className="inline-flex items-center cursor-pointer">
           <input
             type="checkbox"
             value={showNoteIndex ? 1 : 0}
             onChange={() => setShowNoteIndex(!showNoteIndex)}
             className="sr-only peer"
+            defaultChecked={showNoteIndex}
           />
           <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
           <span className="ms-3 text-sm font-medium text-gray-900">
@@ -62,26 +63,28 @@ export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
         </select>
       </div>
 
-      {degrees.map((degree) => {
-        const chord = getScaleChord(
-          note,
-          scale,
-          degree,
-          chordTypeIndexes[chordType]
-        );
+      <div className={"flex overflow-auto"}>
+        {degrees.map((degree) => {
+          const chord = getScaleChord(
+            note,
+            scale,
+            degree,
+            chordTypeIndexes[chordType]
+          );
 
-        return (
-          <div className={"inline-grid mr-4 gap-4"}>
-            <h2>{getChordName(chord)}</h2>
-            <ChordVisualizer
-              chord={chord}
-              strings={["E", "A", "D", "G", "B", "E"]}
-              showNoteIndex={showNoteIndex}
-            />
-          </div>
-        );
-      })}
-    </>
+          return (
+            <div className={"inline-grid gap-4"}>
+              <h2>{getChordName(chord)}</h2>
+              <ChordVisualizer
+                chord={chord}
+                strings={["E", "A", "D", "G", "B", "E"]}
+                showNoteIndex={showNoteIndex}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 };
 

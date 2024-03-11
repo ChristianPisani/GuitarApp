@@ -6,6 +6,7 @@ import {
   getScaleDegree,
   noteDegreeClasses,
   noteIsInScale,
+  noteToString,
 } from "../../utility/noteFunctions";
 import { useContext, useState } from "react";
 import { FretboardContext } from "../../ui/Fretboard/FretboardContext";
@@ -18,7 +19,7 @@ const Settings = () => {
     useContext(FretboardContext);
 
   return (
-    <div className={"flex flex-col gap-4 p-8"}>
+    <div className={"flex flex-col gap-4 overflow-auto mx-4 md:mx-8"}>
       <p className={"font-bold mb-0"}>Select scale</p>
 
       <div className={"flex gap-2"}>
@@ -33,14 +34,11 @@ const Settings = () => {
                 onClick={() => setSelectedNote(note)}
                 className={`w-12 h-12 rounded-full bg-gray-50 grid place-items-center ${
                   noteDegreeClasses[scaleDegree]
-                } ${isInScale ? "border-2 border-blue-950 note-color" : ""} ${
-                  note === selectedNote ? "border-fuchsia-500" : ""
-                }`}
+                } ${isInScale ? "border-2 border-blue-950 note-color" : ""}`}
               >
-                {note.name}
-                {note.sharp ? "#" : ""}
+                {noteToString(note)}
               </button>
-              {isInScale && <p>{scaleDegree + 1}</p>}
+              {isInScale && <p className={"font-bold"}>{scaleDegree + 1}</p>}
             </div>
           );
         })}
@@ -48,7 +46,9 @@ const Settings = () => {
           onChange={(e) =>
             setSelectedScale(availableScales[Number(e.target.value)])
           }
-          className={"p-3 bg-gray-100"}
+          className={
+            "p-3 bg-gray-100 border-gray-900 border-2 self-center ml-8"
+          }
         >
           {availableScales.map((scale, index) => (
             <option value={index}>{scale.name}</option>
@@ -126,13 +126,13 @@ export const FretboardVisualization = () => {
         setSelectedScale,
       }}
     >
-      <main className={"grid max-w-[100svw] overflow-hidden"}>
+      <main className={"grid max-w-[100svw]"}>
         <Settings />
         <div className={"main-content overflow-auto"}>
           <FretBoard />
         </div>
-        <div className={"p-8"}>
-          <h2>Chords in this scale:</h2>
+        <div>
+          <h2 className={"p-4 md:p-8"}>Chords in this scale:</h2>
 
           <ChordDegreeVisualizer
             degrees={degrees}
