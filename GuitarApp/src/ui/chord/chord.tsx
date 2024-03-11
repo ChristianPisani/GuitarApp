@@ -15,7 +15,6 @@ export type ChordDegreeVisualizerProps = {
   degrees: number[];
   scale: Scale;
   note: Note;
-  showNoteIndex: boolean; // TODO: Move this into context??
 };
 
 export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
@@ -25,7 +24,7 @@ export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
 }) => {
   type ChordType = "power" | "triad" | "7th" | "9th";
   const [chordType, setChordType] = useState<ChordType>("triad");
-  const [showNoteIndex, setShowNoteIndex] = useState(false);
+  const [showNoteIndex, setShowNoteIndex] = useState(false); // TODO: Move this into context??
 
   const chordTypeIndexes = {
     power: 2,

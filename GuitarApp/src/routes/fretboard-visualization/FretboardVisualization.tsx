@@ -126,22 +126,19 @@ export const FretboardVisualization = () => {
         setSelectedScale,
       }}
     >
-      <main className={"main"}>
-        <SideBar />
-        <div className={"content"}>
-          <Settings></Settings>
-          <div className={"main-content"}>
-            <FretBoard />
-          </div>
-          <div className={"p-8"}>
-            <h2>Chords in this scale:</h2>
+      <main className={"grid max-w-[100svw] overflow-hidden"}>
+        <Settings />
+        <div className={"main-content overflow-auto"}>
+          <FretBoard />
+        </div>
+        <div className={"p-8"}>
+          <h2>Chords in this scale:</h2>
 
-            <ChordDegreeVisualizer
-              degrees={degrees}
-              scale={selectedScale}
-              note={selectedNote}
-            />
-          </div>
+          <ChordDegreeVisualizer
+            degrees={degrees}
+            scale={selectedScale}
+            note={selectedNote}
+          />
         </div>
       </main>
     </FretboardContext.Provider>

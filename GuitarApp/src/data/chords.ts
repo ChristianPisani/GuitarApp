@@ -34,6 +34,10 @@ export const chordExtensions = [
     interval: 11,
   },
   {
+    name: "Diminished 7th",
+    interval: 10,
+  },
+  {
     name: "9th",
     interval: 3,
   },
@@ -56,7 +60,11 @@ export const getChordName = (chord: Chord) => {
       ? matchingExtensions[matchingExtensions.length - 1].name
       : "";
 
-  return `${noteToString(chord.root)} ${
+  const chordName = `${noteToString(chord.root)} ${
     matchingTriad?.name
   } ${matchingExtensionName}`;
+
+  const chordNameNoDuplicates = [...new Set(chordName.split(" "))].join(" ");
+
+  return chordNameNoDuplicates;
 };
