@@ -24,7 +24,7 @@ export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
 }) => {
   type ChordType = "power" | "triad" | "7th" | "9th";
   const [chordType, setChordType] = useState<ChordType>("triad");
-  const [showNoteIndex, setShowNoteIndex] = useState(false); // TODO: Move this into context??
+  const [showNoteIndex, setShowNoteIndex] = useState(true); // TODO: Move this into context??
 
   const chordTypeIndexes = {
     power: 2,
@@ -146,11 +146,17 @@ export const ChordVisualizer: FC<{
                 );
 
                 const fingerNumberClasses = new Map<number, string>([
-                  [1, "bg-lime-700 rounded-full"],
-                  [2, "rounded-full outline outline-2 outline-gray-900"],
-                  [3, "rotate-45"],
-                  [4, "rotate-45 bg-yellow-600"],
-                  [5, "bg-blue-500 rounded-full"],
+                  [
+                    1,
+                    "bg-lime-500 rounded-full outline outline-2 outline-lime-500",
+                  ],
+                  [
+                    2,
+                    "bg-gray-900 rounded-full outline outline-2 outline-gray-900",
+                  ],
+                  [3, "bg-gray-900 rotate-45"],
+                  [4, "bg-yellow-600 rotate-45"],
+                  [5, "bg-blue-700 rounded-full"],
                 ]);
                 return (
                   <div
@@ -163,7 +169,7 @@ export const ChordVisualizer: FC<{
                     ) && (
                       <>
                         <div
-                          className={`w-8 h-8 bg-gray-900 grid place-items-center absolute ${
+                          className={`w-8 h-8 grid place-items-center absolute ${
                             fingerNumberClasses.get(fingerIndex + 1) ??
                             "bg-gray-900"
                           }`}
