@@ -598,19 +598,14 @@ video {
   position: relative;
 }
 
-.mx-8 {
-  margin-left: 2rem;
-  margin-right: 2rem;
+.mx-4 {
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 
 .my-8 {
   margin-top: 2rem;
   margin-bottom: 2rem;
-}
-
-.mx-4 {
-  margin-left: 1rem;
-  margin-right: 1rem;
 }
 
 .mb-0 {
@@ -619,10 +614,6 @@ video {
 
 .ml-8 {
   margin-left: 2rem;
-}
-
-.mr-4 {
-  margin-right: 1rem;
 }
 
 .ms-3 {
@@ -645,6 +636,10 @@ video {
   display: inline-grid;
 }
 
+.h-10 {
+  height: 2.5rem;
+}
+
 .h-12 {
   height: 3rem;
 }
@@ -659,6 +654,11 @@ video {
 
 .h-full {
   height: 100%;
+}
+
+.h-fit {
+  height: -moz-fit-content;
+  height: fit-content;
 }
 
 .min-h-\[500px\] {
@@ -710,6 +710,12 @@ video {
   cursor: pointer;
 }
 
+.select-none {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+
 .grid-cols-\[auto_1fr\] {
   grid-template-columns: auto 1fr;
 }
@@ -742,6 +748,10 @@ video {
   gap: 2rem;
 }
 
+.gap-16 {
+  gap: 4rem;
+}
+
 .self-center {
   align-self: center;
 }
@@ -750,8 +760,12 @@ video {
   overflow: auto;
 }
 
-.overflow-hidden {
-  overflow: hidden;
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
+.overflow-y-visible {
+  overflow-y: visible;
 }
 
 .rounded {
@@ -834,10 +848,6 @@ video {
 
 .p-4 {
   padding: 1rem;
-}
-
-.p-8 {
-  padding: 2rem;
 }
 
 .px-8 {

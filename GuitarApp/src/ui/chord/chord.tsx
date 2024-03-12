@@ -8,7 +8,7 @@ import {
   notesAreEqual,
   noteToString,
 } from "../../utility/noteFunctions";
-import { FC, useState } from "react";
+import { Component, FC, JSX, ReactNode, useState } from "react";
 import { getChordName } from "../../data/chords";
 
 export type ChordDegreeVisualizerProps = {
@@ -63,7 +63,7 @@ export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
         </select>
       </div>
 
-      <div className={"flex overflow-auto"}>
+      <div className={"flex overflow-x-auto w-full h-fit gap-8"}>
         {degrees.map((degree) => {
           const chord = getScaleChord(
             note,
@@ -73,7 +73,7 @@ export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
           );
 
           return (
-            <div className={"inline-grid gap-4"}>
+            <div className={"inline-grid gap-4 place-items-center"}>
               <h2>{getChordName(chord)}</h2>
               <ChordVisualizer
                 chord={chord}
@@ -84,6 +84,60 @@ export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
           );
         })}
       </div>
+    </div>
+  );
+};
+
+const ChordNoteComponent: FC<{
+  currentNote: Note;
+  chord: Chord;
+  chordNotes: Note[];
+  showNoteIndex: boolean;
+  showString: boolean;
+  fallBack: ReactNode | null;
+}> = ({
+  currentNote,
+  chordNotes,
+  chord,
+  showNoteIndex,
+  showString,
+  fallBack,
+}) => {
+  const fingerIndex = chord.intervals.indexOf(
+    getScaleDegree(chord.root, currentNote, chromaticScale) + 1
+  );
+
+  const fingerNumberClasses = new Map<number, string>([
+    [1, "bg-lime-500 rounded-full outline outline-2 outline-lime-500"],
+    [2, "bg-gray-900 rounded-full outline outline-2 outline-gray-900"],
+    [3, "bg-gray-900 rotate-45"],
+    [4, "bg-yellow-600 rotate-45"],
+    [5, "bg-blue-700 rounded-full"],
+  ]);
+
+  const FallbackComponent = fallBack;
+
+  return (
+    <div
+      className={`w-2 h-full ${
+        showString ? "bg-gray-900" : ""
+      } relative grid place-items-center`}
+    >
+      {chordNotes.some((chordNote) => notesAreEqual(chordNote, currentNote)) ? (
+        <>
+          <div
+            className={`w-8 h-8 grid place-items-center absolute ${
+              fingerNumberClasses.get(fingerIndex + 1) ?? "bg-gray-900"
+            }`}
+          ></div>
+
+          <p className={`text-white text-center absolute text-xl`}>
+            {showNoteIndex ? `${fingerIndex + 1}` : noteToString(currentNote)}
+          </p>
+        </>
+      ) : (
+        fallBack
+      )}
     </div>
   );
 };
@@ -114,9 +168,8 @@ export const ChordVisualizer: FC<{
 
   const chordNotes = getChordNotes(chord);
 
-  const notesSubset = stringNotes.slice(5, 10);
-
   const frets = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  const fretNoOpen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
   return (
     <div
@@ -129,69 +182,56 @@ export const ChordVisualizer: FC<{
           <p>{fret}</p>
         ))}
       </div>
-      <div
-        className={
-          "grid place-items-center h-full w-full rounded-xl border-4 border-gray-900 bg-orange-200"
-        }
-      >
-        {frets.map((fret, fretIndex) => (
-          <>
+
+      <div className={"flex flex-col h-full w-full"}>
+        <div
+          className={"flex w-full h-10 justify-around text-center items-center"}
+        >
+          {strings.map((string, fretIndex) => {
+            const currentNote = stringNotes[fretIndex][0];
+
+            return (
+              <>
+                <ChordNoteComponent
+                  currentNote={currentNote}
+                  chord={chord}
+                  chordNotes={chordNotes}
+                  showNoteIndex={showNoteIndex}
+                  showString={false}
+                  fallBack={<h2 className={"select-none"}>X</h2>}
+                />
+              </>
+            );
+          })}
+        </div>
+        <div
+          className={
+            "grid place-items-center h-full w-full rounded-xl border-4 border-gray-900 bg-orange-200"
+          }
+        >
+          {fretNoOpen.map((fret) => (
             <div
               className={
                 "flex h-full w-full justify-around border-2 border-gray-900 relative items-center"
               }
             >
               {strings.map((string: NoteName, index) => {
-                const currentNote = stringNotes[index][fretIndex];
+                const currentNote = stringNotes[index][fret];
 
-                const fingerIndex = chord.intervals.indexOf(
-                  getScaleDegree(chord.root, currentNote, chromaticScale) + 1
-                );
-
-                const fingerNumberClasses = new Map<number, string>([
-                  [
-                    1,
-                    "bg-lime-500 rounded-full outline outline-2 outline-lime-500",
-                  ],
-                  [
-                    2,
-                    "bg-gray-900 rounded-full outline outline-2 outline-gray-900",
-                  ],
-                  [3, "bg-gray-900 rotate-45"],
-                  [4, "bg-yellow-600 rotate-45"],
-                  [5, "bg-blue-700 rounded-full"],
-                ]);
                 return (
-                  <div
-                    className={
-                      "w-2 h-full bg-gray-900 relative grid place-items-center"
-                    }
-                  >
-                    {chordNotes.some((chordNote) =>
-                      notesAreEqual(chordNote, currentNote)
-                    ) && (
-                      <>
-                        <div
-                          className={`w-8 h-8 grid place-items-center absolute ${
-                            fingerNumberClasses.get(fingerIndex + 1) ??
-                            "bg-gray-900"
-                          }`}
-                        ></div>
-                        <p
-                          className={`text-white text-center absolute text-xl`}
-                        >
-                          {showNoteIndex
-                            ? `${fingerIndex + 1}`
-                            : noteToString(currentNote)}
-                        </p>
-                      </>
-                    )}
-                  </div>
+                  <ChordNoteComponent
+                    currentNote={currentNote}
+                    chordNotes={chordNotes}
+                    chord={chord}
+                    showNoteIndex={showNoteIndex}
+                    showString={true}
+                    fallBack={null}
+                  />
                 );
               })}
             </div>
-          </>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
