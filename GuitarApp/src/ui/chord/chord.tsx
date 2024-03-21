@@ -9,7 +9,11 @@ import {
   noteToString,
 } from "../../utility/noteFunctions";
 import { Component, FC, JSX, ReactNode, useState } from "react";
-import { getChordName } from "../../data/chords";
+import {
+  getChordName,
+  ScaleDegree,
+  scaleDegreeNotations,
+} from "../../data/chords";
 
 export type ChordDegreeVisualizerProps = {
   degrees: number[];
@@ -72,8 +76,20 @@ export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
             chordTypeIndexes[chordType]
           );
 
+          const chordName = getChordName(chord);
+          const isMajor = chordName.includes("Major");
+          const isDiminished = chordName.includes("Diminished");
+          const isAugmented = chordName.includes("Augmented");
+
+          const notation = scaleDegreeNotations((degree + 1) as ScaleDegree);
+
           return (
             <div className={"inline-grid gap-4 place-items-center"}>
+              <p className={"font-bold text-xl"}>
+                {isAugmented ? "+" : ""}
+                {isMajor ? notation : notation.toLowerCase()}
+                {isDiminished ? "°" : ""}
+              </p>
               <h2>{getChordName(chord)}</h2>
               <ChordVisualizer
                 chord={chord}

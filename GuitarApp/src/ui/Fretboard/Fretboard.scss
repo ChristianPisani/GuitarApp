@@ -7,13 +7,14 @@
 
   --string-shadow: 0px 10px 3px 0px rgba(0, 0, 0, 0.2);
 
-  counter-reset: fretnumber -1;
+  counter-reset: fretnumber 0;
 }
 
 .fretboard {
   border: 8px solid;
   border-radius: 20px;
   display: inline-block;
+  width: fit-content;
 
   background-color: var(--color-wood);
 }
@@ -22,6 +23,8 @@
   overflow: auto hidden;
   padding-block: 2rem;
   max-width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr;
 }
 
 .string {
@@ -30,19 +33,24 @@
   flex-direction: row;
   position: relative;
   
-  counter-reset: fretnumber -1;
+  counter-reset: fretnumber 0;
 }
 
 .string:hover .fret::before {
-  --string-glow: 0px 0px 0px 2px var(--color-string);
+  //--string-glow: 0px 0px 0px 2px var(--color-string);
   
-  box-shadow: var(--string-shadow), var(--string-glow);
+  //box-shadow: var(--string-shadow), var(--string-glow);
 }
-.string:active .fret::before {
+.string:hover .fret::before,
+.string:has(.note:hover) .fret::before {
   filter: brightness(2) saturate(2);
-} 
-.string:hover .note {
+}
+.string:hover .note.active,
+.string:has(.note:hover) .note.active {
   transform: scale(1.1);
+}
+.string:hover .note {
+  //transform: scale(1.1);
 }
 
 .string:first-of-type .fret::after {
@@ -102,7 +110,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 75px;
+  min-width: 90px;
   
   height: 50px;
 }
@@ -150,7 +158,7 @@
   background-color: var(--neutral-100);
 
   border-radius: 100%;
-  height: 60%;
+  height: 80%;
   aspect-ratio: 1;
 
   box-shadow: 0px 5px 3px 0px rgba(0, 0, 0, 0.2);
@@ -165,16 +173,16 @@
 }
 
 .note:not(.active:not(:where(.third, .fifth))):hover {
-  transform: scale(1.1);
-  box-shadow: 0px 5px 4px -1px rgba(0, 0, 0, 0.2);
+  //transform: scale(1.1);
+  //box-shadow: 0px 5px 4px -1px rgba(0, 0, 0, 0.2);
 }
 
 :where(.note.active:not(:where(.third, .fifth))) {
-  transform: scale(1.2);
+  //transform: scale(1.2);
 }
 
 .note:hover {
-  cursor: pointer;
+  //cursor: pointer;
 }
 
 .note:active:not(.active:not(:where(.third, .fifth))) {
@@ -235,4 +243,9 @@
 
 .seventh {
   --color-active: var(--interval-7);
+}
+
+.note.open:not(.active) {
+  background: none;
+  box-shadow: none;
 }

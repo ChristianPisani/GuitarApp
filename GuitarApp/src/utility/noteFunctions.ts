@@ -1,5 +1,6 @@
 ﻿import { Chord, Note, Scale } from "../types/musical-terms";
 import { majorScale } from "../data/scales";
+import { chordNames } from "../data/chords";
 
 export const chromaticScale: Scale = {
   name: "Chromatic scale",
