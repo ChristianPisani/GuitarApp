@@ -3,6 +3,7 @@
 export interface Note {
   name: NoteName;
   sharp: boolean;
+  pitch: number;
 }
 
 export type Chord = {

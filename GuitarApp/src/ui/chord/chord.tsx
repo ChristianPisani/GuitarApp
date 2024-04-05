@@ -14,6 +14,9 @@ import {
   ScaleDegree,
   scaleDegreeNotations,
 } from "../../data/chords";
+import { standardTuningNotes } from "../../data/tunings";
+import { acousticGuitar } from "../../utility/instruments";
+import { playChord } from "../../utility/instrumentFunctions";
 
 export type ChordDegreeVisualizerProps = {
   degrees: number[];
@@ -93,9 +96,16 @@ export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
               <h2>{getChordName(chord)}</h2>
               <ChordVisualizer
                 chord={chord}
-                strings={["E", "A", "D", "G", "B", "E"]}
+                strings={standardTuningNotes()}
                 showNoteIndex={showNoteIndex}
               />
+              <button
+                onClick={() => {
+                  playChord(acousticGuitar, chord, 0.2, 1);
+                }}
+              >
+                Play chord
+              </button>
             </div>
           );
         })}
@@ -160,7 +170,7 @@ const ChordNoteComponent: FC<{
 
 export const ChordVisualizer: FC<{
   chord: Chord;
-  strings: NoteName[];
+  strings: Note[];
   showNoteIndex: boolean;
 }> = ({ chord, strings, showNoteIndex }) => {
   // First
@@ -178,8 +188,15 @@ export const ChordVisualizer: FC<{
   // Just show the actual chord from the intervals sent in in this component
   // Then write what chord it is by analysing the intervals
 
-  const stringNotes = strings.map((string) =>
-    getStringNotes({ name: string, sharp: false }, 12)
+  const stringNotes = strings.map((stringNote) =>
+    getStringNotes(
+      {
+        name: stringNote.name,
+        sharp: stringNote.sharp,
+        pitch: stringNote.pitch,
+      },
+      12
+    )
   );
 
   const chordNotes = getChordNotes(chord);
@@ -231,7 +248,7 @@ export const ChordVisualizer: FC<{
                 "flex h-full w-full justify-around border-2 border-gray-900 relative items-center"
               }
             >
-              {strings.map((string: NoteName, index) => {
+              {strings.map((string: Note, index) => {
                 const currentNote = stringNotes[index][fret];
 
                 return (

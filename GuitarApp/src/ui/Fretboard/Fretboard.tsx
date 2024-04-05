@@ -7,8 +7,11 @@ import {
   getScaleDegree,
   getStringNotes,
   noteDegreeClasses,
+  noteToString,
 } from "../../utility/noteFunctions";
-import { Mode, Note, Scale } from "../../types/musical-terms";
+import { Note } from "../../types/musical-terms";
+import { acousticGuitar } from "../../utility/instruments";
+import { standardTuningNotes } from "../../data/tunings";
 
 export const Fret = ({ note }: { note: Note }) => {
   const { selectedNote, setSelectedNote, selectedScale } =
@@ -42,6 +45,11 @@ export const FretboardNote: FC<{ note: Note; open: boolean }> = ({
       className={`note ${highLighted && "active"} ${open && "open"} ${
         noteDegreeClasses[scaleDegree]
       }`}
+      onClick={() => {
+        const noteName = noteToString(note);
+
+        acousticGuitar.triggerAttackRelease(noteName + note.pitch, "4n");
+      }}
     >
       {highLighted && (
         <p className={"font-bold"}>
@@ -75,14 +83,8 @@ export const String = ({
 };
 
 export const FretBoard = (props: any) => {
-  const notes = [
-    getNote("E", false),
-    getNote("B", false),
-    getNote("G", false),
-    getNote("D", false),
-    getNote("A", false),
-    getNote("E", false),
-  ];
+  const basePitch = 2;
+  const notes = standardTuningNotes(basePitch);
 
   return (
     <div className="fretboard-container">

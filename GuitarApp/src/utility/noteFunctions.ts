@@ -11,52 +11,72 @@ export const allNotes: Note[] = [
   {
     name: "A",
     sharp: false,
+    pitch: 2,
   },
   {
     name: "A",
     sharp: true,
+    pitch: 2,
   },
   {
     name: "B",
     sharp: false,
+    pitch: 2,
   },
   {
     name: "C",
     sharp: false,
+    pitch: 2,
   },
   {
     name: "C",
     sharp: true,
+    pitch: 2,
   },
   {
     name: "D",
     sharp: false,
+    pitch: 2,
   },
   {
     name: "D",
     sharp: true,
+    pitch: 2,
   },
   {
     name: "E",
     sharp: false,
+    pitch: 2,
   },
   {
     name: "F",
     sharp: false,
+    pitch: 2,
   },
   {
     name: "F",
     sharp: true,
+    pitch: 2,
   },
   {
     name: "G",
     sharp: false,
+    pitch: 2,
   },
   {
     name: "G",
     sharp: true,
+    pitch: 2,
   },
 ];
+
+// Silly way of allowing indexOf without caring about pitch
+allNotes.indexOf = (note: Note) => {
+  return [...allNotes].indexOf(
+    allNotes.find((n) => n.name === note.name && n.sharp === note.sharp) ??
+      allNotes[0]
+  );
+};
 
 export const noteDegreeClasses = [
   "first",
@@ -68,10 +88,14 @@ export const noteDegreeClasses = [
   "seventh",
 ];
 
-export const getNote = (name: string, sharp: boolean) => {
-  return (
-    allNotes.find((n) => n.name === name && n.sharp === sharp) ?? allNotes[0]
-  );
+export const getNote = (name: string, sharp: boolean, pitch?: number) => {
+  const noteRef =
+    allNotes.find((n) => n.name === name && n.sharp === sharp) ?? allNotes[0];
+  const note = { ...noteRef };
+
+  if (pitch) note.pitch = pitch;
+
+  return note;
 };
 
 export const noteToString = (note: Note) =>
@@ -115,8 +139,14 @@ export const getStringNotes = (startingNote: Note, numberOfNotes: number) => {
   const indexOfStartingNote = chromaticScaleIndexOf(startingNote);
   const stringNotes = [];
 
+  let pitch = startingNote.pitch;
+
   for (let i = 0; i <= numberOfNotes; i++) {
-    stringNotes.push(allNotes[(indexOfStartingNote + i) % allNotes.length]);
+    const currentNote = allNotes[(indexOfStartingNote + i) % allNotes.length];
+
+    if (noteToString(currentNote) === "C") pitch++;
+
+    stringNotes.push({ ...currentNote, pitch });
   }
 
   return stringNotes;
