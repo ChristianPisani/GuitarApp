@@ -14,13 +14,16 @@
   list-style-type: none;
   margin: 0;
   padding: 0;
-  color: var(--neutral-900);
   box-sizing: border-box;
   font-family: var(--regular-font);
+  color: inherit;
+}
+
+button {
+  display: block;
 }
 
 body {
-  margin: 0;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;

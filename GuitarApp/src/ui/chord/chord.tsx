@@ -41,7 +41,7 @@ export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
   };
 
   return (
-    <div className={"flex flex-col w-screen p-4 md:p-8"}>
+    <div className={"flex flex-col max-w-[99svw] p-4 md:p-8"}>
       <div className={"flex flex-col gap-8 my-8 md:flex-row"}>
         <label className="inline-flex items-center cursor-pointer">
           <input
@@ -71,7 +71,7 @@ export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
       </div>
 
       <div className={"flex overflow-x-auto w-full h-fit gap-8"}>
-        {degrees.map((degree) => {
+        {degrees.map((degree, index) => {
           const chord = getScaleChord(
             note,
             scale,
@@ -87,7 +87,7 @@ export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
           const notation = scaleDegreeNotations((degree + 1) as ScaleDegree);
 
           return (
-            <div className={"inline-grid gap-4 place-items-center"}>
+            <div className={"inline-grid gap-4 place-items-center"} key={index}>
               <p className={"font-bold text-xl"}>
                 {isAugmented ? "+" : ""}
                 {isMajor ? notation : notation.toLowerCase()}
@@ -101,7 +101,7 @@ export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
               />
               <button
                 onClick={() => {
-                  playChord(acousticGuitar, chord, 0.2, 1);
+                  playChord(acousticGuitar, chord, 0.025, 1);
                 }}
               >
                 Play chord
@@ -207,12 +207,12 @@ export const ChordVisualizer: FC<{
   return (
     <div
       className={
-        "inline-grid grid-cols-[auto_1fr] gap-2 place-items-center min-h-[500px] min-w-72"
+        "inline-grid grid-cols-[auto_1fr] gap-2 place-items-center min-h-[500px] w-80"
       }
     >
       <div className={"grid h-full items-center text-end"}>
         {frets.map((fret) => (
-          <p>{fret}</p>
+          <p key={fret}>{fret}</p>
         ))}
       </div>
 
@@ -224,16 +224,15 @@ export const ChordVisualizer: FC<{
             const currentNote = stringNotes[fretIndex][0];
 
             return (
-              <>
-                <ChordNoteComponent
-                  currentNote={currentNote}
-                  chord={chord}
-                  chordNotes={chordNotes}
-                  showNoteIndex={showNoteIndex}
-                  showString={false}
-                  fallBack={<h2 className={"select-none"}>X</h2>}
-                />
-              </>
+              <ChordNoteComponent
+                currentNote={currentNote}
+                chord={chord}
+                chordNotes={chordNotes}
+                showNoteIndex={showNoteIndex}
+                showString={false}
+                fallBack={<h2 className={"select-none"}>X</h2>}
+                key={fretIndex}
+              />
             );
           })}
         </div>
@@ -242,11 +241,12 @@ export const ChordVisualizer: FC<{
             "grid place-items-center h-full w-full rounded-xl border-4 border-gray-900 bg-orange-200"
           }
         >
-          {fretNoOpen.map((fret) => (
+          {fretNoOpen.map((fret, index) => (
             <div
               className={
                 "flex h-full w-full justify-around border-2 border-gray-900 relative items-center"
               }
+              key={index}
             >
               {strings.map((string: Note, index) => {
                 const currentNote = stringNotes[index][fret];
@@ -259,6 +259,7 @@ export const ChordVisualizer: FC<{
                     showNoteIndex={showNoteIndex}
                     showString={true}
                     fallBack={null}
+                    key={index}
                   />
                 );
               })}

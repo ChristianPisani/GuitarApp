@@ -75,8 +75,8 @@ export const String = ({
 
   return (
     <div className="string">
-      {stringNotes.splice(startIndex).map((note) => (
-        <Fret note={note}></Fret>
+      {stringNotes.splice(startIndex).map((note, index) => (
+        <Fret note={note} key={index}></Fret>
       ))}
     </div>
   );
@@ -89,15 +89,20 @@ export const FretBoard = (props: any) => {
   return (
     <div className="fretboard-container">
       <div className={"h-full grid place-items-stretch"}>
-        {notes.map((note) => (
-          <div className={"grid w-16 place-items-center"}>
+        {notes.map((note, index) => (
+          <div className={"grid w-16 place-items-center"} key={index}>
             <FretboardNote note={note} open={true} />
           </div>
         ))}
       </div>
       <div className="fretboard">
-        {notes.map((note) => (
-          <String startIndex={1} startingNote={note} numberOfNotes={26} />
+        {notes.map((note, index) => (
+          <String
+            startIndex={1}
+            startingNote={note}
+            numberOfNotes={26}
+            key={index * 200}
+          />
         ))}
       </div>
     </div>

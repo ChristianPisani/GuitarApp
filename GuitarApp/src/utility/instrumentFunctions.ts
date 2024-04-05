@@ -7,7 +7,7 @@ export const playChord = (
   chord: Chord,
   arpeggioDelay: number = 0.1,
   sustain: number = 1,
-  descend: boolean = true
+  descend: boolean = false
 ) => {
   const chordNotes = getChordNotes(chord).map(
     (note) => noteToString(note) + note.pitch

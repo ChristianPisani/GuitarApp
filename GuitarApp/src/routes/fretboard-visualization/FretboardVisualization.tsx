@@ -2,7 +2,6 @@
 import "./fretboard-visualization.scss";
 import {
   allNotes,
-  getScaleChord,
   getScaleDegree,
   noteDegreeClasses,
   noteIsInScale,
@@ -13,6 +12,8 @@ import { FretboardContext } from "../../ui/Fretboard/FretboardContext";
 import { Mode, Note, Scale } from "../../types/musical-terms";
 import { availableScales, majorScale } from "../../data/scales";
 import { ChordDegreeVisualizer } from "../../ui/chord/chord";
+import { Sequencer } from "../../ui/sequencer/sequencer";
+import { ScalePicker } from "../../ui/scale-picker/scale-picker";
 
 const Settings = () => {
   const { selectedScale, selectedNote, setSelectedScale, setSelectedNote } =
@@ -28,7 +29,10 @@ const Settings = () => {
           const isInScale = noteIsInScale(selectedNote, note, selectedScale);
 
           return (
-            <div className={"flex flex-col items-center gap-2"}>
+            <div
+              className={"flex flex-col items-center gap-2"}
+              key={index * 100}
+            >
               <p>{index + 1}</p>
               <button
                 onClick={() => setSelectedNote(note)}
@@ -42,24 +46,14 @@ const Settings = () => {
             </div>
           );
         })}
-        <select
-          onChange={(e) =>
-            setSelectedScale(availableScales[Number(e.target.value)])
-          }
-          className={
-            "p-3 bg-gray-100 border-gray-900 border-2 self-center ml-8"
-          }
-        >
-          {availableScales.map((scale, index) => (
-            <option value={index}>{scale.name}</option>
-          ))}
-        </select>
+        <ScalePicker onChange={setSelectedScale} />
       </div>
 
       <p>Intervals:</p>
       <div className={"flex gap-2"}>
-        {selectedScale.intervals.map((i) => (
+        {selectedScale.intervals.map((i, index) => (
           <span
+            key={index}
             className={"bg-orange-200 rounded py-4 px-8 uppercase font-bold"}
           >
             {i}
@@ -131,14 +125,17 @@ export const FretboardVisualization = () => {
         <div className={"main-content overflow-auto"}>
           <FretBoard />
         </div>
-        <div>
-          <h2 className={"p-4 md:p-8"}>Chords in this scale:</h2>
+        <div className={"p-4 md:p-8"}>
+          <h2>Chords in this scale:</h2>
 
           <ChordDegreeVisualizer
             degrees={degrees}
             scale={selectedScale}
             note={selectedNote}
           />
+
+          <h2 className={"p-4 md:p-8"}>Sequencer</h2>
+          <Sequencer />
         </div>
       </main>
     </FretboardContext.Provider>
