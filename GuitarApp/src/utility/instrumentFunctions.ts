@@ -1,5 +1,5 @@
 ﻿import { getChordNotes, noteToString } from "./noteFunctions";
-import { Chord } from "../types/musical-terms";
+import { Chord, Note } from "../types/musical-terms";
 import { now, Sampler } from "tone";
 
 export const playChord = (
@@ -9,9 +9,19 @@ export const playChord = (
   sustain: number = 1,
   descend: boolean = false
 ) => {
-  const chordNotes = getChordNotes(chord).map(
-    (note) => noteToString(note) + note.pitch
-  );
+  const chordNotes = getChordNotes(chord);
+
+  playNotes(instrument, chordNotes, arpeggioDelay, sustain, descend);
+};
+
+export const playNotes = (
+  instrument: Sampler,
+  notes: Note[],
+  arpeggioDelay: number = 0.1,
+  sustain: number = 1,
+  descend: boolean = false
+) => {
+  const chordNotes = notes.map((note) => noteToString(note) + note.pitch);
 
   if (descend) {
     const reversed = [...chordNotes];

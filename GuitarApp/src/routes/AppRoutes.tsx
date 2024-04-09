@@ -21,9 +21,9 @@ export const AppRoutes = () => {
       children: [
         {
           path: "",
-          element: <HomePage />,
+          element: <FretboardVisualization />,
         },
-        {
+        /*{
           path: "articles",
           element: <ArticlesPage />,
           loader: articlesLoader,
@@ -36,7 +36,7 @@ export const AppRoutes = () => {
         {
           path: "visualizer",
           element: <FretboardVisualization />,
-        },
+        },*/
       ],
     },
   ]);

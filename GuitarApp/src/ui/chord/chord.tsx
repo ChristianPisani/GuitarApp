@@ -121,6 +121,7 @@ const ChordNoteComponent: FC<{
   showNoteIndex: boolean;
   showString: boolean;
   fallBack: ReactNode | null;
+  onClick?: (note: Note) => void;
 }> = ({
   currentNote,
   chordNotes,
@@ -128,6 +129,7 @@ const ChordNoteComponent: FC<{
   showNoteIndex,
   showString,
   fallBack,
+  onClick,
 }) => {
   const fingerIndex = chord.intervals.indexOf(
     getScaleDegree(chord.root, currentNote, chromaticScale) + 1
@@ -141,13 +143,22 @@ const ChordNoteComponent: FC<{
     [5, "bg-blue-700 rounded-full"],
   ]);
 
-  const FallbackComponent = fallBack;
+  const Wrapper = (props: { children?: ReactNode; className?: string }) =>
+    onClick ? (
+      <button className={props.className} onClick={() => onClick(currentNote)}>
+        {props.children}
+      </button>
+    ) : (
+      <p className={props.className}>{props.children}</p>
+    );
 
   return (
     <div
       className={`w-2 h-full ${
         showString ? "bg-gray-900" : ""
-      } relative grid place-items-center`}
+      } relative grid place-items-center transition-all ${
+        onClick ? "hover:scale-105" : ""
+      }`}
     >
       {chordNotes.some((chordNote) => notesAreEqual(chordNote, currentNote)) ? (
         <>
@@ -157,9 +168,11 @@ const ChordNoteComponent: FC<{
             }`}
           ></div>
 
-          <p className={`text-white text-center absolute text-xl`}>
+          <Wrapper
+            className={`text-white text-center absolute text-xl select-none p-4`}
+          >
             {showNoteIndex ? `${fingerIndex + 1}` : noteToString(currentNote)}
-          </p>
+          </Wrapper>
         </>
       ) : (
         fallBack
@@ -172,7 +185,8 @@ export const ChordVisualizer: FC<{
   chord: Chord;
   strings: Note[];
   showNoteIndex: boolean;
-}> = ({ chord, strings, showNoteIndex }) => {
+  onClickNote?: (note: Note, stringIndex: number) => void;
+}> = ({ chord, strings, showNoteIndex, onClickNote }) => {
   // First
   // Do the first inversion chords
   // Starting from first string, then second, third etc
@@ -207,7 +221,7 @@ export const ChordVisualizer: FC<{
   return (
     <div
       className={
-        "inline-grid grid-cols-[auto_1fr] gap-2 place-items-center min-h-[500px] w-80"
+        "inline-grid grid-cols-[auto_1fr_auto] gap-2 place-items-center min-h-[500px] w-80"
       }
     >
       <div className={"grid h-full items-center text-end"}>
@@ -232,6 +246,11 @@ export const ChordVisualizer: FC<{
                 showString={false}
                 fallBack={<h2 className={"select-none"}>X</h2>}
                 key={fretIndex}
+                onClick={
+                  onClickNote
+                    ? () => onClickNote(currentNote, fretIndex)
+                    : undefined
+                }
               />
             );
           })}
@@ -260,6 +279,11 @@ export const ChordVisualizer: FC<{
                     showString={true}
                     fallBack={null}
                     key={index}
+                    onClick={
+                      onClickNote
+                        ? () => onClickNote(currentNote, index)
+                        : undefined
+                    }
                   />
                 );
               })}
