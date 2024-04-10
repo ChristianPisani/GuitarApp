@@ -12,7 +12,11 @@ import * as Tone from "tone";
 import { Chord, Note, Scale } from "../../types/musical-terms";
 import { ChordVisualizer } from "../chord/chord";
 import { standardTuningNotes } from "../../data/tunings";
-import { getScaleChord, noteToString } from "../../utility/noteFunctions";
+import {
+  getScaleChord,
+  notesAreEqual,
+  noteToString,
+} from "../../utility/noteFunctions";
 import { playChord, playNotes } from "../../utility/instrumentFunctions";
 import { acousticGuitar } from "../../utility/instruments";
 import { ScalePicker } from "../scale-picker/scale-picker";
@@ -26,11 +30,6 @@ type SequencerBeat = {
   notes?: Note[][];
 };
 
-const defaultChord: Chord = {
-  intervals: [1, 3, 5],
-  root: { name: "E", sharp: false, pitch: 2 },
-};
-
 export const Sequencer = () => {
   const [amountOfBeats, setAmountOfBeats] = useState(4);
   const [currentBeat, setCurrentBeat] = useState(0);
@@ -41,7 +40,7 @@ export const Sequencer = () => {
     undefined
   );
 
-  const beatSplit = 8;
+  const beatSplit = 4;
 
   const startBeat = async () => {
     setIsPlaying(true);
@@ -81,7 +80,7 @@ export const Sequencer = () => {
   useEffect(() => {
     const beatsInit = [];
     for (let i = 0; i < amountOfBeats; i++) {
-      beatsInit.push({ chord: defaultChord });
+      beatsInit.push({ chord: undefined });
     }
     setBeats(beatsInit);
   }, [amountOfBeats]);
@@ -101,7 +100,7 @@ export const Sequencer = () => {
           <p className={"text-2xl"}>Amount of beats:</p>
           <input
             type={"number"}
-            min={4}
+            min={1}
             max={32}
             step={1}
             value={amountOfBeats}
@@ -148,7 +147,7 @@ export const Sequencer = () => {
 
       <div className={`flex gap-2 place-items-center flex-wrap`}>
         {beats.map((beat, index) => {
-          const beatChord = beats[index]?.chord ?? defaultChord;
+          const beatChord = beats[index]?.chord;
 
           const beatSplitArr = [];
           for (let i = 0; i < beatSplit; i++) {
@@ -194,9 +193,14 @@ export const Sequencer = () => {
   );
 };
 
+export type StringNote = {
+  note: Note;
+  stringIndex: number;
+};
+
 const Beat: FC<{
   onSelectChord: (chord: Chord) => void;
-  beatChord: Chord;
+  beatChord: Chord | undefined;
   currentBeat: number;
   beatIndex: number;
   beatSplit: number;
@@ -206,7 +210,7 @@ const Beat: FC<{
     beatsFill.push({ notes: [] });
   }
 
-  const [beats, setBeats] = useState<{ notes: Note[] }[]>(beatsFill);
+  const [beats, setBeats] = useState<{ notes: StringNote[] }[]>(beatsFill);
   const [activeBeat, setActiveBeat] = useState(0);
 
   useEffect(() => {
@@ -214,86 +218,105 @@ const Beat: FC<{
       currentBeat >= beatIndex * beatSplit &&
       currentBeat < beatIndex * beatSplit + beatSplit
     ) {
-      playNotes(acousticGuitar, beats[currentBeat % beatSplit].notes, 0, 0.2);
+      playNotes(
+        acousticGuitar,
+        beats[currentBeat % beatSplit].notes.map((beatNote) => beatNote.note),
+        0.025,
+        0.2
+      );
     }
   }, [currentBeat]);
 
   return (
     <>
       <BeatCustomizer onSelectChord={onSelectChord}>
-        {beatChord && (
-          <div className={`flex flex-col gap-8`}>
-            <div
-              className={`${
-                currentBeat >= beatIndex * beatSplit &&
-                currentBeat + beatSplit > beatIndex * beatSplit &&
-                currentBeat - beatSplit < beatIndex * beatSplit
-                  ? "outline-4 outline outline-gray-200"
-                  : ""
-              }\`}`}
-            >
-              <ChordVisualizer
-                chord={beatChord ?? defaultChord}
-                strings={standardTuningNotes(2)}
-                showNoteIndex={true}
-                onClickNote={(note: Note, stringIndex: number) => {
-                  if (
-                    beats[activeBeat].notes.some(
-                      (n) => noteToString(n) === noteToString(note)
-                    )
-                  )
-                    return;
+        <div className={`flex flex-col gap-8`}>
+          <div
+            className={`${
+              currentBeat >= beatIndex * beatSplit &&
+              currentBeat + beatSplit > beatIndex * beatSplit &&
+              currentBeat - beatSplit < beatIndex * beatSplit
+                ? "outline-4 outline outline-gray-200"
+                : ""
+            }\`}`}
+          >
+            <ChordVisualizer
+              chord={beatChord}
+              strings={standardTuningNotes(2).reverse()}
+              showNoteIndex={true}
+              selectedNotes={beats[activeBeat].notes}
+              onClickNote={(note: Note, stringIndex: number) => {
+                const foundNote = beats[activeBeat].notes.find(
+                  (string) =>
+                    notesAreEqual(string.note, note) &&
+                    string.stringIndex === stringIndex
+                );
+                const foundNoteOnSameString = beats[activeBeat].notes.find(
+                  (string) => string.stringIndex === stringIndex
+                );
 
-                  beats[activeBeat].notes.push(note);
-                  setBeats([...beats]);
-                }}
-              ></ChordVisualizer>
-              <p>{getChordName(beatChord)}</p>
-            </div>
+                const onSameString = foundNote?.stringIndex === stringIndex;
 
-            <div className={"flex gap-2 justify-around"}>
-              {beats.map((beat, index) => (
-                <div className={"grid flex-1"}>
-                  <div
-                    className={`flex flex-col place-items-center min-h-64 bg-gray-300 rounded flex-grow ${
-                      activeBeat === index
-                        ? "outline outline-2 outline-gray-50"
-                        : ""
-                    } ${
-                      currentBeat + beatIndex ===
-                      index + beatIndex * (beatSplit + 1)
-                        ? "bg-green-200"
-                        : ""
-                    }`}
-                    onClick={() => setActiveBeat(index)}
-                  >
-                    {beat.notes.map((note) => (
-                      <div
-                        className={"flex justify-center min-h-8"}
-                        onClick={() => {
-                          const foundNote = beats[activeBeat].notes.find(
-                            (n) => noteToString(n) === noteToString(note)
-                          );
+                if (
+                  foundNoteOnSameString &&
+                  !notesAreEqual(foundNoteOnSameString.note, note)
+                ) {
+                  const sameStringIndex = beats[activeBeat].notes.indexOf(
+                    foundNoteOnSameString
+                  );
+                  beats[activeBeat].notes.splice(sameStringIndex, 1);
+                  beats[activeBeat].notes.push({ note, stringIndex });
+                } else if (foundNote) {
+                  const foundIndex = beats[activeBeat].notes.indexOf(foundNote);
 
-                          if (!foundNote) return;
+                  beats[activeBeat].notes.splice(foundIndex, 1);
+                } else {
+                  beats[activeBeat].notes.push({ note, stringIndex });
+                }
 
-                          beats[activeBeat].notes.splice(
-                            beats[activeBeat].notes.indexOf(foundNote),
-                            1
-                          );
-                          setBeats([...beats]);
-                        }}
-                      >
-                        <FretboardNote note={note} open={false} />
-                      </div>
-                    ))}
-                  </div>
-                  <p>{beatIndex * beatSplit + index}</p>
-                </div>
-              ))}
-            </div>
+                beats[activeBeat].notes.sort(
+                  (a, b) => a.stringIndex - b.stringIndex
+                );
+                setBeats([...beats]);
+                playNotes(acousticGuitar, [note]);
+              }}
+            ></ChordVisualizer>
+            {beatChord && <p>{getChordName(beatChord)}</p>}
           </div>
-        )}
+
+          <div className={"flex gap-2 justify-around"}>
+            {beats.map((beat, index) => (
+              <div className={"grid flex-1"}>
+                <div
+                  className={`flex flex-col place-items-center min-h-64 bg-gray-300 rounded flex-grow ${
+                    activeBeat === index
+                      ? "outline outline-2 outline-gray-50"
+                      : ""
+                  } ${
+                    currentBeat + beatIndex ===
+                    index + beatIndex * (beatSplit + 1)
+                      ? "bg-green-200"
+                      : ""
+                  }`}
+                  onClick={() => setActiveBeat(index)}
+                >
+                  {beat.notes.map((note) => (
+                    <div className={"flex justify-center min-h-8"}>
+                      <p
+                        className={
+                          "bg-gray-900 rounded-full w-8 h-8 grid place-items-center"
+                        }
+                      >
+                        {noteToString(note.note)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                <p>{beatIndex * beatSplit + index}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </BeatCustomizer>
     </>
   );

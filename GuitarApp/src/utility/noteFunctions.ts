@@ -186,7 +186,9 @@ export const noteIsInScale = (rootNote: Note, note: Note, scale: Scale) => {
   );
 };
 
-export const getChordNotes = (chord: Chord) => {
+export const getChordNotes = (chord: Chord | undefined) => {
+  if (!chord) return [];
+
   const chromaticScaleNotes = getScaleNotes(chord.root, chromaticScale);
 
   return chord.intervals.map((interval) => {

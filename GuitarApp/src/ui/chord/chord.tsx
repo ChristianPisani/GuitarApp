@@ -16,7 +16,8 @@ import {
 } from "../../data/chords";
 import { standardTuningNotes } from "../../data/tunings";
 import { acousticGuitar } from "../../utility/instruments";
-import { playChord } from "../../utility/instrumentFunctions";
+import { playChord, playNotes } from "../../utility/instrumentFunctions";
+import { StringNote } from "../sequencer/sequencer";
 
 export type ChordDegreeVisualizerProps = {
   degrees: number[];
@@ -96,8 +97,9 @@ export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
               <h2>{getChordName(chord)}</h2>
               <ChordVisualizer
                 chord={chord}
-                strings={standardTuningNotes()}
+                strings={standardTuningNotes().reverse()}
                 showNoteIndex={showNoteIndex}
+                onClickNote={(note: Note) => playNotes(acousticGuitar, [note])}
               />
               <button
                 onClick={() => {
@@ -116,12 +118,13 @@ export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
 
 const ChordNoteComponent: FC<{
   currentNote: Note;
-  chord: Chord;
+  chord: Chord | undefined;
   chordNotes: Note[];
   showNoteIndex: boolean;
   showString: boolean;
   fallBack: ReactNode | null;
   onClick?: (note: Note) => void;
+  selected?: boolean;
 }> = ({
   currentNote,
   chordNotes,
@@ -130,10 +133,12 @@ const ChordNoteComponent: FC<{
   showString,
   fallBack,
   onClick,
+  selected = false,
 }) => {
-  const fingerIndex = chord.intervals.indexOf(
-    getScaleDegree(chord.root, currentNote, chromaticScale) + 1
-  );
+  const fingerIndex =
+    chord?.intervals.indexOf(
+      getScaleDegree(chord.root, currentNote, chromaticScale) + 1
+    ) ?? 0;
 
   const fingerNumberClasses = new Map<number, string>([
     [1, "bg-lime-500 rounded-full outline outline-2 outline-lime-500"],
@@ -165,7 +170,7 @@ const ChordNoteComponent: FC<{
           <div
             className={`w-8 h-8 grid place-items-center absolute ${
               fingerNumberClasses.get(fingerIndex + 1) ?? "bg-gray-900"
-            }`}
+            } ${selected ? "outline-2 outline-gray-100 outline" : ""}`}
           ></div>
 
           <Wrapper
@@ -182,11 +187,12 @@ const ChordNoteComponent: FC<{
 };
 
 export const ChordVisualizer: FC<{
-  chord: Chord;
+  chord: Chord | undefined;
   strings: Note[];
   showNoteIndex: boolean;
   onClickNote?: (note: Note, stringIndex: number) => void;
-}> = ({ chord, strings, showNoteIndex, onClickNote }) => {
+  selectedNotes?: StringNote[];
+}> = ({ chord, strings, showNoteIndex, onClickNote, selectedNotes }) => {
   // First
   // Do the first inversion chords
   // Starting from first string, then second, third etc
@@ -244,6 +250,12 @@ export const ChordVisualizer: FC<{
                 chordNotes={chordNotes}
                 showNoteIndex={showNoteIndex}
                 showString={false}
+                selected={selectedNotes?.some(
+                  (selectedNote) =>
+                    selectedNote.stringIndex === fretIndex &&
+                    noteToString(selectedNote.note) ===
+                      noteToString(currentNote)
+                )}
                 fallBack={<h2 className={"select-none"}>X</h2>}
                 key={fretIndex}
                 onClick={
@@ -260,15 +272,15 @@ export const ChordVisualizer: FC<{
             "grid place-items-center h-full w-full rounded-xl border-4 border-gray-900 bg-orange-200"
           }
         >
-          {fretNoOpen.map((fret, index) => (
+          {fretNoOpen.map((fret, fretIndex) => (
             <div
               className={
                 "flex h-full w-full justify-around border-2 border-gray-900 relative items-center"
               }
-              key={index}
+              key={fretIndex}
             >
-              {strings.map((string: Note, index) => {
-                const currentNote = stringNotes[index][fret];
+              {strings.map((string: Note, stringIndex) => {
+                const currentNote = stringNotes[stringIndex][fret];
 
                 return (
                   <ChordNoteComponent
@@ -278,12 +290,18 @@ export const ChordVisualizer: FC<{
                     showNoteIndex={showNoteIndex}
                     showString={true}
                     fallBack={null}
-                    key={index}
+                    key={stringIndex}
                     onClick={
                       onClickNote
-                        ? () => onClickNote(currentNote, index)
+                        ? () => onClickNote(currentNote, stringIndex)
                         : undefined
                     }
+                    selected={selectedNotes?.some(
+                      (selectedNote) =>
+                        selectedNote.stringIndex === stringIndex &&
+                        noteToString(selectedNote.note) ===
+                          noteToString(currentNote)
+                    )}
                   />
                 );
               })}
