@@ -18,3 +18,8 @@ export type Scale = {
   intervals: Interval[];
 };
 export type Mode = 1 | 2 | 3 | 4 | 5 | 6 | 7;
+
+export type StringNote = {
+  note: Note;
+  stringIndex: number;
+};

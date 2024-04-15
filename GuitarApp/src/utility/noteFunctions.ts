@@ -1,4 +1,4 @@
-﻿import { Chord, Note, Scale } from "../types/musical-terms";
+﻿import { Chord, Note, Scale, StringNote } from "../types/musical-terms";
 import { majorScale } from "../data/scales";
 import { chordNames } from "../data/chords";
 
@@ -103,6 +103,13 @@ export const noteToString = (note: Note) =>
 
 export const notesAreEqual = (noteA: Note, noteB: Note) => {
   return noteA.name === noteB.name && noteA.sharp === noteB.sharp;
+};
+
+export const stringNotesAreEqual = (noteA: StringNote, noteB: StringNote) => {
+  return (
+    notesAreEqual(noteA.note, noteB.note) &&
+    noteA.stringIndex === noteB.stringIndex
+  );
 };
 
 export const chromaticScaleIndexOf = (note: Note) => {

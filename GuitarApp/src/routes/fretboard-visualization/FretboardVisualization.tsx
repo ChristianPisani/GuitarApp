@@ -11,9 +11,14 @@ import { useContext, useState } from "react";
 import { FretboardContext } from "../../ui/Fretboard/FretboardContext";
 import { Mode, Note, Scale } from "../../types/musical-terms";
 import { availableScales, majorScale } from "../../data/scales";
-import { ChordDegreeVisualizer } from "../../ui/chord/chord";
+import {
+  ChordDegreeVisualizer,
+  ChordVisualizerFullChord,
+} from "../../ui/chord/chord";
 import { Sequencer } from "../../ui/sequencer/sequencer";
 import { ScalePicker } from "../../ui/scale-picker/scale-picker";
+import { ChordVariations } from "../../ui/chord-variations/chord-variations";
+import { NotePicker } from "../../ui/note-picker/note-picker";
 
 const Settings = () => {
   const { selectedScale, selectedNote, setSelectedScale, setSelectedNote } =
@@ -24,28 +29,11 @@ const Settings = () => {
       <p className={"font-bold mb-0"}>Select scale</p>
 
       <div className={"flex gap-2"}>
-        {allNotes.map((note, index) => {
-          const scaleDegree = getScaleDegree(selectedNote, note, selectedScale);
-          const isInScale = noteIsInScale(selectedNote, note, selectedScale);
-
-          return (
-            <div
-              className={"flex flex-col items-center gap-2"}
-              key={index * 100}
-            >
-              <p>{index + 1}</p>
-              <button
-                onClick={() => setSelectedNote(note)}
-                className={`w-12 h-12 rounded-full bg-gray-50 grid place-items-center ${
-                  noteDegreeClasses[scaleDegree]
-                } ${isInScale ? "border-2 border-blue-950 note-color" : ""}`}
-              >
-                {noteToString(note)}
-              </button>
-              {isInScale && <p className={"font-bold"}>{scaleDegree + 1}</p>}
-            </div>
-          );
-        })}
+        <NotePicker
+          selectedNote={selectedNote}
+          setSelectedNote={setSelectedNote}
+          selectedScale={selectedScale}
+        />
         <ScalePicker onChange={setSelectedScale} />
       </div>
 
@@ -133,6 +121,9 @@ export const FretboardVisualization = () => {
             scale={selectedScale}
             note={selectedNote}
           />
+
+          <h2>Ways to play chord</h2>
+          <ChordVariations />
 
           <h2 className={"p-4 md:p-8"}>Sequencer</h2>
           <Sequencer />

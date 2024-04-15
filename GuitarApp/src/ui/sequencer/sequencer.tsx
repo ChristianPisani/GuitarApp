@@ -9,8 +9,8 @@ import {
   useState,
 } from "react";
 import * as Tone from "tone";
-import { Chord, Note, Scale } from "../../types/musical-terms";
-import { ChordVisualizer } from "../chord/chord";
+import { Chord, Note, Scale, StringNote } from "../../types/musical-terms";
+import { ChordVisualizerFullChord } from "../chord/chord";
 import { standardTuningNotes } from "../../data/tunings";
 import {
   getScaleChord,
@@ -40,7 +40,7 @@ export const Sequencer = () => {
     undefined
   );
 
-  const beatSplit = 4;
+  const beatSplit = 8;
 
   const startBeat = async () => {
     setIsPlaying(true);
@@ -193,11 +193,6 @@ export const Sequencer = () => {
   );
 };
 
-export type StringNote = {
-  note: Note;
-  stringIndex: number;
-};
-
 const Beat: FC<{
   onSelectChord: (chord: Chord) => void;
   beatChord: Chord | undefined;
@@ -240,7 +235,7 @@ const Beat: FC<{
                 : ""
             }\`}`}
           >
-            <ChordVisualizer
+            <ChordVisualizerFullChord
               chord={beatChord}
               strings={standardTuningNotes(2).reverse()}
               showNoteIndex={true}
@@ -280,7 +275,7 @@ const Beat: FC<{
                 setBeats([...beats]);
                 playNotes(acousticGuitar, [note]);
               }}
-            ></ChordVisualizer>
+            ></ChordVisualizerFullChord>
             {beatChord && <p>{getChordName(beatChord)}</p>}
           </div>
 

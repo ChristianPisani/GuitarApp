@@ -1,6 +1,8 @@
 ﻿import { Chord } from "../types/musical-terms";
 import { noteToString } from "../utility/noteFunctions";
 
+export type TriadType = "Major" | "Minor" | "Augmented" | "Diminished";
+
 export const chordNames = [
   {
     // 1, 3, 5 degrees of the major scale
@@ -46,6 +48,10 @@ export const chordExtensions = [
     interval: 2,
   },
 ];
+
+export const getTriad = (type: TriadType) => {
+  return chordNames.find((triad) => triad.name === type);
+};
 
 export const getChordName = (chord: Chord) => {
   const matchingTriad = chordNames.find((triad) =>

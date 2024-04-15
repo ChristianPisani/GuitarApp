@@ -1,4 +1,10 @@
-﻿import { Chord, Note, NoteName, Scale } from "../../types/musical-terms";
+﻿import {
+  Chord,
+  Note,
+  NoteName,
+  Scale,
+  StringNote,
+} from "../../types/musical-terms";
 import {
   chromaticScale,
   getChordNotes,
@@ -7,6 +13,7 @@ import {
   getStringNotes,
   notesAreEqual,
   noteToString,
+  stringNotesAreEqual,
 } from "../../utility/noteFunctions";
 import { Component, FC, JSX, ReactNode, useState } from "react";
 import {
@@ -17,7 +24,6 @@ import {
 import { standardTuningNotes } from "../../data/tunings";
 import { acousticGuitar } from "../../utility/instruments";
 import { playChord, playNotes } from "../../utility/instrumentFunctions";
-import { StringNote } from "../sequencer/sequencer";
 
 export type ChordDegreeVisualizerProps = {
   degrees: number[];
@@ -95,7 +101,7 @@ export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
                 {isDiminished ? "°" : ""}
               </p>
               <h2>{getChordName(chord)}</h2>
-              <ChordVisualizer
+              <ChordVisualizerFullChord
                 chord={chord}
                 strings={standardTuningNotes().reverse()}
                 showNoteIndex={showNoteIndex}
@@ -119,9 +125,10 @@ export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
 const ChordNoteComponent: FC<{
   currentNote: Note;
   chord: Chord | undefined;
-  chordNotes: Note[];
+  chordNotes: StringNote[];
   showNoteIndex: boolean;
   showString: boolean;
+  stringIndex: number;
   fallBack: ReactNode | null;
   onClick?: (note: Note) => void;
   selected?: boolean;
@@ -134,6 +141,7 @@ const ChordNoteComponent: FC<{
   fallBack,
   onClick,
   selected = false,
+  stringIndex,
 }) => {
   const fingerIndex =
     chord?.intervals.indexOf(
@@ -165,7 +173,9 @@ const ChordNoteComponent: FC<{
         onClick ? "hover:scale-105" : ""
       }`}
     >
-      {chordNotes.some((chordNote) => notesAreEqual(chordNote, currentNote)) ? (
+      {chordNotes.some((chordNote) =>
+        stringNotesAreEqual(chordNote, { note: currentNote, stringIndex })
+      ) ? (
         <>
           <div
             className={`w-8 h-8 grid place-items-center absolute ${
@@ -186,27 +196,50 @@ const ChordNoteComponent: FC<{
   );
 };
 
-export const ChordVisualizer: FC<{
+type ChordVizualiserProps = {
   chord: Chord | undefined;
   strings: Note[];
   showNoteIndex: boolean;
   onClickNote?: (note: Note, stringIndex: number) => void;
   selectedNotes?: StringNote[];
-}> = ({ chord, strings, showNoteIndex, onClickNote, selectedNotes }) => {
-  // First
-  // Do the first inversion chords
-  // Starting from first string, then second, third etc
-  // Then
-  // Do the inversions as well
-  // How to do this?
-  // Sort the intervals
-  // Find the notes from the intervals in the chord
-  // Find note on first string, then next on second string etc
-  // Could also try string skip variants?
+};
 
-  // Alternatively
-  // Just show the actual chord from the intervals sent in in this component
-  // Then write what chord it is by analysing the intervals
+export const ChordVisualizerFullChord: FC<ChordVizualiserProps> = ({
+  chord,
+  strings,
+  showNoteIndex,
+  onClickNote,
+  selectedNotes,
+}) => {
+  const chordNotes = getChordNotes(chord).map((chordNote) => ({
+    note: chordNote,
+    stringIndex: 0,
+  }));
+
+  return (
+    <ChordVisualizerCustomChord
+      chord={chord}
+      strings={strings}
+      chordNotes={chordNotes}
+      showNoteIndex={showNoteIndex}
+      onClickNote={onClickNote}
+      selectedNotes={selectedNotes}
+    />
+  );
+};
+
+export const ChordVisualizerCustomChord: FC<
+  ChordVizualiserProps & { chordNotes: StringNote[] }
+> = ({
+  chord,
+  strings,
+  showNoteIndex,
+  onClickNote,
+  selectedNotes,
+  chordNotes,
+}) => {
+  const frets = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  const fretNoOpen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
   const stringNotes = strings.map((stringNote) =>
     getStringNotes(
@@ -218,11 +251,6 @@ export const ChordVisualizer: FC<{
       12
     )
   );
-
-  const chordNotes = getChordNotes(chord);
-
-  const frets = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-  const fretNoOpen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
   return (
     <div
@@ -249,6 +277,7 @@ export const ChordVisualizer: FC<{
                 chord={chord}
                 chordNotes={chordNotes}
                 showNoteIndex={showNoteIndex}
+                stringIndex={fretIndex}
                 showString={false}
                 selected={selectedNotes?.some(
                   (selectedNote) =>
@@ -287,6 +316,7 @@ export const ChordVisualizer: FC<{
                     currentNote={currentNote}
                     chordNotes={chordNotes}
                     chord={chord}
+                    stringIndex={stringIndex}
                     showNoteIndex={showNoteIndex}
                     showString={true}
                     fallBack={null}
