@@ -14,6 +14,7 @@ import {
 } from "../chord/chord";
 import { standardTuningNotes } from "../../data/tunings";
 import { chordNames, getTriad, TriadType } from "../../data/chords";
+import { Toggle } from "../toggle/toggle";
 
 export const ChordVariations = () => {
   const [rootNote, setRootNote] = useState<Note>(allNotes[0]);
@@ -22,7 +23,7 @@ export const ChordVariations = () => {
   const [showNoteIndex, setShowNoteIndex] = useState<boolean>(true);
   const [chordType, setChordType] = useState<TriadType>("Major");
 
-  const strings = standardTuningNotes();
+  const strings = standardTuningNotes().reverse();
 
   const chord: Chord = {
     intervals: getTriad(chordType)?.intervals ?? [],
@@ -31,25 +32,50 @@ export const ChordVariations = () => {
 
   const chordNotes = getChordNotes(chord);
 
-  const allStringNotes = strings.map((string) => getStringNotes(string, 12));
+  const allStringNotes = strings.map((string) => getStringNotes(string, 16));
   const stringNotes: StringNote[] = [];
-  for (let i = 0; i < 3; i++) {
-    const index = (i + inversion) % 2;
+  for (let i = 0; i < 6; i++) {
+    const index = (i + inversion) % 3;
 
     const matchingNote = chordNotes[index];
 
-    stringNotes.push({ note: matchingNote!, stringIndex: i });
+    stringNotes.push({
+      note: matchingNote!,
+      stringIndex: (i + selectedString) % strings.length,
+    });
   }
-  console.log(stringNotes, chord);
+
+  console.log(stringNotes);
 
   return (
-    <>
-      <input
-        type={"range"}
-        min={0}
-        max={2}
-        onChange={(e) => setInversion(Number(e.target.value))}
-      ></input>
+    <div className={"grid gap-8"}>
+      <div className={"flex gap-8"}>
+        <div className={"grid gap-2"}>
+          Inversion: {inversion}
+          <input
+            type={"range"}
+            min={0}
+            max={2}
+            defaultValue={inversion}
+            onChange={(e) => setInversion(Number(e.target.value))}
+          ></input>
+        </div>
+        <div className={"grid gap-2"}>
+          Selected string: {selectedString}
+          <input
+            type={"range"}
+            min={0}
+            max={5}
+            defaultValue={selectedString}
+            onChange={(e) => setSelectedString(Number(e.target.value))}
+          ></input>
+        </div>
+        <Toggle
+          onChange={() => setShowNoteIndex(!showNoteIndex)}
+          value={showNoteIndex}
+          text={"Show note index"}
+        />
+      </div>
 
       <NotePicker selectedNote={rootNote} setSelectedNote={setRootNote} />
 
@@ -57,8 +83,10 @@ export const ChordVariations = () => {
         chord={chord}
         chordNotes={stringNotes}
         strings={strings}
-        showNoteIndex={false}
+        showNoteIndex={showNoteIndex}
+        numberOfFrets={16}
+        careAboutStringIndex={true}
       />
-    </>
+    </div>
   );
 };

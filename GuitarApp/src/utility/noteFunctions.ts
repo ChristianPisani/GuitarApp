@@ -101,14 +101,20 @@ export const getNote = (name: string, sharp: boolean, pitch?: number) => {
 export const noteToString = (note: Note) =>
   `${note.name}${note.sharp ? "#" : ""}`;
 
-export const notesAreEqual = (noteA: Note, noteB: Note) => {
-  return noteA.name === noteB.name && noteA.sharp === noteB.sharp;
+export const notesAreEqual = (
+  noteA: Note | undefined,
+  noteB: Note | undefined
+) => {
+  return noteA?.name === noteB?.name && noteA?.sharp === noteB?.sharp;
 };
 
-export const stringNotesAreEqual = (noteA: StringNote, noteB: StringNote) => {
+export const stringNotesAreEqual = (
+  noteA: StringNote | undefined,
+  noteB: StringNote | undefined
+) => {
   return (
-    notesAreEqual(noteA.note, noteB.note) &&
-    noteA.stringIndex === noteB.stringIndex
+    notesAreEqual(noteA?.note, noteB?.note) &&
+    (noteA?.stringIndex === -1 || noteA?.stringIndex === noteB?.stringIndex)
   );
 };
 
