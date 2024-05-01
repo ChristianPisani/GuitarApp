@@ -9,12 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@material-ui/icons": "^4.11.3",
     "@portabletext/react": "^3.0.11",
     "@portabletext/types": "^2.0.8",
     "@sanity/client": "^6.9.1",
     "@sanity/types": "^3.20.2",
-    "prettier": "^2.8.4",
-    "react": "^18.2.0",
+    "react": "^18.3.1",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.2",
     "tone": "^14.7.77"
@@ -23,6 +23,8 @@
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@vitejs/plugin-react": "^3.1.0",
+    "prettier": "^3.2.5",
+    "prettier-plugin-tailwindcss": "^0.5.14",
     "sass": "^1.69.5",
     "tailwindcss": "^3.4.1",
     "typescript": "^4.9.3",

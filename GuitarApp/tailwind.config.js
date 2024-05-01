@@ -41,5 +41,5 @@ export default {
       full: "9999px",
     },
   },
-  plugins: [],
+  plugins: ["prettier-plugin-tailwindcss"]
 };
