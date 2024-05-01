@@ -7,6 +7,8 @@ import { articlesLoader } from "./articles-page/articles-loader";
 import { ArticlePage } from "./article-page/article-page";
 import { articleLoader } from "./article-page/article-loader";
 import { Header } from "../ui/header/header";
+import { Sequencer } from "../ui/sequencer/sequencer";
+import { SequencerPage } from "./sequencer-page/sequencer-page";
 
 export const AppRoutes = () => {
   const router = createBrowserRouter([
@@ -23,6 +25,7 @@ export const AppRoutes = () => {
           path: "",
           element: <FretboardVisualization />,
         },
+        { path: "sequencer", element: <SequencerPage /> },
         /*{
           path: "articles",
           element: <ArticlesPage />,

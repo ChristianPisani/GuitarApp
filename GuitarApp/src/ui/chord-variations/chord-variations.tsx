@@ -1,19 +1,10 @@
 ﻿import { useState } from "react";
 import { Chord, Note, StringNote } from "../../types/musical-terms";
-import {
-  allNotes,
-  chromaticScale,
-  getChordNotes,
-  getStringNotes,
-  notesAreEqual,
-} from "../../utility/noteFunctions";
+import { allNotes, getChordNotes } from "../../utility/noteFunctions";
 import { NotePicker } from "../note-picker/note-picker";
-import {
-  ChordVisualizerCustomChord,
-  ChordVisualizerFullChord,
-} from "../chord/chord";
+import { ChordVisualizerCustomChord } from "../chord/chord";
 import { standardTuningNotes } from "../../data/tunings";
-import { chordNames, getTriad, TriadType } from "../../data/chords";
+import { getTriad, TriadType } from "../../data/chords";
 import { Toggle } from "../toggle/toggle";
 
 export const ChordVariations = () => {
@@ -32,7 +23,6 @@ export const ChordVariations = () => {
 
   const chordNotes = getChordNotes(chord);
 
-  const allStringNotes = strings.map((string) => getStringNotes(string, 16));
   const stringNotes: StringNote[] = [];
   for (let i = 0; i < 6; i++) {
     const index = (i + inversion) % 3;
@@ -44,8 +34,6 @@ export const ChordVariations = () => {
       stringIndex: (i + selectedString) % strings.length,
     });
   }
-
-  console.log(stringNotes);
 
   return (
     <div className={"grid gap-8"}>

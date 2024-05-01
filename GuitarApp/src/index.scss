@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "scss/tailwind-colors.scss";
 @import "scss/animations.scss";
 @import "ui/Fretboard/Fretboard.scss";
 @import "scss/icons.scss";
@@ -56,6 +57,7 @@ body {
   margin: 0 auto;
   display: grid;
   place-items: center;
+  min-height: 100svh;
 }
 
 .glow {
