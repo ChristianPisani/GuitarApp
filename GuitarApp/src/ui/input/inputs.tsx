@@ -24,7 +24,7 @@ export const NumberInput: FC<NumberInputProps> = props => {
         id={id}
         type={'number'}
         className={
-          'shadow-accent rounded-full border-4 border-secondary-950 bg-primary-50 px-2 py-2 text-center text-2xl font-extrabold'
+          'shadow-accent w-full rounded-full border-4 border-secondary-950 bg-primary-50 px-2 py-2 text-center text-2xl font-extrabold'
         }
       ></input>
     </InputWrapper>
@@ -58,7 +58,10 @@ export const InputWrapper: FC<InputWrapperProps> = ({
 }) => {
   return (
     <div className={'flex flex-col place-items-center gap-2'}>
-      <label className={'text-sm font-bold text-secondary-950'} htmlFor={id}>
+      <label
+        className={'text-center text-sm font-bold text-secondary-950'}
+        htmlFor={id}
+      >
         {label}
       </label>
       {children}

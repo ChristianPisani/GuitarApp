@@ -1,9 +1,15 @@
 ﻿import './sequencer-ui.scss'
 import { PlayArrow, PlayArrowOutlined } from '@material-ui/icons'
 import { Button } from '../button/button'
-import { NumberInput, Select } from '../input/inputs'
-import { allNotes, noteToString } from '../../utility/noteFunctions'
+import { InputWrapper, NumberInput, Select } from '../input/inputs'
+import {
+  allNotes,
+  getScaleChord,
+  noteToString,
+} from '../../utility/noteFunctions'
 import { availableScales } from '../../data/scales'
+import { ChordVisualizerFullChord } from '../chord/chord'
+import { standardTuningNotes } from '../../data/tunings'
 
 export const SequencerUi = () => {
   const beats = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
@@ -11,17 +17,27 @@ export const SequencerUi = () => {
   return (
     <div
       className={
-        'grid min-h-[500px] w-full max-w-[1200px] grid-cols-[2fr_5fr] gap-2 rounded-3xl bg-secondary-950 p-2'
+        'grid min-h-[500px] w-full max-w-[1600px] grid-cols-[2fr_5fr] gap-2 rounded-3xl bg-secondary-950 p-2'
       }
     >
       <div
         className={
-          'grid grid-rows-[auto_auto] rounded-l-2xl rounded-r-lg bg-primary-50 p-8'
+          'grid grid-rows-[1fr_auto] gap-8 rounded-l-2xl rounded-r-lg bg-primary-50'
         }
       >
-        <div className={''}></div>
-        <div className={'flex flex-col justify-end'}>
-          <div className={'flex gap-4'}>
+        <div
+          className={
+            'flex w-full flex-col place-items-center justify-center rounded-3xl p-8 shadow-xl'
+          }
+        >
+          <ChordVisualizerFullChord
+            chord={getScaleChord(allNotes[0], availableScales[0], 1, 3)}
+            strings={standardTuningNotes().reverse()}
+            showNoteIndex={true}
+          />
+        </div>
+        <div className={'flex flex-col justify-end gap-8 p-8'}>
+          <div className={'grid grid-cols-2 place-items-center gap-4'}>
             <NumberInput
               label={'Amount of divisions'}
               id={'divisions-input'}
@@ -35,38 +51,35 @@ export const SequencerUi = () => {
           </div>
         </div>
       </div>
-      <div className={'grid grid-rows-[2fr_1fr_4fr] gap-8'}>
+      <div className={'flex flex-col justify-between gap-8'}>
         <div
           className={
-            'flex flex-col justify-center rounded-lg rounded-tr-2xl bg-primary-50 px-8 py-4'
+            'flex flex-col justify-center rounded-lg rounded-tr-2xl bg-primary-50 px-8 py-7'
           }
         >
           <h2>The wonderful sequencer!</h2>
           <p>Visualize the guitar fretboard in relation to music theory</p>
         </div>
-        <div className={''}></div>
+        <div className={'flex place-items-center justify-center gap-4'}>
+          <button
+            className={
+              'glow flex aspect-square w-fit select-none flex-col place-items-center justify-center rounded-full border-4 border-primary-100 p-6 text-primary-100 shadow shadow-accent-shadow transition-all hover:bg-primary-100 hover:text-secondary-950'
+            }
+          >
+            <p className={'text-xl'}>I</p>
+            <p className={'text-2xl font-bold'}>A MAJOR</p>
+          </button>
+          <div
+            className={
+              'glow h-0 w-48 border-t-8 border-dotted border-primary-100 text-primary-100'
+            }
+          ></div>
+        </div>
         <div
           className={
             'flex flex-col place-items-start gap-8 rounded-lg rounded-br-2xl bg-primary-50 p-8'
           }
         >
-          <div className={'grid w-full grid-cols-8 justify-between gap-4'}>
-            <p
-              className={
-                'col-span-8 text-center text-xs font-bold text-secondary-950'
-              }
-            >
-              Play
-            </p>
-
-            {beats.map(beat => (
-              <div
-                className={
-                  'shadow-accent h-12 w-12 rounded border-2 border-secondary-950 bg-transparent'
-                }
-              />
-            ))}
-          </div>
           <div className={'flex gap-4'}>
             <Button
               text={'Play'}
