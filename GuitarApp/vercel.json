@@ -1,8 +1,8 @@
 ﻿{
-  "routes": [
+  "rewrites": [
     {
-      "src": "/[^.]+",
-      "dest": "/"
+      "source": "/sequencer",
+      "destination": "/"
     }
   ]
 }
