@@ -23,9 +23,8 @@ export const NumberInput: FC<NumberInputProps> = props => {
         {...props}
         id={id}
         type={'number'}
-        className={
-          'shadow-accent w-full rounded-full border-4 border-secondary-950 bg-primary-50 px-2 py-2 text-center text-2xl font-extrabold'
-        }
+        className={`shadow-accent w-full rounded-full border-4 border-secondary-950 bg-transparent
+          px-2 py-2 text-center text-2xl font-extrabold`}
       ></input>
     </InputWrapper>
   )
@@ -39,9 +38,8 @@ export const Select: FC<SelectProps> = props => {
       <select
         {...props}
         id={id}
-        className={
-          'shadow-accent rounded-full border-4 border-secondary-950 bg-primary-50 px-2 py-2 text-center text-2xl font-extrabold'
-        }
+        className={`shadow-accent rounded-full border-4 border-secondary-950 bg-transparent px-2
+          py-2 text-center text-2xl font-extrabold`}
       >
         {options.map(option => (
           <option value={option}>{option}</option>

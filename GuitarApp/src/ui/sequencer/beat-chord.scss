@@ -1,0 +1,82 @@
+﻿//noinspection CssInvalidAtRule
+@property --offset-radius {
+  syntax: "<number>";
+  initial-value: 0;
+  inherits: true;
+}
+//noinspection CssInvalidAtRule
+@property --phase {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: true;
+}
+
+.only-one .beat-chord-circle:not(.add-button,.remove-button) {
+  --radius: 180deg;
+  --phase: 90deg;
+}
+
+.only-two .beat-chord-circle:not(.add-button,.remove-button) {
+  --radius: 45deg;
+  --phase: 68deg;
+}
+
+.beat-chord-circle {
+  --offset-start: 5;
+  --offset-end: 7.5;
+  --offset-radius: var(--offset-end);
+  
+  --phase: 20deg;
+  --radius: 140deg;
+  
+  --rotationAmount: calc(var(--index) * (var(--radius) / var(--total)) + var(--phase));
+  transition: 250ms transform;
+  animation: 250ms pop-in forwards ease-in-out;
+
+  //noinspection CssInvalidFunction
+  transform: rotateZ(var(--rotationAmount)) translateX(calc(var(--offset-radius) * -1rem)) rotateZ(calc(var(--rotationAmount) * -1));
+  
+  &.out {
+    animation: 250ms pop-out forwards ease-in-out;
+  }
+}
+
+.beat-chord-circle.inactive {
+  display: none;
+  animation: none;
+}
+
+.add-button {
+  --index: 0;
+  --phase: 210deg;
+}
+.remove-button {
+  --index: 0;
+  --phase: -30deg;
+}
+
+@keyframes pop-in {
+  from {
+    --offset-radius: var(--offset-start);
+    opacity: 0;
+    width: 0;
+    height: 0;
+    display: none;
+  }
+  to {
+    --offset-radius: var(--offset-end);
+  }
+}
+
+@keyframes pop-out {
+  from {
+    --offset-radius: var(--offset-end);
+  }
+  to {
+    --offset-radius: var(--offset-start);
+    opacity: 0;
+    width: 0;
+    height: 0;
+    display: none;
+  }
+}

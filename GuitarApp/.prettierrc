@@ -8,6 +8,7 @@
   "arrowParens": "avoid",
   "printWidth": 80,
   "plugins": [
-    "prettier-plugin-tailwindcss"
+    "prettier-plugin-tailwindcss", 
+    "prettier-plugin-classnames"
   ]
 }

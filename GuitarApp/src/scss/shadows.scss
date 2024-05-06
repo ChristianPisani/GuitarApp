@@ -1,4 +1,9 @@
 ﻿.shadow-accent {
-  box-shadow: 3px 4px 0 2px hsl(var(--accent-shadow));
-  // filter: drop-shadow(3px 4px 0 hsl(var(--accent-shadow)));
+  // box-shadow: 3px 4px 0 2px hsl(var(--accent-shadow));
+  filter: drop-shadow(2px 3px 0 hsl(var(--accent-shadow)));
+}
+
+.shadow-accent-2 {
+  // box-shadow: 3px 4px 0 2px hsl(var(--accent-shadow));
+  filter: drop-shadow(3px 4px 0 hsl(var(--accent-shadow-2)));
 }

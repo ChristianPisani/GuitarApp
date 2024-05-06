@@ -10,15 +10,15 @@ import {
 import { availableScales } from '../../data/scales'
 import { ChordVisualizerFullChord } from '../chord/chord'
 import { standardTuningNotes } from '../../data/tunings'
+import { BeatChord } from './beat-chord'
 
 export const SequencerUi = () => {
   const beats = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
 
   return (
     <div
-      className={
-        'grid min-h-[500px] w-full max-w-[1600px] grid-cols-[2fr_5fr] gap-2 rounded-3xl bg-secondary-950 p-2'
-      }
+      className={`grid min-h-[500px] w-full max-w-[1600px] grid-cols-[2fr_5fr] gap-2 rounded-3xl
+        bg-secondary-950 p-2`}
     >
       <div
         className={
@@ -26,10 +26,10 @@ export const SequencerUi = () => {
         }
       >
         <div
-          className={
-            'flex w-full flex-col place-items-center justify-center rounded-3xl p-8 shadow-xl'
-          }
+          className={`flex w-full flex-col place-items-center justify-center rounded-3xl p-8 shadow-xl
+            gap-4`}
         >
+          <h2>D Major</h2>
           <ChordVisualizerFullChord
             chord={getScaleChord(allNotes[0], availableScales[0], 1, 3)}
             strings={standardTuningNotes().reverse()}
@@ -51,7 +51,11 @@ export const SequencerUi = () => {
           </div>
         </div>
       </div>
-      <div className={'flex flex-col justify-between gap-8'}>
+      <div
+        className={
+          'flex flex-col justify-between gap-8 max-w-full overflow-hidden'
+        }
+      >
         <div
           className={
             'flex flex-col justify-center rounded-lg rounded-tr-2xl bg-primary-50 px-8 py-7'
@@ -60,25 +64,19 @@ export const SequencerUi = () => {
           <h2>The wonderful sequencer!</h2>
           <p>Visualize the guitar fretboard in relation to music theory</p>
         </div>
-        <div className={'flex place-items-center justify-center gap-4'}>
-          <button
-            className={
-              'glow flex aspect-square w-fit select-none flex-col place-items-center justify-center rounded-full border-4 border-primary-100 p-6 text-primary-100 shadow shadow-accent-shadow transition-all hover:bg-primary-100 hover:text-secondary-950'
-            }
-          >
-            <p className={'text-xl'}>I</p>
-            <p className={'text-2xl font-bold'}>A MAJOR</p>
-          </button>
-          <div
-            className={
-              'glow h-0 w-48 border-t-8 border-dotted border-primary-100 text-primary-100'
-            }
-          ></div>
+        <div className={'w-auto overflow-hidden h-full'}>
+          <div className={'sequencer-chords p-16 gap-8 h-full'}>
+            <BeatChord />
+            <BeatChord />
+            <BeatChord />
+            <BeatChord />
+            <BeatChord />
+            <BeatChord />
+          </div>
         </div>
         <div
-          className={
-            'flex flex-col place-items-start gap-8 rounded-lg rounded-br-2xl bg-primary-50 p-8'
-          }
+          className={`flex flex-col place-items-start gap-8 rounded-lg rounded-br-2xl bg-primary-50
+            p-8`}
         >
           <div className={'flex gap-4'}>
             <Button

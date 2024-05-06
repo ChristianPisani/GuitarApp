@@ -164,11 +164,8 @@ const ChordNoteComponent: FC<{
 
   return (
     <div
-      className={`h-full w-2 ${
-        showString ? 'bg-gray-900' : ''
-      } relative grid place-items-center transition-all ${
-        onClick ? 'hover:scale-105' : ''
-      }`}
+      className={`h-full w-2 ${showString ? 'bg-gray-900' : ''} relative grid place-items-center
+      transition-all ${onClick ? 'hover:scale-105' : ''}`}
     >
       {(!careAboutStringIndex &&
         chordNotes.some(cn => notesAreEqual(cn.note, currentNote))) ||
@@ -184,7 +181,9 @@ const ChordNoteComponent: FC<{
           ></div>
 
           <Wrapper
-            className={`absolute select-none p-4 text-center text-xl text-white`}
+            className={
+              'absolute select-none p-4 text-center text-xl text-white'
+            }
           >
             {showNoteIndex ? `${fingerIndex + 1}` : noteToString(currentNote)}
           </Wrapper>
@@ -265,9 +264,8 @@ export const ChordVisualizerCustomChord: FC<
 
   return (
     <div
-      className={
-        'inline-grid min-h-[500px] w-80 grid-cols-[auto_1fr_auto] place-items-center gap-2'
-      }
+      className={`inline-grid min-h-[500px] w-72 grid-cols-[auto_1fr_auto] place-items-center
+        gap-2`}
     >
       <div className={'grid h-full items-center text-end'}>
         {frets.map(fret => (
@@ -310,15 +308,13 @@ export const ChordVisualizerCustomChord: FC<
           })}
         </div>
         <div
-          className={
-            'rounded-4xl grid h-full w-full place-items-center overflow-hidden border-8 border-gray-900'
-          }
+          className={`rounded-4xl grid h-full w-full place-items-center overflow-hidden border-8
+            border-gray-900`}
         >
           {fretNoOpen.map((fret, fretIndex) => (
             <div
-              className={
-                'relative flex h-full w-full items-center justify-around border-y-2 border-gray-900'
-              }
+              className={`relative flex h-full w-full items-center justify-around border-y-2
+                border-gray-900`}
               key={fretIndex}
             >
               {strings.map((string: Note, stringIndex) => {
