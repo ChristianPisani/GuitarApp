@@ -6,12 +6,16 @@
 } from 'react'
 import './beat-chord.scss'
 
-type BeatChordProps = {} & DetailedHTMLProps<
+type BeatChordProps = {
+  showLines: boolean
+} & DetailedHTMLProps<
   ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
 >
 
 export const BeatChord = (props: BeatChordProps) => {
+  const { showLines } = props
+
   const [amountOfBeats, setAmountOfBeats] = useState(4)
   const [selected, setSelected] = useState(false)
   const [selectedBeat, setSelectedBeat] = useState(0)
@@ -78,19 +82,21 @@ export const BeatChord = (props: BeatChordProps) => {
             })
             setSelected(!selected)
           }}
-          className={`${selected ? 'glow' : ''} flex aspect-square w-fit select-none flex-col
-          place-items-center justify-center rounded-full border-4 border-primary-100 p-6
+          className={`${selected ? 'glow' : ''} flex aspect-square w-40 select-none flex-col
+          justify-center items-center rounded-full border-4 border-primary-100 p-6
           text-primary-100 transition-all hover:text-primary-50 shadow-accent-2`}
         >
           <p className={'text-xl'}>I</p>
           <p className={'text-2xl font-bold'}>A MAJOR</p>
         </button>
       </div>
-      <div
-        className={
-          'glow h-0 w-48 border-t-8 border-dotted border-primary-100 text-primary-100'
-        }
-      ></div>
+      {showLines && (
+        <div
+          className={
+            'glow h-0 w-48 border-t-8 border-dotted border-primary-100 text-primary-100'
+          }
+        ></div>
+      )}
     </div>
   )
 }

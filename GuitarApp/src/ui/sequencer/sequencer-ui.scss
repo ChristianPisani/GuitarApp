@@ -3,11 +3,5 @@
   align-items: center;
   overflow-x: auto;
   padding-left: 40%;
-  
-  *:nth-child(1n) {
-    flex: 2;
-  }
-  *:nth-child(1n + 1) {
-    flex: 1;
-  }
+  padding-right: 40%;
 }

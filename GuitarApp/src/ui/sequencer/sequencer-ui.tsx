@@ -66,12 +66,12 @@ export const SequencerUi = () => {
         </div>
         <div className={'w-auto overflow-hidden h-full'}>
           <div className={'sequencer-chords p-16 gap-8 h-full'}>
-            <BeatChord />
-            <BeatChord />
-            <BeatChord />
-            <BeatChord />
-            <BeatChord />
-            <BeatChord />
+            <BeatChord showLines={true} />
+            <BeatChord showLines={true} />
+            <BeatChord showLines={true} />
+            <BeatChord showLines={true} />
+            <BeatChord showLines={true} />
+            <BeatChord showLines={false} />
           </div>
         </div>
         <div
