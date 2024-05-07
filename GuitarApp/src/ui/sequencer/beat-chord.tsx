@@ -20,11 +20,8 @@ export const BeatChord = (props: BeatChordProps) => {
   const [selected, setSelected] = useState(false)
   const [selectedBeat, setSelectedBeat] = useState(0)
 
-  const beatsArray = []
   const maxBeats = 8
-  for (let i = 0; i < maxBeats; i++) {
-    beatsArray.push(i)
-  }
+  const beatsArray = Array(maxBeats).fill(1);
 
   const removeBeat = () => {
     setAmountOfBeats(Math.max(1, amountOfBeats - 1))
