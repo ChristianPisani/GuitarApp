@@ -11,6 +11,7 @@ import { availableScales } from '../../data/scales'
 import { ChordVisualizerFullChord } from '../chord/chord'
 import { standardTuningNotes } from '../../data/tunings'
 import { BeatChord } from './beat-chord'
+import { ChordsEditor } from './chords-editor'
 
 export const SequencerUi = () => {
   const beats = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
@@ -64,16 +65,7 @@ export const SequencerUi = () => {
           <h2>The wonderful sequencer!</h2>
           <p>Visualize the guitar fretboard in relation to music theory</p>
         </div>
-        <div className={'w-auto overflow-hidden h-full'}>
-          <div className={'sequencer-chords p-16 gap-8 h-full'}>
-            <BeatChord showLines={true} />
-            <BeatChord showLines={true} />
-            <BeatChord showLines={true} />
-            <BeatChord showLines={true} />
-            <BeatChord showLines={true} />
-            <BeatChord showLines={false} />
-          </div>
-        </div>
+        <ChordsEditor />
         <div
           className={`flex flex-col place-items-start gap-8 rounded-lg rounded-br-2xl bg-primary-50
             p-8`}

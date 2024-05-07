@@ -8,3 +8,12 @@
     opacity: 0;
   }
 }
+
+.animation-fade-in {
+  animation: 250ms animation-fade-in ease-in-out forwards;
+}
+
+@keyframes animation-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

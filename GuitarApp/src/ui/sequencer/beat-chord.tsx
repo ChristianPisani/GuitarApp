@@ -8,20 +8,21 @@ import './beat-chord.scss'
 
 type BeatChordProps = {
   showLines: boolean
+  onDelete?: () => void
 } & DetailedHTMLProps<
   ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
 >
 
 export const BeatChord = (props: BeatChordProps) => {
-  const { showLines } = props
+  const { showLines, onDelete } = props
 
   const [amountOfBeats, setAmountOfBeats] = useState(4)
   const [selected, setSelected] = useState(false)
   const [selectedBeat, setSelectedBeat] = useState(0)
 
   const maxBeats = 8
-  const beatsArray = Array(maxBeats).fill(1);
+  const beatsArray = Array(maxBeats).fill(1)
 
   const removeBeat = () => {
     setAmountOfBeats(Math.max(1, amountOfBeats - 1))
@@ -33,7 +34,7 @@ export const BeatChord = (props: BeatChordProps) => {
   }
 
   return (
-    <div className={'flex place-items-center gap-8'}>
+    <div className={'flex place-items-center gap-8 animation-fade-in'}>
       <div
         className={`grid place-items-center relative transition-all ${
           amountOfBeats === 2 ? 'only-two' : ''
@@ -86,6 +87,11 @@ export const BeatChord = (props: BeatChordProps) => {
           <p className={'text-xl'}>I</p>
           <p className={'text-2xl font-bold'}>A MAJOR</p>
         </button>
+        {selected && onDelete && (
+          <button className={'absolute bottom-[-2.5rem]'} onClick={onDelete}>
+            Remove
+          </button>
+        )}
       </div>
       {showLines && (
         <div
