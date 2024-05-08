@@ -8,7 +8,15 @@ export const ChordsEditor = () => {
   const [chords, setChords] = useState<Chord[]>([])
 
   const addChord = () => {
-    setChords([...chords, getScaleChord(getNote('A', false), majorScale, 1, 4)])
+    setChords([
+      ...chords,
+      getScaleChord(
+        getNote('A', false),
+        majorScale,
+        Math.round(Math.random() * 7),
+        4
+      ),
+    ])
   }
 
   const removeChord = (index: number) => {
@@ -40,6 +48,8 @@ export const ChordsEditor = () => {
             <BeatChord
               showLines={index !== chords.length}
               onDelete={() => removeChord(index)}
+              chord={chord}
+              scaleDegree={2}
             />
           )
         })}

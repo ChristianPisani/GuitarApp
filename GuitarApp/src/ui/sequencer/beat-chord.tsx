@@ -2,20 +2,31 @@
   ButtonHTMLAttributes,
   CSSProperties,
   DetailedHTMLProps,
+  useRef,
   useState,
 } from 'react'
 import './beat-chord.scss'
+import { Chord } from '../../types/musical-terms'
+import {
+  getChordName,
+  ScaleDegree,
+  scaleDegreeNotations,
+} from '../../data/chords'
 
 type BeatChordProps = {
   showLines: boolean
   onDelete?: () => void
+  chord: Chord
+  scaleDegree: ScaleDegree
 } & DetailedHTMLProps<
   ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
 >
 
 export const BeatChord = (props: BeatChordProps) => {
-  const { showLines, onDelete } = props
+  const ref = useRef<HTMLDivElement>(null)
+  const [removed, setRemoved] = useState(false)
+  const { showLines, onDelete, chord, scaleDegree } = props
 
   const [amountOfBeats, setAmountOfBeats] = useState(4)
   const [selected, setSelected] = useState(false)
@@ -33,8 +44,23 @@ export const BeatChord = (props: BeatChordProps) => {
     setAmountOfBeats(Math.min(maxBeats, amountOfBeats + 1))
   }
 
+  const onRemove = () => {
+    setRemoved(true)
+
+    ref.current?.addEventListener('animationend', () => {
+      onDelete?.()
+
+      return undefined
+    })
+  }
+
   return (
-    <div className={'flex place-items-center gap-8 animation-fade-in'}>
+    <div
+      className={`flex place-items-center gap-8 ${
+        removed ? 'animation-fade-out' : 'animation-fade-in'
+      }`}
+      ref={ref}
+    >
       <div
         className={`grid place-items-center relative transition-all ${
           amountOfBeats === 2 ? 'only-two' : ''
@@ -84,11 +110,11 @@ export const BeatChord = (props: BeatChordProps) => {
           justify-center items-center rounded-full border-4 border-primary-100 p-6
           text-primary-100 transition-all hover:text-primary-50 shadow-accent-2`}
         >
-          <p className={'text-xl'}>I</p>
-          <p className={'text-2xl font-bold'}>A MAJOR</p>
+          <p className={'text-xl'}>{scaleDegreeNotations(scaleDegree)}</p>
+          <p className={'text-2xl font-bold'}>{getChordName(chord)}</p>
         </button>
         {selected && onDelete && (
-          <button className={'absolute bottom-[-2.5rem]'} onClick={onDelete}>
+          <button className={'absolute bottom-[-2.5rem]'} onClick={onRemove}>
             Remove
           </button>
         )}
