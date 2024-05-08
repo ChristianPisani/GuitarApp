@@ -4,18 +4,25 @@ import { Chord } from '../../types/musical-terms'
 import { getNote, getScaleChord } from '../../utility/noteFunctions'
 import { majorScale } from '../../data/scales'
 
+type EditorChord = Chord & {
+  id: number
+}
+
 export const ChordsEditor = () => {
-  const [chords, setChords] = useState<Chord[]>([])
+  const [chords, setChords] = useState<EditorChord[]>([])
+  const [currentId, setCurrentId] = useState(1)
 
   const addChord = () => {
+    setCurrentId(currentId+1)
+    
     setChords([
       ...chords,
-      getScaleChord(
+          {...getScaleChord(
         getNote('A', false),
         majorScale,
         Math.round(Math.random() * 7),
         4
-      ),
+      ), id: currentId},
     ])
   }
 
@@ -45,7 +52,8 @@ export const ChordsEditor = () => {
         )}
         {chords.map((chord, index) => {
           return (
-            <BeatChord
+            <BeatChord 
+              key={chord.id}
               showLines={index !== chords.length}
               onDelete={() => removeChord(index)}
               chord={chord}
