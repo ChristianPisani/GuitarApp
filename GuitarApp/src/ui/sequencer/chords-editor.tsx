@@ -3,33 +3,27 @@ import { useState } from 'react'
 import { Chord } from '../../types/musical-terms'
 import { getNote, getScaleChord } from '../../utility/noteFunctions'
 import { majorScale } from '../../data/scales'
+import {ScaleDegree} from "../../data/chords";
 
 type EditorChord = Chord & {
   id: number
 }
 
 export const ChordsEditor = () => {
-  const [chords, setChords] = useState<EditorChord[]>([])
+  const [chordDegrees, setChordDegrees] = useState<{ degree: ScaleDegree, id: number }[]>([])
   const [currentId, setCurrentId] = useState(1)
 
   const addChord = () => {
     setCurrentId(currentId+1)
-    
-    setChords([
-      ...chords,
-          {...getScaleChord(
-        getNote('A', false),
-        majorScale,
-        Math.round(Math.random() * 7),
-        4
-      ), id: currentId},
-    ])
+      
+    const degree = Math.round(Math.random() * 7) + 1 as ScaleDegree
+    setChordDegrees([...chordDegrees, {degree, id: currentId}]);
   }
 
   const removeChord = (index: number) => {
-    const copy = [...chords]
+    const copy = [...chordDegrees]
     copy.splice(index, 1)
-    setChords(copy)
+    setChordDegrees(copy)
   }
 
   return (
@@ -39,7 +33,7 @@ export const ChordsEditor = () => {
           'sequencer-chords p-16 gap-8 h-full text-primary-50 relative transition-all'
         }
       >
-        {chords.length === 0 && (
+        {chordDegrees.length === 0 && (
           <div className={'absolute left-16'}>
             <p className={'font-extrabold text-8xl'}>No chords added.</p>
             <button
@@ -50,18 +44,18 @@ export const ChordsEditor = () => {
             </button>
           </div>
         )}
-        {chords.map((chord, index) => {
+        {chordDegrees.map((chordDegree, index) => {
           return (
             <BeatChord 
-              key={chord.id}
-              showLines={index !== chords.length}
+              key={chordDegree.id}
+              showLines={index !== chordDegrees.length}
               onDelete={() => removeChord(index)}
-              chord={chord}
-              scaleDegree={2}
+              chord={getScaleChord(getNote("A", false), majorScale, chordDegree.degree, 4)}
+              scaleDegree={chordDegree.degree}
             />
           )
         })}
-        {chords.length > 0 && (
+        {chordDegrees.length > 0 && (
           <button
             onClick={addChord}
             className={
