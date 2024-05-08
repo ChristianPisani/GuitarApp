@@ -16,7 +16,7 @@ export const ChordsEditor = () => {
   const addChord = () => {
     setCurrentId(currentId+1)
       
-    const degree = Math.round(Math.random() * 7) + 1 as ScaleDegree
+    const degree = Math.round(Math.random() * 7) as ScaleDegree
     setChordDegrees([...chordDegrees, {degree, id: currentId}]);
   }
 
@@ -50,7 +50,7 @@ export const ChordsEditor = () => {
               key={chordDegree.id}
               showLines={index !== chordDegrees.length}
               onDelete={() => removeChord(index)}
-              chord={getScaleChord(getNote("A", false), majorScale, chordDegree.degree, 4)}
+              chord={getScaleChord(getNote("A", false), majorScale, chordDegree.degree, 3)}
               scaleDegree={chordDegree.degree}
             />
           )
