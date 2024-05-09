@@ -11,9 +11,21 @@ import { ChordVisualizerFullChord } from '../chord/chord'
 import { standardTuningNotes } from '../../data/tunings'
 import { BeatChord } from './beat-chord'
 import { ChordsEditor } from './chords-editor'
+import { useContext } from 'react'
+import { MusicContext } from '../../context/app-context'
+import { getChordName } from '../../data/chords'
 
 export const SequencerUi = () => {
   const beats = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+
+  const { selectedBeat, state, setState } = useContext(MusicContext)
+
+  const selectedChord = getScaleChord(
+    allNotes[0],
+    availableScales[0],
+    selectedBeat?.scaleDegree ?? 0,
+    3
+  )
 
   return (
     <div
@@ -29,9 +41,9 @@ export const SequencerUi = () => {
           className={`flex w-full flex-col place-items-center justify-center rounded-3xl p-8 shadow-xl
             gap-4`}
         >
-          <h2>D Major</h2>
+          <h2>{getChordName(selectedChord)}</h2>
           <ChordVisualizerFullChord
-            chord={getScaleChord(allNotes[0], availableScales[0], 1, 3)}
+            chord={selectedChord}
             strings={standardTuningNotes().reverse()}
             showNoteIndex={true}
           />

@@ -14,6 +14,7 @@ import {
   ScaleDegree,
   scaleDegreeNotations,
 } from '../../data/chords'
+import { useSequencer } from '../../hooks/sequencer-hook'
 
 type BeatChordProps = {
   showLines: boolean
@@ -34,7 +35,7 @@ export const BeatChord = (props: BeatChordProps) => {
   const [removed, setRemoved] = useState(false)
   const { showLines, onDelete, chord, scaleDegree } = props
 
-  const [amountOfBeats, setAmountOfBeats] = useState(4)
+  const [amountOfBeats, setAmountOfBeats] = useState(2)
   const [selectedBeat, setSelectedBeat] = useState(0)
 
   const maxBeats = 8
@@ -55,14 +56,29 @@ export const BeatChord = (props: BeatChordProps) => {
     onDelete?.(ref.current ?? undefined)
   }
 
+  const onBeat = (currentBeat: number) => {
+    setSelectedBeat(currentBeat)
+  }
+
+  const sequencer = useSequencer({
+    subdivisions: amountOfBeats,
+    onBeat,
+  })
+
+  useEffect(() => {}, [])
+
   useEffect(() => {
     if (selected) {
+      sequencer?.startBeat()
+
       const targetElement = ref.current
       targetElement?.scrollIntoView({
         behavior: 'smooth',
         block: 'center',
         inline: 'center',
       })
+    } else {
+      sequencer.stopBeat()
     }
   }, [selected])
 

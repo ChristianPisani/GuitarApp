@@ -15,6 +15,8 @@ export interface Beat {
   id: number
 }
 
+export type SequencerState = 'playing' | 'paused' | 'stopped' | 'editing'
+
 interface MusicContextProps {
   selectedNote: Note
   setSelectedNote: Dispatch<SetStateAction<Note>>
@@ -26,6 +28,9 @@ interface MusicContextProps {
   setBeats: Dispatch<SetStateAction<Beat[]>>
   selectedBeat: Beat | undefined
   setSelectedBeat: Dispatch<SetStateAction<Beat | undefined>>
+
+  state: SequencerState
+  setState: (state: SequencerState) => void
 }
 
 export const MusicContext = createContext<MusicContextProps>({
@@ -39,4 +44,7 @@ export const MusicContext = createContext<MusicContextProps>({
   setSelectedMode: () => null,
   setBeats: () => null,
   setSelectedBeat: () => null,
+
+  state: 'editing',
+  setState: () => null,
 })
