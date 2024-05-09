@@ -1,5 +1,4 @@
 ﻿import './sequencer-ui.scss'
-import { PlayArrow, PlayArrowOutlined } from '@material-ui/icons'
 import { Button } from '../button/button'
 import { InputWrapper, NumberInput, Select } from '../input/inputs'
 import {
@@ -74,7 +73,7 @@ export const SequencerUi = () => {
             <Button
               text={'Play'}
               id={'play-button'}
-              icon={<PlayArrowOutlined fontSize={'large'} />}
+              icon={<p>Needs icon</p>}
             ></Button>
             <NumberInput
               value={130}
