@@ -5,4 +5,5 @@
   padding-left: 40%;
   padding-right: 40%;
   transition: 250ms;
+  pointer-events: auto !important; // Override react-indiana-drag-scroll pointer-events: none
 }

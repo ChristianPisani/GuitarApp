@@ -1,23 +1,27 @@
 ﻿import { BeatChord } from './beat-chord'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Chord } from '../../types/musical-terms'
 import { getNote, getScaleChord } from '../../utility/noteFunctions'
 import { majorScale } from '../../data/scales'
-import {ScaleDegree} from "../../data/chords";
+import { ScaleDegree } from '../../data/chords'
+import { ScrollContainer, useScrollContainer } from 'react-indiana-drag-scroll'
+import { AbstractArtificialScroll } from 'react-indiana-drag-scroll/dist/core/AbstractArtificialScroll'
 
 type EditorChord = Chord & {
   id: number
 }
 
 export const ChordsEditor = () => {
-  const [chordDegrees, setChordDegrees] = useState<{ degree: ScaleDegree, id: number }[]>([])
+  const [chordDegrees, setChordDegrees] = useState<
+    { degree: ScaleDegree; id: number }[]
+  >([])
   const [currentId, setCurrentId] = useState(1)
 
   const addChord = () => {
-    setCurrentId(currentId+1)
-      
-    const degree = Math.round(Math.random() * 7) as ScaleDegree
-    setChordDegrees([...chordDegrees, {degree, id: currentId}]);
+    setCurrentId(currentId + 1)
+
+    const degree = Math.round(Math.random() * 6) as ScaleDegree
+    setChordDegrees([...chordDegrees, { degree, id: currentId }])
   }
 
   const removeChord = (index: number) => {
@@ -28,7 +32,8 @@ export const ChordsEditor = () => {
 
   return (
     <div className={'w-auto overflow-hidden h-full'}>
-      <div
+      <ScrollContainer
+        hideScrollbars={true}
         className={
           'sequencer-chords p-16 gap-8 h-full text-primary-50 relative transition-all'
         }
@@ -46,11 +51,16 @@ export const ChordsEditor = () => {
         )}
         {chordDegrees.map((chordDegree, index) => {
           return (
-            <BeatChord 
+            <BeatChord
               key={chordDegree.id}
               showLines={index !== chordDegrees.length}
               onDelete={() => removeChord(index)}
-              chord={getScaleChord(getNote("A", false), majorScale, chordDegree.degree, 3)}
+              chord={getScaleChord(
+                getNote('A', false),
+                majorScale,
+                chordDegree.degree,
+                3
+              )}
               scaleDegree={chordDegree.degree}
             />
           )
@@ -65,7 +75,7 @@ export const ChordsEditor = () => {
             +
           </button>
         )}
-      </div>
+      </ScrollContainer>
     </div>
   )
 }
