@@ -53,7 +53,7 @@ export const SequencerUi = () => {
       </div>
       <div
         className={
-          'flex flex-col justify-between gap-8 max-w-full overflow-hidden'
+          'flex flex-col justify-between gap-4 max-w-full overflow-hidden'
         }
       >
         <div

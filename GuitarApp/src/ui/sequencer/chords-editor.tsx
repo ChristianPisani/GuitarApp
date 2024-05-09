@@ -1,33 +1,51 @@
 ﻿import { BeatChord } from './beat-chord'
-import React, { useState } from 'react'
-import { Chord } from '../../types/musical-terms'
+import React, { Ref, useContext, useState } from 'react'
 import { getNote, getScaleChord } from '../../utility/noteFunctions'
 import { majorScale } from '../../data/scales'
 import { ScaleDegree } from '../../data/chords'
 import { ScrollContainer, useScrollContainer } from 'react-indiana-drag-scroll'
-import { AbstractArtificialScroll } from 'react-indiana-drag-scroll/dist/core/AbstractArtificialScroll'
-
-type EditorChord = Chord & {
-  id: number
-}
+import { Beat, MusicContext } from '../../context/app-context'
 
 export const ChordsEditor = () => {
-  const [chordDegrees, setChordDegrees] = useState<
-    { degree: ScaleDegree; id: number }[]
-  >([])
+  const { beats, selectedBeat, setBeats, setSelectedBeat } =
+    useContext(MusicContext)
   const [currentId, setCurrentId] = useState(1)
 
   const addChord = () => {
     setCurrentId(currentId + 1)
 
     const degree = Math.round(Math.random() * 6) as ScaleDegree
-    setChordDegrees([...chordDegrees, { degree, id: currentId }])
+
+    const newBeat = { scaleDegree: degree, subdivisions: [], id: currentId }
+
+    setBeats([...beats, newBeat])
+    setSelectedBeat(newBeat)
   }
 
-  const removeChord = (index: number) => {
-    const copy = [...chordDegrees]
+  const removeChord = (index: number, divRef?: HTMLDivElement) => {
+    const copy = [...beats]
     copy.splice(index, 1)
-    setChordDegrees(copy)
+
+    if (copy.length > 0) {
+      setSelectedBeat(copy[copy.length - 1])
+    }
+
+    divRef?.addEventListener('animationend', () => {
+      setBeats(copy)
+
+      if (copy.length > 0) {
+        setSelectedBeat(copy[copy.length - 1])
+      }
+
+      return undefined
+    })
+  }
+
+  const onBeatChordClick = (beat: Beat) => {
+    const selected = beat.id === selectedBeat?.id
+
+    if (selected) setSelectedBeat(undefined)
+    else setSelectedBeat(beat)
   }
 
   return (
@@ -38,34 +56,37 @@ export const ChordsEditor = () => {
           'sequencer-chords p-16 gap-8 h-full text-primary-50 relative transition-all'
         }
       >
-        {chordDegrees.length === 0 && (
+        {beats.length === 0 && (
           <div className={'absolute left-16'}>
-            <p className={'font-extrabold text-8xl'}>No chords added.</p>
+            <h2 className={'font-extrabold text-8xl'}>No chords added.</h2>
             <button
               onClick={addChord}
-              className={'border-2 rounded-full px-8 py-4'}
+              className={`border-2 rounded-tl-none rounded-2xl border-t-transparent px-8 py-2
+                hover:text-secondary-950 hover:bg-primary-100 transition`}
             >
               Add you first chord
             </button>
           </div>
         )}
-        {chordDegrees.map((chordDegree, index) => {
+        {beats.map((beat, index) => {
           return (
             <BeatChord
-              key={chordDegree.id}
-              showLines={index !== chordDegrees.length}
-              onDelete={() => removeChord(index)}
+              key={beat.id}
+              showLines={index !== beats.length}
+              onDelete={ref => removeChord(index, ref)}
               chord={getScaleChord(
                 getNote('A', false),
                 majorScale,
-                chordDegree.degree,
+                beat.scaleDegree,
                 3
               )}
-              scaleDegree={chordDegree.degree}
+              scaleDegree={beat.scaleDegree}
+              selected={selectedBeat?.id === beat.id}
+              onClick={() => onBeatChordClick(beat)}
             />
           )
         })}
-        {chordDegrees.length > 0 && (
+        {beats.length > 0 && (
           <button
             onClick={addChord}
             className={

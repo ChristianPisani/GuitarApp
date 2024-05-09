@@ -914,8 +914,36 @@ video {
   border-bottom-right-radius: 1rem;
 }
 
+.rounded-tl-none {
+  border-top-left-radius: 0;
+}
+
 .rounded-tr-2xl {
   border-top-right-radius: 1rem;
+}
+
+.rounded-tr-none {
+  border-top-right-radius: 0;
+}
+
+.rounded-br-none {
+  border-bottom-right-radius: 0;
+}
+
+.rounded-br-sm {
+  border-bottom-right-radius: .125rem;
+}
+
+.rounded-bl-full {
+  border-bottom-left-radius: 9999px;
+}
+
+.rounded-bl-sm {
+  border-bottom-left-radius: .125rem;
+}
+
+.rounded-bl-2xl {
+  border-bottom-left-radius: 1rem;
 }
 
 .border-2 {
@@ -961,6 +989,10 @@ video {
 .border-secondary-950 {
   --tw-border-opacity: 1;
   border-color: hsl(var(--secondary-950) / var(--tw-border-opacity));
+}
+
+.border-t-transparent {
+  border-top-color: transparent;
 }
 
 .bg-blue-600 {
@@ -1079,6 +1111,11 @@ video {
 .px-4 {
   padding-left: 1rem;
   padding-right: 1rem;
+}
+
+.px-6 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
 }
 
 .px-8 {
@@ -1243,6 +1280,14 @@ video {
   transition-duration: 150ms;
 }
 
+.transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
 .ease-in-out {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -1370,6 +1415,10 @@ body {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
+.hover\:rounded-br-full:hover {
+  border-bottom-right-radius: 9999px;
+}
+
 .hover\:bg-blue-400:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(96 165 250 / var(--tw-bg-opacity));
@@ -1393,6 +1442,11 @@ body {
 .hover\:text-primary-900:hover {
   --tw-text-opacity: 1;
   color: hsl(var(--primary-900) / var(--tw-text-opacity));
+}
+
+.hover\:text-secondary-950:hover {
+  --tw-text-opacity: 1;
+  color: hsl(var(--secondary-950) / var(--tw-text-opacity));
 }
 
 .hover\:shadow-xl:hover {

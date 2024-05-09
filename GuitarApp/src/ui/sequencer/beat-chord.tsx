@@ -2,6 +2,8 @@
   ButtonHTMLAttributes,
   CSSProperties,
   DetailedHTMLProps,
+  Ref,
+  useEffect,
   useRef,
   useState,
 } from 'react'
@@ -15,21 +17,24 @@ import {
 
 type BeatChordProps = {
   showLines: boolean
-  onDelete?: () => void
+  onDelete?: (ref?: HTMLDivElement) => void
   chord: Chord
   scaleDegree: ScaleDegree
+  selected: boolean
+  onClick: () => void
 } & DetailedHTMLProps<
   ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
 >
 
 export const BeatChord = (props: BeatChordProps) => {
+  const { selected } = props
+
   const ref = useRef<HTMLDivElement>(null)
   const [removed, setRemoved] = useState(false)
   const { showLines, onDelete, chord, scaleDegree } = props
 
   const [amountOfBeats, setAmountOfBeats] = useState(4)
-  const [selected, setSelected] = useState(false)
   const [selectedBeat, setSelectedBeat] = useState(0)
 
   const maxBeats = 8
@@ -47,12 +52,19 @@ export const BeatChord = (props: BeatChordProps) => {
   const onRemove = () => {
     setRemoved(true)
 
-    ref.current?.addEventListener('animationend', () => {
-      onDelete?.()
-
-      return undefined
-    })
+    onDelete?.(ref.current ?? undefined)
   }
+
+  useEffect(() => {
+    if (selected) {
+      const targetElement = ref.current
+      targetElement?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'center',
+      })
+    }
+  }, [selected])
 
   return (
     <div
@@ -99,12 +111,7 @@ export const BeatChord = (props: BeatChordProps) => {
         </button>
         <button
           onClick={e => {
-            ;(e.target as HTMLElement).scrollIntoView({
-              behavior: 'smooth',
-              block: 'center',
-              inline: 'center',
-            })
-            setSelected(!selected)
+            props.onClick()
           }}
           className={`${selected ? 'glow' : ''} flex aspect-square w-40 select-none flex-col
           justify-center items-center rounded-full border-4 border-primary-100 p-6
