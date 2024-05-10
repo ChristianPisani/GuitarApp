@@ -7,77 +7,22 @@ import {
   noteToString,
 } from '../../utility/noteFunctions'
 import { availableScales } from '../../data/scales'
-import { ChordVisualizerFullChord } from '../chord/chord'
-import { standardTuningNotes } from '../../data/tunings'
 import { ChordsEditor } from './chords-editor'
 import { useContext } from 'react'
 import { MusicContext } from '../../context/app-context'
-import { getChordName } from '../../data/chords'
-import {
-  ArrowBack,
-  ArrowForward,
-  ArrowLeftRounded,
-  ArrowLeftTwoTone,
-  ArrowRightRounded,
-  ChevronLeft,
-  ChevronLeftRounded,
-  ChevronRightRounded,
-} from '@mui/icons-material'
+import { InstrumentEditor } from './instrument-editor'
 
 export const SequencerUi = () => {
   const beats = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
 
   const { selectedBeat, state, setState } = useContext(MusicContext)
 
-  const selectedChord = getScaleChord(
-    allNotes[0],
-    availableScales[0],
-    selectedBeat?.scaleDegree ?? 0,
-    3
-  )
-
   return (
     <div
       className={`grid min-h-[500px] w-full max-w-[1600px] grid-cols-[2fr_5fr] gap-2 rounded-3xl
         bg-secondary-950 p-2`}
     >
-      <div
-        className={
-          'grid grid-rows-[1fr_auto] gap-8 rounded-l-2xl rounded-r-lg bg-primary-50'
-        }
-      >
-        <div
-          className={`flex w-full flex-col place-items-center justify-center rounded-3xl p-8 shadow-xl
-            gap-4`}
-        >
-          <h2>{getChordName(selectedChord)}</h2>
-          <ChordVisualizerFullChord
-            chord={selectedChord}
-            strings={standardTuningNotes().reverse()}
-            showNoteIndex={true}
-          />
-          <h3>Subdivision</h3>
-          <div className={'flex place-items-center'}>
-            <ChevronLeftRounded />
-            <p className={'font-extrabold'}>1/5</p>
-            <ChevronRightRounded />
-          </div>
-        </div>
-        <div className={'flex flex-col justify-end gap-8 p-8'}>
-          <div className={'grid grid-cols-2 place-items-center gap-4'}>
-            <NumberInput
-              label={'Amount of divisions'}
-              id={'divisions-input'}
-              value={4}
-            ></NumberInput>
-            <Select
-              options={['CAGED', '3NPS']}
-              label={'Visualization technique'}
-              id={'visualization-select'}
-            />
-          </div>
-        </div>
-      </div>
+      <InstrumentEditor />
       <div
         className={
           'flex flex-col justify-between gap-4 max-w-full overflow-hidden'
