@@ -1,35 +1,24 @@
-﻿import { FC, useEffect, useState } from 'react'
-import { Chord, Note } from '../types/musical-terms'
+﻿import { useContext, useEffect, useState } from 'react'
+import { Chord, Note, Scale } from '../types/musical-terms'
 import * as Tone from 'tone'
-import { getTransport, Loop, Transport } from 'tone'
-import { playChord, playNotes } from '../utility/instrumentFunctions'
-import { acousticGuitar, synth } from '../utility/instruments'
-
-type SequencerBeat = {
-  chord: Chord | undefined
-  notes?: Note[][]
-}
+import { Loop, Sampler, Synth, Transport } from 'tone'
+import { Beat, MusicContext } from '../context/app-context'
+import { getScaleChord } from '../utility/noteFunctions'
+import { playChord } from '../utility/instrumentFunctions'
+import { acousticGuitar } from '../utility/instruments'
 
 type SequencerHookProps = {
-  subdivisions: number
   onBeat: (beat: number) => void
+  instrument: Sampler | Synth
+  beats: Beat[]
+  selectedNote: Note
+  selectedScale: Scale
 }
 
-export const useSequencer: ({
-  onBeat,
-  subdivisions,
-}: {
-  onBeat: any
-  subdivisions: any
-}) => {
-  onBeat: (beat: number) => void
-  startBeat: () => Promise<void>
-  stopBeat: () => void
-} = ({ onBeat, subdivisions }) => {
-  const [amountOfBeats, setAmountOfBeats] = useState(1)
+export const useSequencer = (props: SequencerHookProps) => {
   const [currentBeat, setCurrentBeat] = useState(0)
+  const [currentSubdivision, setCurrentSubdivision] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [beats, setBeats] = useState<SequencerBeat[]>([])
   const [bpm, setBpm] = useState(130)
   const [currentChord, setCurrentChord] = useState<Chord | undefined>(undefined)
 
@@ -48,42 +37,76 @@ export const useSequencer: ({
   }
 
   useEffect(() => {
-    if (isPlaying) {
-      const beatChord = beats[Math.floor(currentBeat / subdivisions)].chord
-
-      if (beatChord && currentBeat % subdivisions === 0) {
-        setCurrentChord(beatChord)
-        // playChord(acousticGuitar, beatChord, 0.05);
-      }
-
-      onBeat(currentBeat)
+    /* if (!isPlaying || props.beats.length === 0) {
+      return
     }
+
+    const beatScaleDegree =
+      props.beats[Math.floor(currentBeat / amountOfSubdivisions)].scaleDegree
+    const beatChord = getScaleChord(
+      props.selectedNote,
+      props.selectedScale,
+      beatScaleDegree,
+      3
+    )
+
+    if (beatChord && currentBeat % amountOfSubdivisions === 0) {
+      setCurrentChord(beatChord)
+      // playChord(acousticGuitar, beatChord, 0.05);
+    }
+
+    props.onBeat(currentBeat) */
   }, [currentBeat])
 
   useEffect(() => {
-    const interval = `${subdivisions * 4}n`
+    if (props.beats.length === 0) return
+
+    if (currentSubdivision === 0) {
+      setCurrentBeat(c => (c + 1) % props.beats.length)
+    }
+  }, [currentSubdivision])
+
+  useEffect(() => {
+    if (!isPlaying || props.beats.length === 0) {
+      return
+    }
+
+    const currentBeatBeat = props.beats[currentBeat] ?? []
+    const subdivisions = currentBeatBeat?.subdivisions ?? []
+    const amountOfSubdivisions = subdivisions?.length ?? 1
+
+    const interval = `${amountOfSubdivisions}n`
+
+    if (loop) {
+      loop.dispose()
+    }
 
     const newLoop = new Loop(time => {
-      acousticGuitar.triggerAttackRelease(['A2'], interval, time)
-      setCurrentBeat(c => (c + 1) % (amountOfBeats * subdivisions))
+      // instrument.triggerAttackRelease('A2', interval, time)
+
+      const beatScaleDegree = props.beats[currentBeat].scaleDegree
+      const beatChord = getScaleChord(
+        props.selectedNote,
+        props.selectedScale,
+        beatScaleDegree,
+        3
+      )
+
+      playChord(acousticGuitar, beatChord, 0.01, 0.1, true)
+
+      setCurrentSubdivision(c => (c + 1) % amountOfSubdivisions)
     }, interval).start(0)
+
+    setLoop(newLoop)
 
     return () => {
       newLoop?.dispose()
     }
-  }, [amountOfBeats, bpm, subdivisions])
-
-  useEffect(() => {
-    const beatsInit = []
-    for (let i = 0; i < amountOfBeats; i++) {
-      beatsInit.push({ chord: undefined })
-    }
-    setBeats(beatsInit)
-  }, [amountOfBeats])
+  }, [props.beats.length, bpm, isPlaying, currentBeat])
 
   useEffect(() => {
     Transport.bpm.rampTo(bpm)
   }, [bpm])
 
-  return { onBeat, startBeat, stopBeat }
+  return { startBeat, stopBeat, currentBeat, currentSubdivision }
 }

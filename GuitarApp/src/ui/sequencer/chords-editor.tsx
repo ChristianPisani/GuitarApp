@@ -1,5 +1,5 @@
 ﻿import { BeatChord } from './beat-chord'
-import React, { Ref, useContext, useState } from 'react'
+import React, { Ref, useContext, useEffect, useState } from 'react'
 import { getNote, getScaleChord } from '../../utility/noteFunctions'
 import { majorScale } from '../../data/scales'
 import { ScaleDegree } from '../../data/chords'
@@ -7,8 +7,15 @@ import { ScrollContainer, useScrollContainer } from 'react-indiana-drag-scroll'
 import { Beat, MusicContext } from '../../context/app-context'
 
 export const ChordsEditor = () => {
-  const { beats, selectedBeat, setBeats, setSelectedBeat } =
-    useContext(MusicContext)
+  const {
+    beats,
+    selectedBeat,
+    setBeats,
+    setSelectedBeat,
+    currentBeat,
+    currentSubdivision,
+    state,
+  } = useContext(MusicContext)
   const [currentId, setCurrentId] = useState(1)
 
   const addChord = () => {
@@ -16,7 +23,13 @@ export const ChordsEditor = () => {
 
     const degree = Math.round(Math.random() * 6) as ScaleDegree
 
-    const newBeat = { scaleDegree: degree, subdivisions: [], id: currentId }
+    // TODO: Not quite sure how to index these. The notes should change when user changes scale,
+    // so it needs to use indexes, but not sure how to do this correctly with major/minor/etc chords
+    const newBeat = {
+      scaleDegree: degree,
+      subdivisions: [{ noteIndexes: [1, 3, 5] }],
+      id: currentId,
+    }
 
     setBeats([...beats, newBeat])
     setSelectedBeat(newBeat)
@@ -30,6 +43,7 @@ export const ChordsEditor = () => {
       setSelectedBeat(copy[copy.length - 1])
     }
 
+    // Want to animate out, so just wait until that is completed before actually deleting the element
     divRef?.addEventListener('animationend', () => {
       setBeats(copy)
 
@@ -42,11 +56,19 @@ export const ChordsEditor = () => {
   }
 
   const onBeatChordClick = (beat: Beat) => {
+    if (state !== 'editing') return
+
     const selected = beat.id === selectedBeat?.id
 
     if (selected) setSelectedBeat(undefined)
     else setSelectedBeat(beat)
   }
+
+  useEffect(() => {
+    if (state !== 'playing') return
+
+    setSelectedBeat(beats[currentBeat])
+  }, [currentBeat])
 
   return (
     <div className={'w-auto overflow-hidden h-full'}>
@@ -80,7 +102,7 @@ export const ChordsEditor = () => {
                 beat.scaleDegree,
                 3
               )}
-              scaleDegree={beat.scaleDegree}
+              beat={beat}
               selected={selectedBeat?.id === beat.id}
               onClick={() => onBeatChordClick(beat)}
             />

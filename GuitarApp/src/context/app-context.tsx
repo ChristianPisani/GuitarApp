@@ -6,7 +6,7 @@ import { majorScale } from '../data/scales'
 import { ScaleDegree } from '../data/chords'
 
 export interface Subdivision {
-  notes: Note[]
+  noteIndexes: number[]
 }
 
 export interface Beat {
@@ -31,6 +31,9 @@ interface MusicContextProps {
 
   state: SequencerState
   setState: (state: SequencerState) => void
+
+  currentBeat: number
+  currentSubdivision: number
 }
 
 export const MusicContext = createContext<MusicContextProps>({
@@ -47,4 +50,7 @@ export const MusicContext = createContext<MusicContextProps>({
 
   state: 'editing',
   setState: () => null,
+
+  currentBeat: 0,
+  currentSubdivision: 0,
 })
