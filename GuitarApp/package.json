@@ -9,7 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@material-ui/icons": "^4.11.3",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/icons-material": "^5.15.17",
     "@portabletext/react": "^3.0.11",
     "@portabletext/types": "^2.0.8",
     "@sanity/client": "^6.9.1",

@@ -3,6 +3,7 @@
   CSSProperties,
   DetailedHTMLProps,
   Ref,
+  useContext,
   useEffect,
   useRef,
   useState,
@@ -14,13 +15,13 @@ import {
   ScaleDegree,
   scaleDegreeNotations,
 } from '../../data/chords'
-import { useSequencer } from '../../hooks/sequencer-hook'
+import { Beat, MusicContext } from '../../context/app-context'
 
 type BeatChordProps = {
   showLines: boolean
+  beat: Beat
   onDelete?: (ref?: HTMLDivElement) => void
   chord: Chord
-  scaleDegree: ScaleDegree
   selected: boolean
   onClick: () => void
 } & DetailedHTMLProps<
@@ -29,25 +30,40 @@ type BeatChordProps = {
 >
 
 export const BeatChord = (props: BeatChordProps) => {
-  const { selected } = props
+  const { selected, beat } = props
 
   const ref = useRef<HTMLDivElement>(null)
   const [removed, setRemoved] = useState(false)
-  const { showLines, onDelete, chord, scaleDegree } = props
+  const { showLines, onDelete, chord } = props
 
-  const [amountOfBeats, setAmountOfBeats] = useState(2)
-  const [selectedBeat, setSelectedBeat] = useState(0)
+  const [selectedSubdivision, setSelectedSubdivision] = useState(0)
 
   const maxBeats = 8
   const beatsArray = Array(maxBeats).fill(1)
 
+  const { beats, currentBeat, currentSubdivision, state, setBeats } =
+    useContext(MusicContext)
+
   const removeBeat = () => {
-    setAmountOfBeats(Math.max(1, amountOfBeats - 1))
-    if (selectedBeat >= amountOfBeats - 1) setSelectedBeat(amountOfBeats - 2)
+    const currentAmountOfSubdivisions = beat.subdivisions.length
+
+    if (currentAmountOfSubdivisions <= 1) return
+
+    if (selectedSubdivision >= currentAmountOfSubdivisions - 1) {
+      setSelectedSubdivision(currentAmountOfSubdivisions - 2)
+    }
+
+    const beatIndex = beats.findIndex(b => b.id === beat.id)
+    beats[beatIndex].subdivisions.splice(-1, 1)
+    setBeats([...beats])
   }
 
   const addBeat = () => {
-    setAmountOfBeats(Math.min(maxBeats, amountOfBeats + 1))
+    if (amountOfSubdivisions >= maxBeats) return
+
+    const beatIndex = beats.findIndex(b => b.id === beat.id)
+    beats[beatIndex].subdivisions.push({ noteIndexes: [] })
+    setBeats([...beats])
   }
 
   const onRemove = () => {
@@ -56,31 +72,22 @@ export const BeatChord = (props: BeatChordProps) => {
     onDelete?.(ref.current ?? undefined)
   }
 
-  const onBeat = (currentBeat: number) => {
-    setSelectedBeat(currentBeat)
-  }
-
-  const sequencer = useSequencer({
-    subdivisions: amountOfBeats,
-    onBeat,
-  })
-
-  useEffect(() => {}, [])
-
   useEffect(() => {
     if (selected) {
-      sequencer?.startBeat()
-
       const targetElement = ref.current
       targetElement?.scrollIntoView({
         behavior: 'smooth',
         block: 'center',
         inline: 'center',
       })
-    } else {
-      sequencer.stopBeat()
     }
   }, [selected])
+
+  useEffect(() => {
+    setSelectedSubdivision(currentSubdivision)
+  }, [currentSubdivision])
+
+  const amountOfSubdivisions = beat?.subdivisions?.length ?? 0
 
   return (
     <div
@@ -91,18 +98,23 @@ export const BeatChord = (props: BeatChordProps) => {
     >
       <div
         className={`grid place-items-center relative transition-all ${
-          amountOfBeats === 2 ? 'only-two' : ''
-        } ${amountOfBeats === 1 ? 'only-one' : ''}`}
-        style={{ '--total': Math.max(amountOfBeats - 1, 1) } as CSSProperties}
+          amountOfSubdivisions === 2 ? 'only-two' : ''
+        } ${amountOfSubdivisions === 1 ? 'only-one' : ''}`}
+        style={
+          {
+            '--total': Math.max(amountOfSubdivisions - 1, 1),
+          } as CSSProperties
+        }
       >
         {beatsArray.map((beat, index) => (
           <button
-            onClick={() => setSelectedBeat(index)}
+            key={beat.id + 'button' + index}
+            onClick={() => setSelectedSubdivision(index)}
             className={`beat-chord-circle text-primary-100 grid place-items-center w-8 h-8
             shadow-accent-2 absolute border-2 border-primary-200 rounded-full ${
               selected ? '' : 'out'
-            } ${index <= amountOfBeats - 1 ? '' : 'inactive'} ${
-              selectedBeat === index ? 'glow' : ''
+            } ${index <= amountOfSubdivisions - 1 ? '' : 'inactive'} ${
+              selectedSubdivision === index ? 'glow' : ''
             }`}
             style={{ '--index': index } as CSSProperties}
           >
@@ -133,7 +145,7 @@ export const BeatChord = (props: BeatChordProps) => {
           justify-center items-center rounded-full border-4 border-primary-100 p-6
           text-primary-100 transition-all hover:text-primary-50 shadow-accent-2`}
         >
-          <p className={'text-xl'}>{scaleDegreeNotations(scaleDegree)}</p>
+          <p className={'text-xl'}>{scaleDegreeNotations(beat.scaleDegree)}</p>
           <p className={'text-2xl font-bold'}>{getChordName(chord)}</p>
         </button>
         {selected && onDelete && (

@@ -1,6 +1,6 @@
 ﻿import './sequencer-ui.scss'
 import { Button } from '../button/button'
-import { InputWrapper, NumberInput, Select } from '../input/inputs'
+import { NumberInput, Select } from '../input/inputs'
 import {
   allNotes,
   getScaleChord,
@@ -9,11 +9,20 @@ import {
 import { availableScales } from '../../data/scales'
 import { ChordVisualizerFullChord } from '../chord/chord'
 import { standardTuningNotes } from '../../data/tunings'
-import { BeatChord } from './beat-chord'
 import { ChordsEditor } from './chords-editor'
 import { useContext } from 'react'
 import { MusicContext } from '../../context/app-context'
 import { getChordName } from '../../data/chords'
+import {
+  ArrowBack,
+  ArrowForward,
+  ArrowLeftRounded,
+  ArrowLeftTwoTone,
+  ArrowRightRounded,
+  ChevronLeft,
+  ChevronLeftRounded,
+  ChevronRightRounded,
+} from '@mui/icons-material'
 
 export const SequencerUi = () => {
   const beats = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
@@ -47,6 +56,12 @@ export const SequencerUi = () => {
             strings={standardTuningNotes().reverse()}
             showNoteIndex={true}
           />
+          <h3>Subdivision</h3>
+          <div className={'flex place-items-center'}>
+            <ChevronLeftRounded />
+            <p className={'font-extrabold'}>1/5</p>
+            <ChevronRightRounded />
+          </div>
         </div>
         <div className={'flex flex-col justify-end gap-8 p-8'}>
           <div className={'grid grid-cols-2 place-items-center gap-4'}>
@@ -83,6 +98,9 @@ export const SequencerUi = () => {
         >
           <div className={'flex gap-4'}>
             <Button
+              onClick={() => {
+                setState('playing')
+              }}
               text={'Play'}
               id={'play-button'}
               icon={<p>Needs icon</p>}

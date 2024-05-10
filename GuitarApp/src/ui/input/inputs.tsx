@@ -42,7 +42,9 @@ export const Select: FC<SelectProps> = props => {
           py-2 text-center text-2xl font-extrabold`}
       >
         {options.map(option => (
-          <option value={option}>{option}</option>
+          <option key={option} value={option}>
+            {option}
+          </option>
         ))}
       </select>
     </InputWrapper>

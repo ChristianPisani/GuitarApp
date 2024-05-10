@@ -7,15 +7,19 @@ type ButtonProps = {
   id: string
 } & HTMLProps<HTMLButtonElement>
 
-export const Button: FC<ButtonProps> = ({ icon, text, id }) => {
+export const Button: FC<ButtonProps> = props => {
+  const { icon, text, id } = props
+
   return (
     <div className={'flex flex-col place-items-center gap-2'}>
       <label className={'text-sm font-bold text-secondary-950'} htmlFor={id}>
         {text}
       </label>
       <button
+        onClick={props.onClick}
         id={id}
-        className={'shadow-accent grid place-items-center rounded-full border-4 border-secondary-950 px-12 py-2'}
+        className={`shadow-accent grid place-items-center rounded-full border-4 border-secondary-950
+          px-12 py-2`}
       >
         {icon}
       </button>

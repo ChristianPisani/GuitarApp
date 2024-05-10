@@ -1,12 +1,14 @@
 ﻿import './sequencer-page.scss'
 import { allNotes } from '../../utility/noteFunctions'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FretboardContext } from '../../ui/Fretboard/FretboardContext'
 import { Mode, Note, Scale } from '../../types/musical-terms'
 import { majorScale } from '../../data/scales'
 import { Sequencer } from '../../ui/sequencer/sequencer'
 import { SequencerUi } from '../../ui/sequencer/sequencer-ui'
-import { Beat, MusicContext } from '../../context/app-context'
+import { Beat, MusicContext, SequencerState } from '../../context/app-context'
+import { useSequencer } from '../../hooks/sequencer-hook'
+import { acousticGuitar } from '../../utility/instruments'
 
 export const SequencerPage = () => {
   const [selectedNote, setSelectedNote] = useState<Note>(allNotes[0])
@@ -14,6 +16,23 @@ export const SequencerPage = () => {
   const [selectedMode, setSelectedMode] = useState<Mode>(1)
   const [selectedBeat, setSelectedBeat] = useState<Beat | undefined>(undefined)
   const [beats, setBeats] = useState<Beat[]>([])
+  const [state, setState] = useState<SequencerState>('editing')
+
+  const sequencer = useSequencer({
+    instrument: acousticGuitar,
+    onBeat: () => null,
+    beats,
+    selectedNote,
+    selectedScale,
+  })
+
+  useEffect(() => {
+    console.log(state)
+
+    if (state === 'playing') {
+      sequencer.startBeat()
+    }
+  }, [state])
 
   return (
     <MusicContext.Provider
@@ -28,6 +47,10 @@ export const SequencerPage = () => {
         setBeats,
         selectedBeat,
         setSelectedBeat,
+        state,
+        setState,
+        currentBeat: sequencer.currentBeat,
+        currentSubdivision: sequencer.currentSubdivision,
       }}
     >
       <main
@@ -36,6 +59,14 @@ export const SequencerPage = () => {
         }
       >
         <h2 className={'p-4 md:p-8'}>Sequencer</h2>
+        <h3>Beats: {beats.length}</h3>
+        <h4>
+          Subdivisions:{' '}
+          {beats[sequencer.currentBeat]?.subdivisions?.length ?? 0}
+        </h4>
+        <h3>
+          {sequencer.currentBeat}:{sequencer.currentSubdivision}
+        </h3>
         <SequencerUi />
       </main>
     </MusicContext.Provider>
