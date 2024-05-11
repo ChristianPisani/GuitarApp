@@ -83,10 +83,10 @@ export const ChordsEditor = () => {
             <h2 className={'font-extrabold text-8xl'}>No chords added.</h2>
             <button
               onClick={addChord}
-              className={`border-2 rounded-tl-none rounded-2xl border-t-transparent px-8 py-2
-                hover:text-secondary-950 hover:bg-primary-100 transition`}
+              className={`border-2 rounded-2xl px-8 py-2 hover:text-secondary-950 hover:bg-primary-100
+                mt-2 transition`}
             >
-              Add you first chord
+              Add your first chord
             </button>
           </div>
         )}

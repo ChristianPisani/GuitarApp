@@ -628,6 +628,10 @@ video {
   margin-inline-start: 0.75rem;
 }
 
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
 .block {
   display: block;
 }
@@ -914,10 +918,6 @@ video {
   border-bottom-right-radius: 1rem;
 }
 
-.rounded-tl-none {
-  border-top-left-radius: 0;
-}
-
 .rounded-tr-2xl {
   border-top-right-radius: 1rem;
 }
@@ -969,10 +969,6 @@ video {
 .border-secondary-950 {
   --tw-border-opacity: 1;
   border-color: hsl(var(--secondary-950) / var(--tw-border-opacity));
-}
-
-.border-t-transparent {
-  border-top-color: transparent;
 }
 
 .bg-blue-600 {

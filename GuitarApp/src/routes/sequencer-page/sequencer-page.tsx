@@ -41,9 +41,40 @@ export const SequencerPage = () => {
     selectedScale,
   })
 
-  useEffect(() => {
-    console.log(state)
+  const removeBeat = (beat: Beat) => {
+    const beatIndex = beats.findIndex(b => b.id === beat.id)
+    beats[beatIndex].subdivisions.splice(-1, 1)
+    setBeats([...beats])
+  }
 
+  const updateBeat = (beat: Beat) => {
+    const beatIndex = beats.findIndex(b => b.id === beat.id)
+    beats[beatIndex] = beat
+    setBeats([...beats])
+  }
+
+  const removeSubdivision = (beat: Beat) => {
+    const currentAmountOfSubdivisions = beat.subdivisions.length
+
+    if (currentAmountOfSubdivisions <= 1) return
+
+    beat.subdivisions.splice(-1, 1)
+    updateBeat(beat)
+  }
+
+  const addSubdivision = (beat: Beat) => {
+    const maxAmountOfSubdivisions = 8
+
+    const currentAmountOfSubdivisions = beat.subdivisions.length
+
+    if (!selectedBeat || currentAmountOfSubdivisions >= maxAmountOfSubdivisions)
+      return
+
+    beat.subdivisions.push({ notes: [] })
+    updateBeat(beat)
+  }
+
+  useEffect(() => {
     if (state === 'playing') {
       sequencer.startBeat()
     }
@@ -66,6 +97,10 @@ export const SequencerPage = () => {
         setState,
         currentBeat: sequencer.currentBeat,
         currentSubdivision: sequencer.currentSubdivision,
+        removeSubdivision,
+        addSubdivision,
+        updateBeat,
+        removeBeat,
       }}
     >
       <main

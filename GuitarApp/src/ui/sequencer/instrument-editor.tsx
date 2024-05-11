@@ -33,6 +33,8 @@ export const InstrumentEditor = () => {
     selectedNote,
     selectedScale,
     currentSubdivision,
+    addSubdivision,
+    removeSubdivision,
   } = useContext(MusicContext)
 
   const [selectedSubdivision, setSelectedSubdivision] = useState(0)
@@ -73,26 +75,6 @@ export const InstrumentEditor = () => {
         3
       )
     : undefined
-
-  const removeSubdivision = () => {
-    if (!selectedBeat || currentAmountOfSubdivisions <= 1) return
-
-    if (selectedSubdivision >= currentAmountOfSubdivisions - 1) {
-      setSelectedSubdivision(currentAmountOfSubdivisions - 2)
-    }
-
-    const beatIndex = beats.findIndex(b => b.id === selectedBeat.id)
-    beats[beatIndex].subdivisions.splice(-1, 1)
-    setBeats([...beats])
-  }
-
-  const addSubdivision = () => {
-    if (!selectedBeat || currentAmountOfSubdivisions >= maxSubdivisions) return
-
-    const beatIndex = beats.findIndex(b => b.id === selectedBeat.id)
-    beats[beatIndex].subdivisions.push({ notes: [] })
-    setBeats([...beats])
-  }
 
   const gotoNextSubdivision = () => {
     setSelectedSubdivision(
@@ -168,13 +150,15 @@ export const InstrumentEditor = () => {
               <h3>Subdivisions</h3>
               <div className={'flex gap-2'}>
                 <button
-                  onClick={removeSubdivision}
+                  onClick={() =>
+                    selectedBeat && removeSubdivision(selectedBeat)
+                  }
                   className={'hover:scale-105 active:scale-95 rounded-full'}
                 >
                   <RemoveCircleOutline />
                 </button>
                 <button
-                  onClick={addSubdivision}
+                  onClick={() => selectedBeat && addSubdivision(selectedBeat)}
                   className={'hover:scale-105 active:scale-95 rounded-full'}
                 >
                   <AddCircleOutlined />
@@ -197,11 +181,6 @@ export const InstrumentEditor = () => {
       </div>
       <div className={'flex flex-col justify-end gap-8 p-8'}>
         <div className={'grid grid-cols-2 place-items-center gap-4'}>
-          <NumberInput
-            label={'Amount of divisions'}
-            id={'divisions-input'}
-            value={4}
-          ></NumberInput>
           <Select
             options={['CAGED', '3NPS']}
             label={'Visualization technique'}

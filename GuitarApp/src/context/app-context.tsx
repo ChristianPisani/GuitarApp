@@ -40,6 +40,10 @@ interface MusicContextProps {
 
   currentBeat: number
   currentSubdivision: number
+  addSubdivision: (beat: Beat) => void
+  removeSubdivision: (beat: Beat) => void
+  updateBeat: (beat: Beat) => void
+  removeBeat: (beat: Beat) => void
 }
 
 export const MusicContext = createContext<MusicContextProps>({
@@ -59,4 +63,10 @@ export const MusicContext = createContext<MusicContextProps>({
 
   currentBeat: 0,
   currentSubdivision: 0,
+
+  addSubdivision: beat => undefined,
+  removeSubdivision: beat => undefined,
+
+  updateBeat: beat => undefined,
+  removeBeat: beat => undefined,
 })
