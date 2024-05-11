@@ -1,5 +1,5 @@
 ﻿import './sequencer-page.scss'
-import { allNotes } from '../../utility/noteFunctions'
+import { allNotes, getScaleNotes } from '../../utility/noteFunctions'
 import { useEffect, useState } from 'react'
 import { FretboardContext } from '../../ui/Fretboard/FretboardContext'
 import { Mode, Note, Scale } from '../../types/musical-terms'
@@ -9,6 +9,7 @@ import { SequencerUi } from '../../ui/sequencer/sequencer-ui'
 import { Beat, MusicContext, SequencerState } from '../../context/app-context'
 import { useSequencer } from '../../hooks/sequencer-hook'
 import { acousticGuitar } from '../../utility/instruments'
+import { playNotes } from '../../utility/instrumentFunctions'
 
 export const SequencerPage = () => {
   const [selectedNote, setSelectedNote] = useState<Note>(allNotes[0])
@@ -18,9 +19,23 @@ export const SequencerPage = () => {
   const [beats, setBeats] = useState<Beat[]>([])
   const [state, setState] = useState<SequencerState>('editing')
 
+  const scaleNotes = getScaleNotes(selectedNote, selectedScale)
+
   const sequencer = useSequencer({
     instrument: acousticGuitar,
-    onBeat: () => null,
+    onBeat: (beat: Beat, subdivision: number) => {
+      const notes = beat.subdivisions[subdivision].notes.map(beatNote => {
+        const scaleNote = scaleNotes[beatNote.index]
+
+        return {
+          pitch: beatNote.pitch,
+          sharp: scaleNote.sharp,
+          name: scaleNote.name,
+        }
+      })
+
+      playNotes(acousticGuitar, notes, 0.01, 0.1, true)
+    },
     beats,
     selectedNote,
     selectedScale,
@@ -61,7 +76,7 @@ export const SequencerPage = () => {
         <h2 className={'p-4 md:p-8'}>Sequencer</h2>
         <h3>Beats: {beats.length}</h3>
         <h4>
-          Subdivisions:{' '}
+          Subdivisions:
           {beats[sequencer.currentBeat]?.subdivisions?.length ?? 0}
         </h4>
         <h3>

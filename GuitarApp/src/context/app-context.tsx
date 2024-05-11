@@ -5,8 +5,14 @@ import { allNotes } from '../utility/noteFunctions'
 import { majorScale } from '../data/scales'
 import { ScaleDegree } from '../data/chords'
 
+export type SubdivisionNote = {
+  index: number
+  pitch: number
+  string?: number
+}
+
 export interface Subdivision {
-  noteIndexes: number[]
+  notes: SubdivisionNote[]
 }
 
 export interface Beat {

@@ -36,7 +36,7 @@ export const BeatChord = (props: BeatChordProps) => {
   const [removed, setRemoved] = useState(false)
   const { showLines, onDelete, chord } = props
 
-  const [selectedSubdivision, setSelectedSubdivision] = useState(0)
+  const [selectedBeatIndex, setSelectedBeatIndex] = useState(0)
 
   const maxBeats = 8
   const beatsArray = Array(maxBeats).fill(1)
@@ -49,8 +49,8 @@ export const BeatChord = (props: BeatChordProps) => {
 
     if (currentAmountOfSubdivisions <= 1) return
 
-    if (selectedSubdivision >= currentAmountOfSubdivisions - 1) {
-      setSelectedSubdivision(currentAmountOfSubdivisions - 2)
+    if (selectedBeatIndex >= currentAmountOfSubdivisions - 1) {
+      setSelectedBeatIndex(currentAmountOfSubdivisions - 2)
     }
 
     const beatIndex = beats.findIndex(b => b.id === beat.id)
@@ -62,7 +62,7 @@ export const BeatChord = (props: BeatChordProps) => {
     if (amountOfSubdivisions >= maxBeats) return
 
     const beatIndex = beats.findIndex(b => b.id === beat.id)
-    beats[beatIndex].subdivisions.push({ noteIndexes: [] })
+    beats[beatIndex].subdivisions.push({ notes: [] })
     setBeats([...beats])
   }
 
@@ -84,7 +84,7 @@ export const BeatChord = (props: BeatChordProps) => {
   }, [selected])
 
   useEffect(() => {
-    setSelectedSubdivision(currentSubdivision)
+    setSelectedBeatIndex(currentSubdivision)
   }, [currentSubdivision])
 
   const amountOfSubdivisions = beat?.subdivisions?.length ?? 0
@@ -109,12 +109,12 @@ export const BeatChord = (props: BeatChordProps) => {
         {beatsArray.map((beat, index) => (
           <button
             key={beat.id + 'button' + index}
-            onClick={() => setSelectedSubdivision(index)}
+            onClick={() => setSelectedBeatIndex(index)}
             className={`beat-chord-circle text-primary-100 grid place-items-center w-8 h-8
             shadow-accent-2 absolute border-2 border-primary-200 rounded-full ${
               selected ? '' : 'out'
             } ${index <= amountOfSubdivisions - 1 ? '' : 'inactive'} ${
-              selectedSubdivision === index ? 'glow' : ''
+              selectedBeatIndex === index ? 'glow' : ''
             }`}
             style={{ '--index': index } as CSSProperties}
           >

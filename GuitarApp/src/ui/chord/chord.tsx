@@ -177,7 +177,7 @@ const ChordNoteComponent: FC<{
           <div
             className={`absolute grid h-8 w-8 place-items-center ${
               fingerNumberClasses.get(fingerIndex + 1) ?? 'bg-gray-900'
-            } ${selected ? 'outline outline-2 outline-gray-100' : ''}`}
+            } ${selected ? 'bg-orange-300 outline-none border-none' : ''}`}
           ></div>
 
           <Wrapper

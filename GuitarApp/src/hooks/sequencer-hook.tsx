@@ -1,14 +1,11 @@
-﻿import { useContext, useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { Chord, Note, Scale } from '../types/musical-terms'
 import * as Tone from 'tone'
 import { Loop, Sampler, Synth, Transport } from 'tone'
-import { Beat, MusicContext } from '../context/app-context'
-import { getScaleChord } from '../utility/noteFunctions'
-import { playChord } from '../utility/instrumentFunctions'
-import { acousticGuitar } from '../utility/instruments'
+import { Beat } from '../context/app-context'
 
 type SequencerHookProps = {
-  onBeat: (beat: number) => void
+  onBeat: (beat: Beat, subdivision: number) => void
   instrument: Sampler | Synth
   beats: Beat[]
   selectedNote: Note
@@ -64,6 +61,8 @@ export const useSequencer = (props: SequencerHookProps) => {
     if (currentSubdivision === 0) {
       setCurrentBeat(c => (c + 1) % props.beats.length)
     }
+
+    props.onBeat(props.beats[currentBeat], currentSubdivision)
   }, [currentSubdivision])
 
   useEffect(() => {
@@ -82,18 +81,6 @@ export const useSequencer = (props: SequencerHookProps) => {
     }
 
     const newLoop = new Loop(time => {
-      // instrument.triggerAttackRelease('A2', interval, time)
-
-      const beatScaleDegree = props.beats[currentBeat].scaleDegree
-      const beatChord = getScaleChord(
-        props.selectedNote,
-        props.selectedScale,
-        beatScaleDegree,
-        3
-      )
-
-      playChord(acousticGuitar, beatChord, 0.01, 0.1, true)
-
       setCurrentSubdivision(c => (c + 1) % amountOfSubdivisions)
     }, interval).start(0)
 
