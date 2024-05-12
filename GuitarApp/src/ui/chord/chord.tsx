@@ -27,7 +27,7 @@ import { playChord, playNotes } from '../../utility/instrumentFunctions'
 import { Toggle } from '../toggle/toggle'
 
 export type ChordDegreeVisualizerProps = {
-  degrees: number[]
+  degrees: ScaleDegree[]
   scale: Scale
   note: Note
 }
@@ -144,8 +144,8 @@ const ChordNoteComponent: FC<{
     ) ?? 0
 
   const fingerNumberClasses = new Map<number, string>([
-    [1, 'bg-lime-500 rounded-full outline outline-2 outline-lime-500'],
-    [2, 'bg-gray-900 rounded-full outline outline-2 outline-gray-900'],
+    [1, 'bg-lime-500 rounded-full'],
+    [2, 'bg-gray-900 rounded-full'],
     [3, 'bg-gray-900 rotate-45'],
     [4, 'bg-yellow-600 rotate-45'],
     [5, 'bg-blue-700 rounded-full'],
@@ -177,7 +177,11 @@ const ChordNoteComponent: FC<{
           <div
             className={`absolute grid h-8 w-8 place-items-center ${
               fingerNumberClasses.get(fingerIndex + 1) ?? 'bg-gray-900'
-            } ${selected ? 'bg-orange-300 outline-none border-none' : ''}`}
+            } ${
+              selected
+                ? 'bg-orange-300 outline-orange-300 border-orange-300'
+                : ''
+            }`}
           ></div>
 
           <Wrapper

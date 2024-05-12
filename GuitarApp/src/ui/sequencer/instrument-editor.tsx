@@ -1,5 +1,6 @@
 ﻿import { getChordName } from '../../data/chords'
 import {
+  ChordDegreeVisualizer,
   ChordVisualizerCustomChord,
   ChordVisualizerFullChord,
 } from '../chord/chord'
@@ -16,9 +17,11 @@ import { useContext, useEffect, useState } from 'react'
 import { MusicContext } from '../../context/app-context'
 import {
   allNotes,
+  getChordNotes,
   getScaleChord,
   getScaleDegree,
   getScaleNotes,
+  notesAreEqual,
 } from '../../utility/noteFunctions'
 import { availableScales } from '../../data/scales'
 import { Note, StringNote } from '../../types/musical-terms'
@@ -45,10 +48,16 @@ export const InstrumentEditor = () => {
   }, [selectedBeat])
 
   useEffect(() => {
+    if (!selectedBeat) return
+
     const scaleNotes = getScaleNotes(selectedNote, selectedScale)
-    const notes = selectedBeat?.subdivisions[selectedSubdivision]?.notes
+    const chordNotes = getChordNotes(
+      getScaleChord(selectedNote, selectedScale, selectedBeat.scaleDegree, 13)
+    )
+
+    const notes = selectedBeat.subdivisions[selectedSubdivision]?.notes
       ?.map(note => {
-        const scaleNote = scaleNotes[note.index]
+        const scaleNote = chordNotes[note.index]
         return {
           note: scaleNote,
           stringIndex: note.string ?? 1,
@@ -63,17 +72,10 @@ export const InstrumentEditor = () => {
     setSelectedSubdivision(currentSubdivision)
   }, [currentSubdivision])
 
-  const maxSubdivisions = 8
-
   const currentAmountOfSubdivisions = selectedBeat?.subdivisions.length ?? 0
 
   const selectedChord = selectedBeat
-    ? getScaleChord(
-        allNotes[0],
-        availableScales[0],
-        selectedBeat.scaleDegree,
-        3
-      )
+    ? getScaleChord(selectedNote, selectedScale, selectedBeat.scaleDegree, 3)
     : undefined
 
   const gotoNextSubdivision = () => {
@@ -86,7 +88,17 @@ export const InstrumentEditor = () => {
   }
 
   const toggleNote = (note: Note, stringIndex: number) => {
-    const scaleDegree = getScaleDegree(selectedNote, note, selectedScale)
+    const chordNotes = getChordNotes(
+      getScaleChord(
+        selectedNote,
+        selectedScale,
+        selectedBeat?.scaleDegree ?? 1,
+        13
+      )
+    )
+    const chordIndex = chordNotes.findIndex(chordNote =>
+      notesAreEqual(chordNote, note)
+    )
 
     const selectedBeatIndex = beats.findIndex(
       beat => beat.id === selectedBeat?.id
@@ -96,7 +108,7 @@ export const InstrumentEditor = () => {
       selectedSubdivision
     ].notes?.findIndex(
       subDivisionNote =>
-        subDivisionNote.index === scaleDegree &&
+        subDivisionNote.index === chordIndex &&
         subDivisionNote.pitch === note.pitch &&
         subDivisionNote.string === stringIndex
     )
@@ -105,7 +117,7 @@ export const InstrumentEditor = () => {
     if (!hasNote) {
       beats[selectedBeatIndex]?.subdivisions[selectedSubdivision].notes?.push({
         string: stringIndex,
-        index: scaleDegree,
+        index: chordIndex,
         pitch: note.pitch,
       })
     } else {
