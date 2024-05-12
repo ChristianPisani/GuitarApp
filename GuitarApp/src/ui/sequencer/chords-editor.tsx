@@ -15,6 +15,8 @@ export const ChordsEditor = () => {
     currentBeat,
     currentSubdivision,
     state,
+    selectedScale,
+    selectedNote,
   } = useContext(MusicContext)
   const [currentId, setCurrentId] = useState(1)
 
@@ -98,8 +100,8 @@ export const ChordsEditor = () => {
               showLines={index !== beats.length}
               onDelete={ref => removeChord(index, ref)}
               chord={getScaleChord(
-                getNote('A', false),
-                majorScale,
+                selectedNote,
+                selectedScale,
                 beat.scaleDegree,
                 3
               )}

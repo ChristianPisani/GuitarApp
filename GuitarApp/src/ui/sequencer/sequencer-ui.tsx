@@ -8,15 +8,25 @@ import {
 } from '../../utility/noteFunctions'
 import { availableScales } from '../../data/scales'
 import { ChordsEditor } from './chords-editor'
-import { useContext } from 'react'
+import { ChangeEvent, FormEvent, useContext } from 'react'
 import { MusicContext } from '../../context/app-context'
 import { InstrumentEditor } from './instrument-editor'
 import { PlayArrowOutlined, StopOutlined } from '@mui/icons-material'
+import { NotePicker } from '../note-picker/note-picker'
+import { ScalePicker } from '../scale-picker/scale-picker'
 
 export const SequencerUi = () => {
   const beats = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
 
-  const { selectedBeat, state, setState } = useContext(MusicContext)
+  const {
+    selectedBeat,
+    state,
+    setState,
+    setSelectedNote,
+    selectedNote,
+    selectedScale,
+    setSelectedScale,
+  } = useContext(MusicContext)
 
   return (
     <div
@@ -73,12 +83,26 @@ export const SequencerUi = () => {
             <Select
               label={'Root note'}
               id={'root-note-select'}
-              options={allNotes.map(note => noteToString(note))}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                const note = allNotes[Number(e.target.value)]
+                if (note) setSelectedNote(note)
+              }}
+              options={allNotes.map((note, index) => ({
+                key: noteToString(note),
+                value: index.toString(),
+              }))}
             />
             <Select
               label={'Scale'}
               id={'scale-select'}
-              options={availableScales.map(scale => scale.name)}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                const scale = availableScales[Number(e.target.value)]
+                if (scale) setSelectedScale(scale)
+              }}
+              options={availableScales.map((scale, index) => ({
+                key: scale.name,
+                value: index.toString(),
+              }))}
             />
 
             <Select

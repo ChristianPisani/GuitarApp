@@ -10,7 +10,7 @@ export type NumberInputProps = {} & InputWrapperProps &
   HTMLProps<HTMLInputElement>
 
 export type SelectProps = {
-  options: string[]
+  options: { key: string; value: string }[]
 } & InputWrapperProps &
   HTMLProps<HTMLSelectElement>
 
@@ -42,8 +42,8 @@ export const Select: FC<SelectProps> = props => {
           py-2 text-center text-2xl font-extrabold`}
       >
         {options.map(option => (
-          <option key={option} value={option}>
-            {option}
+          <option key={option.key} value={option.value}>
+            {option.key}
           </option>
         ))}
       </select>
