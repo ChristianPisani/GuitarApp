@@ -31,6 +31,8 @@ export const useSequencer = (props: SequencerHookProps) => {
   const stopBeat = () => {
     setIsPlaying(false)
     Tone.Transport.stop()
+    loop?.dispose()
+    setLoop(undefined)
   }
 
   useEffect(() => {

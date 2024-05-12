@@ -1,5 +1,10 @@
 ﻿import './sequencer-page.scss'
-import { allNotes, getScaleNotes } from '../../utility/noteFunctions'
+import {
+  allNotes,
+  getChordNotes,
+  getScaleChord,
+  getScaleNotes,
+} from '../../utility/noteFunctions'
 import { useEffect, useState } from 'react'
 import { FretboardContext } from '../../ui/Fretboard/FretboardContext'
 import { Mode, Note, Scale } from '../../types/musical-terms'
@@ -25,12 +30,19 @@ export const SequencerPage = () => {
     instrument: acousticGuitar,
     onBeat: (beat: Beat, subdivision: number) => {
       const notes = beat.subdivisions[subdivision].notes.map(beatNote => {
-        const scaleNote = scaleNotes[beatNote.index]
+        const scaleChord = getScaleChord(
+          selectedNote,
+          selectedScale,
+          beat.scaleDegree,
+          13
+        )
+        const chordNotes = getChordNotes(scaleChord)
+        const chordNote = chordNotes[beatNote.index]
 
         return {
           pitch: beatNote.pitch,
-          sharp: scaleNote.sharp,
-          name: scaleNote.name,
+          sharp: chordNote.sharp,
+          name: chordNote.name,
         }
       })
 
@@ -77,6 +89,8 @@ export const SequencerPage = () => {
   useEffect(() => {
     if (state === 'playing') {
       sequencer.startBeat()
+    } else {
+      sequencer.stopBeat()
     }
   }, [state])
 

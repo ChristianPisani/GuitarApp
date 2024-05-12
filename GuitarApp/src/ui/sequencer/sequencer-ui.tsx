@@ -11,6 +11,7 @@ import { ChordsEditor } from './chords-editor'
 import { useContext } from 'react'
 import { MusicContext } from '../../context/app-context'
 import { InstrumentEditor } from './instrument-editor'
+import { PlayArrowOutlined, StopOutlined } from '@mui/icons-material'
 
 export const SequencerUi = () => {
   const beats = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
@@ -42,14 +43,26 @@ export const SequencerUi = () => {
             p-8`}
         >
           <div className={'flex gap-4'}>
-            <Button
-              onClick={() => {
-                setState('playing')
-              }}
-              text={'Play'}
-              id={'play-button'}
-              icon={<p>Needs icon</p>}
-            ></Button>
+            {state !== 'playing' && (
+              <Button
+                onClick={() => {
+                  setState('playing')
+                }}
+                text={'Play'}
+                id={'play-button'}
+                icon={<PlayArrowOutlined />}
+              ></Button>
+            )}
+            {state === 'playing' && (
+              <Button
+                onClick={() => {
+                  setState('editing')
+                }}
+                text={'Stop'}
+                id={'stop-button'}
+                icon={<StopOutlined />}
+              ></Button>
+            )}
             <NumberInput
               value={130}
               label={'BPM'}
