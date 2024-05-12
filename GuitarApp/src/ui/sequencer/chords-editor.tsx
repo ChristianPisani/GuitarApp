@@ -27,8 +27,9 @@ export const ChordsEditor = () => {
     // so it needs to use indexes, but not sure how to do this correctly with major/minor/etc chords
     const newBeat = {
       scaleDegree: degree,
-      subdivisions: [{ notes: [{ index: 1, pitch: 2, string: 0 }] }],
+      subdivisions: [{ notes: [] }],
       id: currentId,
+      bars: 4,
     }
 
     setBeats([...beats, newBeat])

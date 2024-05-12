@@ -65,7 +65,7 @@ export const InstrumentEditor = () => {
 
   const maxSubdivisions = 8
 
-  const currentAmountOfSubdivisions = selectedBeat?.subdivisions.length ?? 1
+  const currentAmountOfSubdivisions = selectedBeat?.subdivisions.length ?? 0
 
   const selectedChord = selectedBeat
     ? getScaleChord(

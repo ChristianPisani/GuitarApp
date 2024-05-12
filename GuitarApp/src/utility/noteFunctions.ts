@@ -1,6 +1,6 @@
 ﻿import { Chord, Note, Scale, StringNote } from '../types/musical-terms'
 import { majorScale } from '../data/scales'
-import { chordNames } from '../data/chords'
+import { chordNames, ScaleDegree } from '../data/chords'
 
 export const chromaticScale: Scale = {
   name: 'Chromatic scale',
@@ -212,11 +212,11 @@ export const getChordNotes = (chord: Chord | undefined) => {
 export const getScaleChord = (
   rootNote: Note,
   scale: Scale,
-  degree: number,
+  degree: ScaleDegree,
   length: number
 ): Chord => {
   const scaleNotes = getScaleNotes(rootNote, scale)
-  const relativeRoot = scaleNotes[degree]
+  const relativeRoot = scaleNotes[degree - 1]
   const chromaticScaleNotes = getScaleNotes(relativeRoot, chromaticScale)
 
   const chordIntervals = []
@@ -224,7 +224,7 @@ export const getScaleChord = (
   for (let i = 0; i < length; i++) {
     chordIntervals.push(
       chromaticScaleNotes.indexOf(
-        scaleNotes[(degree + i * 2) % scaleNotes.length]
+        scaleNotes[(degree - 1 + i * 2) % scaleNotes.length]
       ) + 1
     )
   }
