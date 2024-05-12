@@ -50,7 +50,6 @@ export const InstrumentEditor = () => {
   useEffect(() => {
     if (!selectedBeat) return
 
-    const scaleNotes = getScaleNotes(selectedNote, selectedScale)
     const chordNotes = getChordNotes(
       getScaleChord(selectedNote, selectedScale, selectedBeat.scaleDegree, 13)
     )

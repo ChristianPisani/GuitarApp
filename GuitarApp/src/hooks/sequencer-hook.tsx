@@ -60,11 +60,18 @@ export const useSequencer = (props: SequencerHookProps) => {
   const onPulse = (subdivision: number) => {
     if (props.beats.length === 0) return
 
-    if (subdivision === props.beats[currentBeat].subdivisions.length - 1) {
-      setCurrentBeat(c => (c + 1) % props.beats.length)
-    }
+    const shouldChangeBeat = subdivision === 0
 
-    props.onBeat(props.beats[currentBeat], subdivision)
+    if (shouldChangeBeat) {
+      setCurrentBeat(c => {
+        const newBeat = (c + 1) % props.beats.length
+
+        props.onBeat(props.beats[newBeat], subdivision)
+        return (c + 1) % props.beats.length
+      })
+    } else {
+      props.onBeat(props.beats[currentBeat], subdivision)
+    }
   }
 
   useEffect(() => {
@@ -84,8 +91,10 @@ export const useSequencer = (props: SequencerHookProps) => {
 
     const newLoop = new Loop(time => {
       setCurrentSubdivision(c => {
-        onPulse(c)
-        return (c + 1) % amountOfSubdivisions
+        const newSubdivision = (c + 1) % amountOfSubdivisions
+
+        onPulse(newSubdivision)
+        return newSubdivision
       })
     }, interval).start(0)
 
