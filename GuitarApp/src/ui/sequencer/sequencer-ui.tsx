@@ -26,6 +26,8 @@ export const SequencerUi = () => {
     selectedNote,
     selectedScale,
     setSelectedScale,
+    bpm,
+    setBpm,
   } = useContext(MusicContext)
 
   return (
@@ -74,7 +76,10 @@ export const SequencerUi = () => {
               ></Button>
             )}
             <NumberInput
-              value={130}
+              value={bpm}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setBpm(Number(e.target.value))
+              }
               label={'BPM'}
               id={'bpm-input'}
             ></NumberInput>

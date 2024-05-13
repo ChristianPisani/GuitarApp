@@ -10,13 +10,13 @@ type SequencerHookProps = {
   beats: Beat[]
   selectedNote: Note
   selectedScale: Scale
+  bpm: number
 }
 
 export const useSequencer = (props: SequencerHookProps) => {
   const [currentBeat, setCurrentBeat] = useState(0)
   const [currentSubdivision, setCurrentSubdivision] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [bpm, setBpm] = useState(130)
   const [currentChord, setCurrentChord] = useState<Chord | undefined>(undefined)
 
   const [loop, setLoop] = useState<Loop>()
@@ -103,11 +103,11 @@ export const useSequencer = (props: SequencerHookProps) => {
     return () => {
       newLoop?.dispose()
     }
-  }, [props.beats.length, bpm, isPlaying, currentBeat])
+  }, [props.beats.length, props.bpm, isPlaying, currentBeat])
 
   useEffect(() => {
-    Transport.bpm.rampTo(bpm)
-  }, [bpm])
+    Transport.bpm.rampTo(props.bpm)
+  }, [props.bpm])
 
   return { startBeat, stopBeat, currentBeat, currentSubdivision }
 }

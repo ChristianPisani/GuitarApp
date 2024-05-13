@@ -1,29 +1,20 @@
 ﻿import { getChordName } from '../../data/chords'
-import {
-  ChordDegreeVisualizer,
-  ChordVisualizerCustomChord,
-  ChordVisualizerFullChord,
-} from '../chord/chord'
+import { ChordVisualizerFullChord } from '../chord/chord'
 import { standardTuningNotes } from '../../data/tunings'
 import {
-  Add,
   AddCircleOutlined,
   ChevronLeftRounded,
   ChevronRightRounded,
   RemoveCircleOutline,
 } from '@mui/icons-material'
-import { NumberInput, Select } from '../input/inputs'
+import { Select } from '../input/inputs'
 import { useContext, useEffect, useState } from 'react'
 import { MusicContext } from '../../context/app-context'
 import {
-  allNotes,
   getChordNotes,
   getScaleChord,
-  getScaleDegree,
-  getScaleNotes,
   notesAreEqual,
 } from '../../utility/noteFunctions'
-import { availableScales } from '../../data/scales'
 import { Note, StringNote } from '../../types/musical-terms'
 
 export const InstrumentEditor = () => {
@@ -38,6 +29,7 @@ export const InstrumentEditor = () => {
     currentSubdivision,
     addSubdivision,
     removeSubdivision,
+    updateBeat,
   } = useContext(MusicContext)
 
   const [selectedSubdivision, setSelectedSubdivision] = useState(0)
@@ -58,7 +50,7 @@ export const InstrumentEditor = () => {
       ?.map(note => {
         const scaleNote = chordNotes[note.index]
         return {
-          note: scaleNote,
+          note: { ...scaleNote, pitch: note.pitch },
           stringIndex: note.string ?? 1,
         }
       })
@@ -87,6 +79,8 @@ export const InstrumentEditor = () => {
   }
 
   const toggleNote = (note: Note, stringIndex: number) => {
+    if (!selectedBeat) return
+
     const chordNotes = getChordNotes(
       getScaleChord(
         selectedNote,
@@ -96,14 +90,10 @@ export const InstrumentEditor = () => {
       )
     )
     const chordIndex = chordNotes.findIndex(chordNote =>
-      notesAreEqual(chordNote, note)
+      notesAreEqual(chordNote, note, false)
     )
 
-    const selectedBeatIndex = beats.findIndex(
-      beat => beat.id === selectedBeat?.id
-    )
-
-    const noteIndex = beats[selectedBeatIndex]?.subdivisions[
+    const noteIndex = selectedBeat.subdivisions[
       selectedSubdivision
     ].notes?.findIndex(
       subDivisionNote =>
@@ -113,20 +103,30 @@ export const InstrumentEditor = () => {
     )
     const hasNote = noteIndex !== -1
 
+    const stringAlreadyHasNoteIndex = selectedBeat.subdivisions[
+      selectedSubdivision
+    ].notes.findIndex(subdivisionNote => subdivisionNote.string === stringIndex)
+    if (stringAlreadyHasNoteIndex !== -1) {
+      selectedBeat.subdivisions[selectedSubdivision].notes?.splice(
+        stringAlreadyHasNoteIndex,
+        1
+      )
+    }
+
     if (!hasNote) {
-      beats[selectedBeatIndex]?.subdivisions[selectedSubdivision].notes?.push({
+      selectedBeat?.subdivisions[selectedSubdivision].notes?.push({
         string: stringIndex,
         index: chordIndex,
         pitch: note.pitch,
       })
     } else {
-      beats[selectedBeatIndex]?.subdivisions[selectedSubdivision].notes?.splice(
+      selectedBeat?.subdivisions[selectedSubdivision].notes?.splice(
         noteIndex,
         1
       )
     }
 
-    setBeats([...beats])
+    updateBeat(selectedBeat)
   }
 
   return (

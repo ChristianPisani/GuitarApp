@@ -29,6 +29,8 @@ interface MusicContextProps {
   setSelectedNote: Dispatch<SetStateAction<Note>>
   selectedScale: Scale
   setSelectedScale: Dispatch<SetStateAction<Scale>>
+  bpm: number
+  setBpm: Dispatch<SetStateAction<number>>
   selectedMode: Mode
   setSelectedMode: Dispatch<SetStateAction<Mode>>
   beats: Beat[]
@@ -51,6 +53,8 @@ export const MusicContext = createContext<MusicContextProps>({
   selectedNote: allNotes[0],
   selectedScale: majorScale,
   selectedMode: 1,
+  bpm: 130,
+  setBpm: () => undefined,
   beats: [],
   selectedBeat: undefined,
   setSelectedScale: () => null,

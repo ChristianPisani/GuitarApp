@@ -23,6 +23,7 @@ export const SequencerPage = () => {
   const [selectedBeat, setSelectedBeat] = useState<Beat | undefined>(undefined)
   const [beats, setBeats] = useState<Beat[]>([])
   const [state, setState] = useState<SequencerState>('editing')
+  const [bpm, setBpm] = useState(130)
 
   const scaleNotes = getScaleNotes(selectedNote, selectedScale)
 
@@ -46,11 +47,12 @@ export const SequencerPage = () => {
         }
       })
 
-      playNotes(acousticGuitar, notes, 0.01, 0.1, true)
+      playNotes(acousticGuitar, notes, 0.02, 0.3, true)
     },
     beats,
     selectedNote,
     selectedScale,
+    bpm,
   })
 
   const removeBeat = (beat: Beat) => {
@@ -115,6 +117,8 @@ export const SequencerPage = () => {
         addSubdivision,
         updateBeat,
         removeBeat,
+        bpm,
+        setBpm,
       }}
     >
       <main

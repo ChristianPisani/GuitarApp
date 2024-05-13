@@ -103,9 +103,14 @@ export const noteToString = (note: Note) =>
 
 export const notesAreEqual = (
   noteA: Note | undefined,
-  noteB: Note | undefined
+  noteB: Note | undefined,
+  includePitch?: boolean
 ) => {
-  return noteA?.name === noteB?.name && noteA?.sharp === noteB?.sharp
+  return (
+    noteA?.name === noteB?.name &&
+    noteA?.sharp === noteB?.sharp &&
+    (includePitch ? noteA?.pitch === noteB?.pitch : true)
+  )
 }
 
 export const stringNotesAreEqual = (

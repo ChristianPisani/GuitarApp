@@ -262,7 +262,7 @@ export const ChordVisualizerCustomChord: FC<
         sharp: stringNote.sharp,
         pitch: stringNote.pitch,
       },
-      numberOfFrets
+      numberOfFrets + 1
     )
   )
 
@@ -297,8 +297,7 @@ export const ChordVisualizerCustomChord: FC<
                   selectedNote =>
                     (selectedNote.stringIndex === -1 ||
                       selectedNote.stringIndex === fretIndex) &&
-                    noteToString(selectedNote.note) ===
-                      noteToString(currentNote)
+                    notesAreEqual(selectedNote.note, currentNote, true)
                 )}
                 fallBack={<h2 className={'select-none'}>X</h2>}
                 key={fretIndex}
@@ -343,8 +342,7 @@ export const ChordVisualizerCustomChord: FC<
                     selected={selectedNotes?.some(
                       selectedNote =>
                         selectedNote.stringIndex === stringIndex &&
-                        noteToString(selectedNote.note) ===
-                          noteToString(currentNote)
+                        notesAreEqual(selectedNote.note, currentNote, true)
                     )}
                   />
                 )
