@@ -77,7 +77,7 @@ export const SequencerPage = () => {
   }
 
   const addSubdivision = (beat: Beat) => {
-    const maxAmountOfSubdivisions = 8
+    const maxAmountOfSubdivisions = 16
 
     const currentAmountOfSubdivisions = beat.subdivisions.length
 

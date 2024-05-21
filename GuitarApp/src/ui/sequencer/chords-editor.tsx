@@ -23,7 +23,9 @@ export const ChordsEditor = () => {
   const addChord = () => {
     setCurrentId(currentId + 1)
 
-    const degree = Math.round(Math.random() * 6) as ScaleDegree
+    const degree = (Math.round(Math.random() * 6) + 1) as ScaleDegree
+
+    console.log({ degree })
 
     // TODO: Not quite sure how to index these. The notes should change when user changes scale,
     // so it needs to use indexes, but not sure how to do this correctly with major/minor/etc chords

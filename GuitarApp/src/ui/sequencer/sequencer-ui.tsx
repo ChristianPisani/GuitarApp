@@ -41,13 +41,10 @@ export const SequencerUi = () => {
           'flex flex-col justify-between gap-4 max-w-full overflow-hidden'
         }
       >
-        <div
-          className={
-            'flex flex-col justify-center rounded-lg rounded-tr-2xl bg-primary-50 px-8 py-7'
-          }
-        >
-          <h2>The wonderful sequencer!</h2>
-          <p>Visualize the guitar fretboard in relation to music theory</p>
+        <div className={'flex gap-8 px-8 py-7 text-primary-100'}>
+          <p className={'text-2xl font-bold text-primary-50'}>Chord mode</p>
+          <p className={'text-2xl'}>Sequencer mode</p>
+          <p className={'text-2xl'}>Composition mode</p>
         </div>
         <ChordsEditor />
         <div

@@ -90,7 +90,7 @@ export const noteDegreeClasses = [
 
 export const getNote = (name: string, sharp: boolean, pitch?: number) => {
   const noteRef =
-    allNotes.find(n => n.name === name && n.sharp === sharp) ?? allNotes[0]
+    allNotes.find(n => n?.name === name && n?.sharp === sharp) ?? allNotes[0]
   const note = { ...noteRef }
 
   if (pitch) note.pitch = pitch
@@ -99,7 +99,7 @@ export const getNote = (name: string, sharp: boolean, pitch?: number) => {
 }
 
 export const noteToString = (note: Note) =>
-  `${note.name}${note.sharp ? '#' : ''}`
+  `${note?.name}${note?.sharp ? '#' : ''}`
 
 export const notesAreEqual = (
   noteA: Note | undefined,
@@ -125,7 +125,7 @@ export const stringNotesAreEqual = (
 
 export const chromaticScaleIndexOf = (note: Note) => {
   const chromaticNote = allNotes.find(
-    n => n.name === note.name && n.sharp === note.sharp
+    n => n?.name === note?.name && n?.sharp === note?.sharp
   )
 
   if (!chromaticNote) return -1

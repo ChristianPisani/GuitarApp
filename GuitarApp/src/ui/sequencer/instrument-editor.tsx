@@ -35,6 +35,8 @@ export const InstrumentEditor = () => {
   const [selectedSubdivision, setSelectedSubdivision] = useState(0)
   const [notes, setNotes] = useState<StringNote[]>([])
 
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(1)
+
   useEffect(() => {
     setSelectedSubdivision(0)
   }, [selectedBeat])
@@ -131,10 +133,28 @@ export const InstrumentEditor = () => {
 
   return (
     <div
-      className={
-        'grid grid-rows-[1fr_auto] gap-8 rounded-l-2xl rounded-r-lg bg-primary-50'
-      }
+      className={`grid grid-rows-[1fr_auto] gap-8 rounded-l-2xl rounded-r-lg bg-primary-50
+        relative z-0`}
     >
+      <div
+        className={
+          'absolute right-[100%] top-8 flex flex-col gap-2 justify-end items-end z-[-1]'
+        }
+      >
+        {Array.from({ length: 4 }).map((_, index) => (
+          <button
+            onClick={() => setCurrentTrackIndex(index)}
+            className={`${
+              index === currentTrackIndex
+                ? 'font-bold border-secondary-950 pr-12'
+                : 'border-transparent hover:bg-gray-50'
+            } bg-primary-50 border-8 px-8 py-4
+            rounded-l-3xl border-r-0 w-fit whitespace-nowrap transition-all`}
+          >
+            <p className={'text-lg'}>Track {index}</p>
+          </button>
+        ))}
+      </div>
       <div
         className={`flex w-full flex-col place-items-center justify-center rounded-3xl p-8 shadow-xl
           gap-4`}

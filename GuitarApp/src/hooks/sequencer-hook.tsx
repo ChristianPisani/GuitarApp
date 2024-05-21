@@ -1,7 +1,7 @@
 ﻿import { useEffect, useState } from 'react'
 import { Chord, Note, Scale } from '../types/musical-terms'
 import * as Tone from 'tone'
-import { Loop, Sampler, Synth, Transport } from 'tone'
+import { Draw, Loop, Sampler, Synth, Transport } from 'tone'
 import { Beat } from '../context/app-context'
 
 type SequencerHookProps = {
@@ -90,12 +90,14 @@ export const useSequencer = (props: SequencerHookProps) => {
     }
 
     const newLoop = new Loop(time => {
-      setCurrentSubdivision(c => {
-        const newSubdivision = (c + 1) % amountOfSubdivisions
+      Draw.schedule(() => {
+        setCurrentSubdivision(c => {
+          const newSubdivision = (c + 1) % amountOfSubdivisions
 
-        onPulse(newSubdivision)
-        return newSubdivision
-      })
+          onPulse(newSubdivision)
+          return newSubdivision
+        })
+      }, time)
     }, interval).start(0)
 
     setLoop(newLoop)
