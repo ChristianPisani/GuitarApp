@@ -3,20 +3,24 @@ import {
   allNotes,
   getChordNotes,
   getScaleChord,
-  getScaleNotes,
 } from '../../utility/noteFunctions'
 import { useEffect, useState } from 'react'
-import { FretboardContext } from '../../ui/Fretboard/FretboardContext'
 import { Mode, Note, Scale } from '../../types/musical-terms'
 import { majorScale } from '../../data/scales'
-import { Sequencer } from '../../ui/sequencer/sequencer'
 import { SequencerUi } from '../../ui/sequencer/sequencer-ui'
 import { Beat, MusicContext, SequencerState } from '../../context/app-context'
 import { useSequencer } from '../../hooks/sequencer-hook'
 import { acousticGuitar } from '../../utility/instruments'
 import { playNotes } from '../../utility/instrumentFunctions'
+import useLocalStorage from 'react-use-localstorage'
 
 export const SequencerPage = () => {
+  const [loadedTrackName, setLoadedTrackName] = useState('defaultTrack')
+  const [saveState, setSaveState] = useLocalStorage(
+    loadedTrackName,
+    JSON.stringify('')
+  )
+
   const [selectedNote, setSelectedNote] = useState<Note>(allNotes[0])
   const [selectedScale, setSelectedScale] = useState<Scale>(majorScale)
   const [selectedMode, setSelectedMode] = useState<Mode>(1)
@@ -25,7 +29,35 @@ export const SequencerPage = () => {
   const [state, setState] = useState<SequencerState>('editing')
   const [bpm, setBpm] = useState(130)
 
-  const scaleNotes = getScaleNotes(selectedNote, selectedScale)
+  const savableState = {
+    selectedNote,
+    selectedScale,
+    selectedMode,
+    beats,
+    selectedBeat,
+    state,
+    bpm,
+  }
+
+  useEffect(() => {
+    const loadedState = JSON.parse(saveState)
+
+    if (!loadedState) return
+
+    setSelectedNote(loadedState.selectedNote ?? allNotes[0])
+    setSelectedScale(loadedState.selectedScale ?? majorScale)
+    setSelectedMode(loadedState.selectedMode ?? 1)
+    setBeats(loadedState.beats ?? [])
+    setBpm(loadedState.bpm ?? 130)
+  }, [saveState])
+
+  const saveTrack = () => {
+    setSaveState(JSON.stringify(savableState))
+  }
+
+  const loadTrack = (trackName: string) => {
+    setLoadedTrackName(trackName)
+  }
 
   const sequencer = useSequencer({
     instrument: acousticGuitar,
@@ -99,16 +131,10 @@ export const SequencerPage = () => {
     <MusicContext.Provider
       value={{
         setSelectedNote,
-        selectedNote,
-        selectedScale,
-        selectedMode,
         setSelectedMode,
         setSelectedScale,
-        beats,
         setBeats,
-        selectedBeat,
         setSelectedBeat,
-        state,
         setState,
         currentBeat: sequencer.currentBeat,
         currentSubdivision: sequencer.currentSubdivision,
@@ -116,8 +142,8 @@ export const SequencerPage = () => {
         addSubdivision,
         updateBeat,
         removeBeat,
-        bpm,
         setBpm,
+        ...savableState,
       }}
     >
       <main
@@ -127,6 +153,28 @@ export const SequencerPage = () => {
       >
         <h2 className={'p-4 md:p-8'}>Sequencer</h2>
         <h3>Beats: {beats.length}</h3>
+        <button
+          className={
+            'rounded-full px-8 py-4 bg-primary-200 hover:bg-primary-400'
+          }
+          onClick={() => saveTrack()}
+        >
+          Save track
+        </button>
+        <select
+          defaultValue={loadedTrackName}
+          className={'bg-primary-50 p-4'}
+          onChange={e => loadTrack(e.target.value)}
+        >
+          {new Array(localStorage.length)
+            .fill(0)
+            .map((_, localStorageIndex) => {
+              const localStorageKey =
+                localStorage.key(localStorageIndex) ?? 'No key'
+
+              return <option value={localStorageKey}>{localStorageKey}</option>
+            })}
+        </select>
         <h4>
           Subdivisions:
           {beats[sequencer.currentBeat]?.subdivisions?.length ?? 0}

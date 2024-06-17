@@ -16,19 +16,8 @@ import { NotePicker } from '../note-picker/note-picker'
 import { ScalePicker } from '../scale-picker/scale-picker'
 
 export const SequencerUi = () => {
-  const beats = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-
-  const {
-    selectedBeat,
-    state,
-    setState,
-    setSelectedNote,
-    selectedNote,
-    selectedScale,
-    setSelectedScale,
-    bpm,
-    setBpm,
-  } = useContext(MusicContext)
+  const { state, setState, setSelectedNote, setSelectedScale, bpm, setBpm } =
+    useContext(MusicContext)
 
   return (
     <div

@@ -20,6 +20,7 @@
     "react-dom": "^18.2.0",
     "react-indiana-drag-scroll": "3.0.3-alpha",
     "react-router-dom": "^6.8.2",
+    "react-use-localstorage": "^3.5.3",
     "tone": "^14.7.77"
   },
   "devDependencies": {

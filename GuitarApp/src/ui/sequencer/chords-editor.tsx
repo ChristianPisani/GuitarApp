@@ -1,9 +1,8 @@
 ﻿import { BeatChord } from './beat-chord'
-import React, { Ref, useContext, useEffect, useState } from 'react'
-import { getNote, getScaleChord } from '../../utility/noteFunctions'
-import { majorScale } from '../../data/scales'
+import React, { useContext, useEffect } from 'react'
+import { getScaleChord } from '../../utility/noteFunctions'
 import { ScaleDegree } from '../../data/chords'
-import { ScrollContainer, useScrollContainer } from 'react-indiana-drag-scroll'
+import { ScrollContainer } from 'react-indiana-drag-scroll'
 import { Beat, MusicContext } from '../../context/app-context'
 
 export const ChordsEditor = () => {
@@ -13,24 +12,17 @@ export const ChordsEditor = () => {
     setBeats,
     setSelectedBeat,
     currentBeat,
-    currentSubdivision,
     state,
     selectedScale,
     selectedNote,
   } = useContext(MusicContext)
-  const [currentId, setCurrentId] = useState(1)
-
   const addChord = () => {
-    setCurrentId(currentId + 1)
-
     const degree = (Math.round(Math.random() * 6) + 1) as ScaleDegree
 
-    // TODO: Not quite sure how to index these. The notes should change when user changes scale,
-    // so it needs to use indexes, but not sure how to do this correctly with major/minor/etc chords
     const newBeat = {
       scaleDegree: degree,
       subdivisions: [{ notes: [] }],
-      id: currentId,
+      id: beats.length > 0 ? beats[beats.length - 1].id + 1 : 1,
       bars: 4,
     }
 
