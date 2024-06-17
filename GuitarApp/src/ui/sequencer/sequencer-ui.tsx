@@ -41,10 +41,12 @@ export const SequencerUi = () => {
           'flex flex-col justify-between gap-4 max-w-full overflow-hidden'
         }
       >
-        <div className={'flex gap-8 px-8 py-7 text-primary-100'}>
-          <p className={'text-2xl font-bold text-primary-50'}>Chord mode</p>
-          <p className={'text-2xl'}>Sequencer mode</p>
-          <p className={'text-2xl'}>Composition mode</p>
+        <div className={'flex gap-8 px-8 py-7 text-primary-100 items-center'}>
+          <h2 className={'text-primary-100'}>Mode</h2>
+          <p className={'text-2xl font-bold text-primary-50'}>Chord</p>
+          <p className={'text-2xl'}>Sequencer</p>
+          <p className={'text-2xl'}>Composition</p>
+          <p className={'text-2xl'}>Tab</p>
         </div>
         <ChordsEditor />
         <div
@@ -107,11 +109,7 @@ export const SequencerUi = () => {
               }))}
             />
 
-            <Select
-              label={'Mode'}
-              id={'mode-select'}
-              options={['1st', '2nd', '3rd', '4th', '5th', '6th', '7th']}
-            />
+            <Select label={'Mode'} id={'mode-select'} options={[]} />
           </div>
         </div>
       </div>

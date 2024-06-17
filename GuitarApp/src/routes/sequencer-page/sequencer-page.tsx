@@ -34,8 +34,7 @@ export const SequencerPage = () => {
         const scaleChord = getScaleChord(
           selectedNote,
           selectedScale,
-          beat.scaleDegree,
-          13
+          beat.scaleDegree
         )
         const chordNotes = getChordNotes(scaleChord)
         const chordNote = chordNotes[beatNote.index]

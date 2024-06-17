@@ -218,7 +218,7 @@ export const getScaleChord = (
   rootNote: Note,
   scale: Scale,
   degree: ScaleDegree,
-  length: number
+  length: number = 13
 ): Chord => {
   const scaleNotes = getScaleNotes(rootNote, scale)
   const relativeRoot = scaleNotes[degree - 1]

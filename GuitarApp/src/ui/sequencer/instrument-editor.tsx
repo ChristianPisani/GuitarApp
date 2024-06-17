@@ -45,7 +45,7 @@ export const InstrumentEditor = () => {
     if (!selectedBeat) return
 
     const chordNotes = getChordNotes(
-      getScaleChord(selectedNote, selectedScale, selectedBeat.scaleDegree, 13)
+      getScaleChord(selectedNote, selectedScale, selectedBeat.scaleDegree)
     )
 
     const notes = selectedBeat.subdivisions[selectedSubdivision]?.notes
@@ -58,8 +58,8 @@ export const InstrumentEditor = () => {
       })
       .filter(note => !!note)
 
-    setNotes(notes ?? [])
-  }, [selectedBeat, selectedSubdivision, beats])
+    setNotes([...notes] ?? [])
+  }, [selectedBeat, selectedSubdivision, beats, selectedScale])
 
   useEffect(() => {
     setSelectedSubdivision(currentSubdivision)
@@ -68,7 +68,7 @@ export const InstrumentEditor = () => {
   const currentAmountOfSubdivisions = selectedBeat?.subdivisions.length ?? 0
 
   const selectedChord = selectedBeat
-    ? getScaleChord(selectedNote, selectedScale, selectedBeat.scaleDegree, 3)
+    ? getScaleChord(selectedNote, selectedScale, selectedBeat.scaleDegree, 5)
     : undefined
 
   const gotoNextSubdivision = () => {
@@ -84,12 +84,7 @@ export const InstrumentEditor = () => {
     if (!selectedBeat) return
 
     const chordNotes = getChordNotes(
-      getScaleChord(
-        selectedNote,
-        selectedScale,
-        selectedBeat?.scaleDegree ?? 1,
-        13
-      )
+      getScaleChord(selectedNote, selectedScale, selectedBeat?.scaleDegree ?? 1)
     )
     const chordIndex = chordNotes.findIndex(chordNote =>
       notesAreEqual(chordNote, note, false)
@@ -170,7 +165,7 @@ export const InstrumentEditor = () => {
         )}
         <ChordVisualizerFullChord
           chord={selectedChord}
-          strings={standardTuningNotes().reverse()}
+          strings={standardTuningNotes()}
           showNoteIndex={true}
           selectedNotes={notes}
           onClickNote={toggleNote}
@@ -213,7 +208,10 @@ export const InstrumentEditor = () => {
       <div className={'flex flex-col justify-end gap-8 p-8'}>
         <div className={'grid grid-cols-2 place-items-center gap-4'}>
           <Select
-            options={['CAGED', '3NPS']}
+            options={[
+              { key: 'CAGED', value: 'caged' },
+              { key: '3NPS', value: '3pns' },
+            ]}
             label={'Visualization technique'}
             id={'visualization-select'}
           />

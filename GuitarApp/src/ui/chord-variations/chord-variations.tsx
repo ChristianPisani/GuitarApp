@@ -14,7 +14,7 @@ export const ChordVariations = () => {
   const [showNoteIndex, setShowNoteIndex] = useState<boolean>(true);
   const [chordType, setChordType] = useState<TriadType>("Major");
 
-  const strings = standardTuningNotes().reverse();
+  const strings = standardTuningNotes();
 
   const chord: Chord = {
     intervals: getTriad(chordType)?.intervals ?? [],

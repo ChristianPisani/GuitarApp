@@ -96,7 +96,7 @@ export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
               <h2>{getChordName(chord)}</h2>
               <ChordVisualizerFullChord
                 chord={chord}
-                strings={standardTuningNotes().reverse()}
+                strings={standardTuningNotes()}
                 showNoteIndex={showNoteIndex}
                 onClickNote={(note: Note) => playNotes(acousticGuitar, [note])}
               />
@@ -143,14 +143,6 @@ const ChordNoteComponent: FC<{
       getScaleDegree(chord.root, currentNote, chromaticScale) + 1
     ) ?? 0
 
-  const fingerNumberClasses = new Map<number, string>([
-    [1, 'bg-lime-500 rounded-full'],
-    [2, 'bg-gray-900 rounded-full'],
-    [3, 'bg-gray-900 rotate-45'],
-    [4, 'bg-yellow-600 rotate-45'],
-    [5, 'bg-blue-700 rounded-full'],
-  ])
-
   const Wrapper = (props: { children?: ReactNode; className?: string }) =>
     onClick ? (
       <button className={props.className} onClick={() => onClick(currentNote)}>
@@ -164,8 +156,8 @@ const ChordNoteComponent: FC<{
 
   return (
     <div
-      className={`h-full w-2 ${showString ? 'bg-gray-900' : ''} relative grid place-items-center
-      transition-all ${onClick ? 'hover:scale-105' : ''}`}
+      className={`h-full w-2 font-bold ${showString ? 'bg-gray-900' : ''} relative grid
+      place-items-center transition-all ${onClick ? 'hover:scale-105' : ''}`}
     >
       {(!careAboutStringIndex &&
         chordNotes.some(cn => notesAreEqual(cn.note, currentNote))) ||
@@ -173,25 +165,16 @@ const ChordNoteComponent: FC<{
         note: currentNote,
         stringIndex,
       }) ? (
-        <>
-          <div
-            className={`absolute grid h-8 w-8 place-items-center ${
-              fingerNumberClasses.get(fingerIndex + 1) ?? 'bg-gray-900'
-            } ${
+        <Wrapper
+          className={`absolute select-none text-center text-xl text-inherit grid h-8 w-8
+            place-items-center rounded-full ${
               selected
-                ? 'bg-orange-300 outline-orange-300 border-orange-300'
-                : ''
+                ? 'bg-secondary-700 text-primary-50'
+                : 'bg-secondary-200 text-primary-950'
             }`}
-          ></div>
-
-          <Wrapper
-            className={
-              'absolute select-none p-4 text-center text-xl text-white'
-            }
-          >
-            {showNoteIndex ? `${fingerIndex + 1}` : noteToString(currentNote)}
-          </Wrapper>
-        </>
+        >
+          {showNoteIndex ? `${fingerIndex + 1}` : noteToString(currentNote)}
+        </Wrapper>
       ) : (
         fallBack
       )}
@@ -216,7 +199,6 @@ export const ChordVisualizerFullChord: FC<ChordVizualiserProps> = ({
   onClickNote,
   selectedNotes,
   numberOfFrets = 13,
-  careAboutStringIndex = false,
 }) => {
   const chordNotes = getChordNotes(chord).map(chordNote => ({
     note: chordNote,
