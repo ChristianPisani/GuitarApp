@@ -13,6 +13,7 @@ import { useSequencer } from '../../hooks/sequencer-hook'
 import { acousticGuitar } from '../../utility/instruments'
 import { playNotes } from '../../utility/instrumentFunctions'
 import useLocalStorage from 'react-use-localstorage'
+import { ScaleDegree } from '../../data/chords'
 
 export const SequencerPage = () => {
   const [loadedTrackName, setLoadedTrackName] = useState('defaultTrack')
@@ -28,6 +29,7 @@ export const SequencerPage = () => {
   const [beats, setBeats] = useState<Beat[]>([])
   const [state, setState] = useState<SequencerState>('editing')
   const [bpm, setBpm] = useState(130)
+  const [currentSubdivision, setCurrentSubdivision] = useState(0)
 
   const savableState = {
     selectedNote,
@@ -84,6 +86,8 @@ export const SequencerPage = () => {
     selectedNote,
     selectedScale,
     bpm,
+    currentSubdivision,
+    setCurrentSubdivision,
   })
 
   const removeBeat = (beat: Beat) => {
@@ -104,6 +108,7 @@ export const SequencerPage = () => {
     if (currentAmountOfSubdivisions <= 1) return
 
     beat.subdivisions.splice(-1, 1)
+
     updateBeat(beat)
   }
 
@@ -116,6 +121,16 @@ export const SequencerPage = () => {
       return
 
     beat.subdivisions.push({ notes: [] })
+    updateBeat(beat)
+  }
+
+  const toggleInterval = (beat: Beat, interval: ScaleDegree) => {
+    const index = beat.scaleDegrees.indexOf(interval)
+    if (index === -1) {
+      beat.scaleDegrees.push(interval)
+    } else {
+      beat.scaleDegrees.splice(index, 1)
+    }
     updateBeat(beat)
   }
 
@@ -143,45 +158,50 @@ export const SequencerPage = () => {
         updateBeat,
         removeBeat,
         setBpm,
+        toggleInterval,
         ...savableState,
       }}
     >
       <main
         className={
-          'flex h-full w-full flex-col place-items-center bg-primary-100'
+          'flex min-h-full w-full flex-col place-items-center bg-primary-100 p-8'
         }
       >
         <h2 className={'p-4 md:p-8'}>Sequencer</h2>
-        <h3>Beats: {beats.length}</h3>
-        <button
-          className={
-            'rounded-full px-8 py-4 bg-primary-200 hover:bg-primary-400'
-          }
-          onClick={() => saveTrack()}
-        >
-          Save track
-        </button>
-        <select
-          defaultValue={loadedTrackName}
-          className={'bg-primary-50 p-4'}
-          onChange={e => loadTrack(e.target.value)}
-        >
-          {new Array(localStorage.length)
-            .fill(0)
-            .map((_, localStorageIndex) => {
-              const localStorageKey =
-                localStorage.key(localStorageIndex) ?? 'No key'
+        <div className={'flex gap-8 my-8'}>
+          <h3>Beats: {beats.length}</h3>
+          <button
+            className={
+              'rounded-full px-8 py-4 bg-primary-200 hover:bg-primary-400'
+            }
+            onClick={() => saveTrack()}
+          >
+            Save track
+          </button>
+          <select
+            defaultValue={loadedTrackName}
+            className={'bg-primary-50 p-4'}
+            onChange={e => loadTrack(e.target.value)}
+          >
+            {new Array(localStorage.length)
+              .fill(0)
+              .map((_, localStorageIndex) => {
+                const localStorageKey =
+                  localStorage.key(localStorageIndex) ?? 'No key'
 
-              return <option value={localStorageKey}>{localStorageKey}</option>
-            })}
-        </select>
-        <h4>
-          Subdivisions:
-          {beats[sequencer.currentBeat]?.subdivisions?.length ?? 0}
-        </h4>
-        <h3>
-          {sequencer.currentBeat}:{sequencer.currentSubdivision}
-        </h3>
+                return (
+                  <option value={localStorageKey}>{localStorageKey}</option>
+                )
+              })}
+          </select>
+          <h4>
+            Subdivisions:
+            {beats[sequencer.currentBeat]?.subdivisions?.length ?? 0}
+          </h4>
+          <h3>
+            {sequencer.currentBeat}:{sequencer.currentSubdivision}
+          </h3>
+        </div>
         <SequencerUi />
       </main>
     </MusicContext.Provider>

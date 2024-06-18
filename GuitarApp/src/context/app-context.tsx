@@ -1,4 +1,4 @@
-﻿import { Mode, Note, Scale } from '../types/musical-terms'
+﻿import { Interval, Mode, Note, Scale } from '../types/musical-terms'
 import { createContext, Dispatch, SetStateAction } from 'react'
 
 import { allNotes } from '../utility/noteFunctions'
@@ -17,6 +17,7 @@ export interface Subdivision {
 
 export interface Beat {
   scaleDegree: ScaleDegree
+  scaleDegrees: ScaleDegree[]
   subdivisions: Subdivision[]
   id: number
   bars: number
@@ -47,6 +48,8 @@ interface MusicContextProps {
   removeSubdivision: (beat: Beat) => void
   updateBeat: (beat: Beat) => void
   removeBeat: (beat: Beat) => void
+
+  toggleInterval: (beat: Beat, interval: ScaleDegree) => void
 }
 
 export const MusicContext = createContext<MusicContextProps>({
@@ -74,4 +77,6 @@ export const MusicContext = createContext<MusicContextProps>({
 
   updateBeat: beat => undefined,
   removeBeat: beat => undefined,
+
+  toggleInterval: (beat, interval) => undefined,
 })

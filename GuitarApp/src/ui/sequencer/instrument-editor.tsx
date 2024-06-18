@@ -1,4 +1,8 @@
-﻿import { getChordName } from '../../data/chords'
+﻿import {
+  getChordName,
+  ScaleDegree,
+  scaleDegreeNotations,
+} from '../../data/chords'
 import { ChordVisualizerFullChord } from '../chord/chord'
 import { standardTuningNotes } from '../../data/tunings'
 import {
@@ -9,7 +13,7 @@ import {
 } from '@mui/icons-material'
 import { Select } from '../input/inputs'
 import { useContext, useEffect, useState } from 'react'
-import { MusicContext } from '../../context/app-context'
+import { Beat, MusicContext } from '../../context/app-context'
 import {
   getChordNotes,
   getScaleChord,
@@ -30,6 +34,7 @@ export const InstrumentEditor = () => {
     addSubdivision,
     removeSubdivision,
     updateBeat,
+    toggleInterval,
   } = useContext(MusicContext)
 
   const [selectedSubdivision, setSelectedSubdivision] = useState(0)
@@ -48,7 +53,9 @@ export const InstrumentEditor = () => {
       getScaleChord(selectedNote, selectedScale, selectedBeat.scaleDegree)
     )
 
-    const notes = selectedBeat.subdivisions[selectedSubdivision]?.notes
+    const notes = selectedBeat.subdivisions[
+      Math.min(selectedSubdivision, selectedBeat.subdivisions.length - 1)
+    ]?.notes
       ?.map(note => {
         const scaleNote = chordNotes[note.index]
         return {
@@ -68,7 +75,12 @@ export const InstrumentEditor = () => {
   const currentAmountOfSubdivisions = selectedBeat?.subdivisions.length ?? 0
 
   const selectedChord = selectedBeat
-    ? getScaleChord(selectedNote, selectedScale, selectedBeat.scaleDegree, 5)
+    ? getScaleChord(
+        selectedNote,
+        selectedScale,
+        selectedBeat.scaleDegree,
+        selectedBeat.scaleDegrees
+      )
     : undefined
 
   const gotoNextSubdivision = () => {
@@ -78,6 +90,12 @@ export const InstrumentEditor = () => {
   }
   const gotoPreviousSubdivision = () => {
     setSelectedSubdivision(Math.max(0, selectedSubdivision - 1))
+  }
+
+  const doRemoveSubdivision = (beat: Beat) => {
+    setSelectedSubdivision(c => Math.min(beat.subdivisions.length - 1, c))
+
+    removeSubdivision(beat)
   }
 
   const toggleNote = (note: Note, stringIndex: number) => {
@@ -111,11 +129,13 @@ export const InstrumentEditor = () => {
     }
 
     if (!hasNote) {
-      selectedBeat?.subdivisions[selectedSubdivision].notes?.push({
+      const noteToPush = {
         string: stringIndex,
         index: chordIndex,
         pitch: note.pitch,
-      })
+      }
+
+      selectedBeat?.subdivisions[selectedSubdivision].notes?.push(noteToPush)
     } else {
       selectedBeat?.subdivisions[selectedSubdivision].notes?.splice(
         noteIndex,
@@ -172,12 +192,22 @@ export const InstrumentEditor = () => {
         />
         {selectedChord && (
           <>
+            <div className={'flex gap-2'}>
+              {selectedBeat?.subdivisions.map((subdivision, index) => (
+                <button
+                  className={`rounded-full border-2 border-secondary-950 w-3 h-3 ${
+                    selectedSubdivision === index ? 'bg-secondary-950' : ''
+                  }`}
+                  onClick={() => setSelectedSubdivision(index)}
+                ></button>
+              ))}
+            </div>
             <div className={'flex gap-4'}>
               <h3>Subdivisions</h3>
               <div className={'flex gap-2'}>
                 <button
                   onClick={() =>
-                    selectedBeat && removeSubdivision(selectedBeat)
+                    selectedBeat && doRemoveSubdivision(selectedBeat)
                   }
                   className={'hover:scale-105 active:scale-95 rounded-full'}
                 >
@@ -201,6 +231,35 @@ export const InstrumentEditor = () => {
               <button onClick={gotoNextSubdivision}>
                 <ChevronRightRounded />
               </button>
+            </div>
+            <div className={'flex flex-col items-center gap-4'}>
+              <h3>Intervals</h3>
+              <div className={'flex gap-2'}>
+                {selectedScale.intervals.map((_, index) => {
+                  // TOOD: Not sure if this will work with all scales. Should find a better way to handle intervals generally.
+                  const intervalIndex = index + 1
+
+                  const selected = selectedBeat?.scaleDegrees?.some(
+                    interval => interval === intervalIndex
+                  )
+
+                  return (
+                    <button
+                      className={`border-2 border-gray-950 rounded text-md grid place-items-center w-10 transition
+                      h-10 ${selected ? 'shadow-accent transform scale-110 font-bold' : ''}`}
+                      onClick={() =>
+                        selectedBeat &&
+                        toggleInterval(
+                          selectedBeat,
+                          intervalIndex as ScaleDegree
+                        )
+                      }
+                    >
+                      {intervalIndex}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
           </>
         )}

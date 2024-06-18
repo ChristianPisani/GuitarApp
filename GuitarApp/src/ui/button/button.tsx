@@ -1,5 +1,4 @@
-﻿import { PlayArrowOutlined } from '@material-ui/icons'
-import { FC, HTMLProps, ReactNode } from 'react'
+﻿import { FC, HTMLProps, ReactNode } from 'react'
 
 type ButtonProps = {
   icon?: ReactNode

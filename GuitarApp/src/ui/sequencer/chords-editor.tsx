@@ -3,7 +3,7 @@ import React, { useContext, useEffect } from 'react'
 import { getScaleChord } from '../../utility/noteFunctions'
 import { ScaleDegree } from '../../data/chords'
 import { ScrollContainer } from 'react-indiana-drag-scroll'
-import { Beat, MusicContext } from '../../context/app-context'
+import { Beat, MusicContext, Subdivision } from '../../context/app-context'
 
 export const ChordsEditor = () => {
   const {
@@ -21,7 +21,13 @@ export const ChordsEditor = () => {
 
     const newBeat = {
       scaleDegree: degree,
-      subdivisions: [{ notes: [] }],
+      scaleDegrees: [1, 2, 3] as ScaleDegree[],
+      subdivisions: [
+        { notes: [] },
+        { notes: [] },
+        { notes: [] },
+        { notes: [] },
+      ],
       id: beats.length > 0 ? beats[beats.length - 1].id + 1 : 1,
       bars: 4,
     }
@@ -95,7 +101,7 @@ export const ChordsEditor = () => {
                 selectedNote,
                 selectedScale,
                 beat.scaleDegree,
-                5
+                beat.scaleDegrees
               )}
               beat={beat}
               selected={selectedBeat?.id === beat.id}

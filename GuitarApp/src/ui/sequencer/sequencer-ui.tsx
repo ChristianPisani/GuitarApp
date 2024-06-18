@@ -22,7 +22,7 @@ export const SequencerUi = () => {
   return (
     <div
       className={`grid min-h-[500px] w-full max-w-[1600px] grid-cols-[2fr_5fr] gap-2 rounded-3xl
-        bg-secondary-950 p-2`}
+        bg-secondary-950 p-2 border-8 border-secondary-500`}
     >
       <InstrumentEditor />
       <div

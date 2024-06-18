@@ -72,12 +72,7 @@ export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
 
       <div className={'flex h-fit w-full gap-8 overflow-x-auto'}>
         {degrees.map((degree, index) => {
-          const chord = getScaleChord(
-            note,
-            scale,
-            degree,
-            chordTypeIndexes[chordType]
-          )
+          const chord = getScaleChord(note, scale, degree, degrees)
 
           const chordName = getChordName(chord)
           const isMajor = chordName.includes('Major')

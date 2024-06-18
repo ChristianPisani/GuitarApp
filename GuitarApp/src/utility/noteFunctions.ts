@@ -218,7 +218,7 @@ export const getScaleChord = (
   rootNote: Note,
   scale: Scale,
   degree: ScaleDegree,
-  length: number = 13
+  scaleDegrees?: ScaleDegree[]
 ): Chord => {
   const scaleNotes = getScaleNotes(rootNote, scale)
   const relativeRoot = scaleNotes[degree - 1]
@@ -226,12 +226,17 @@ export const getScaleChord = (
 
   const chordIntervals = []
 
-  for (let i = 0; i < length; i++) {
-    chordIntervals.push(
-      chromaticScaleNotes.indexOf(
-        scaleNotes[(degree - 1 + i * 2) % scaleNotes.length]
-      ) + 1
+  // Create scale chords by skipping every second note in the scale
+  for (let i = 0; i < chromaticScaleNotes.length; i++) {
+    const scaleDegreeAtIndex = (degree - 1 + i * 2) % scaleNotes.length
+
+    if (
+      !scaleDegrees ||
+      scaleDegrees?.some(scaleDegree => i === scaleDegree - 1)
     )
+      chordIntervals.push(
+        chromaticScaleNotes.indexOf(scaleNotes[scaleDegreeAtIndex]) + 1
+      )
   }
 
   return { intervals: chordIntervals, root: relativeRoot }
