@@ -86,8 +86,6 @@ export const SequencerPage = () => {
     selectedNote,
     selectedScale,
     bpm,
-    currentSubdivision,
-    setCurrentSubdivision,
   })
 
   const removeBeat = (beat: Beat) => {
