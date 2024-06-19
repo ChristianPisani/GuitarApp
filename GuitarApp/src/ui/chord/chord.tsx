@@ -135,7 +135,7 @@ const ChordNoteComponent: FC<{
 }) => {
   const fingerIndex =
     chord?.intervals.indexOf(
-      getScaleDegree(chord.root, currentNote, chromaticScale) + 1
+      getScaleDegree(chord.root, currentNote, chromaticScale, 1) + 1
     ) ?? 0
 
   const Wrapper = (props: { children?: ReactNode; className?: string }) =>
@@ -238,6 +238,7 @@ export const ChordVisualizerCustomChord: FC<
         name: stringNote.name,
         sharp: stringNote.sharp,
         pitch: stringNote.pitch,
+        relativeIndex: 0,
       },
       numberOfFrets + 1
     )
@@ -274,7 +275,9 @@ export const ChordVisualizerCustomChord: FC<
                   selectedNote =>
                     (selectedNote.stringIndex === -1 ||
                       selectedNote.stringIndex === fretIndex) &&
-                    notesAreEqual(selectedNote.note, currentNote, true)
+                    notesAreEqual(selectedNote.note, currentNote, false) &&
+                    selectedNote.note.relativeIndex ===
+                      currentNote.relativeIndex
                 )}
                 fallBack={<h2 className={'select-none'}>X</h2>}
                 key={fretIndex}
@@ -319,7 +322,9 @@ export const ChordVisualizerCustomChord: FC<
                     selected={selectedNotes?.some(
                       selectedNote =>
                         selectedNote.stringIndex === stringIndex &&
-                        notesAreEqual(selectedNote.note, currentNote, true)
+                        notesAreEqual(selectedNote.note, currentNote, false) &&
+                        selectedNote.note.relativeIndex ===
+                          currentNote.relativeIndex
                     )}
                   />
                 )

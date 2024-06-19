@@ -30,6 +30,7 @@ export const InstrumentEditor = () => {
     setBeats,
     selectedNote,
     selectedScale,
+    selectedMode,
     currentSubdivision,
     addSubdivision,
     removeSubdivision,
@@ -50,7 +51,12 @@ export const InstrumentEditor = () => {
     if (!selectedBeat) return
 
     const chordNotes = getChordNotes(
-      getScaleChord(selectedNote, selectedScale, selectedBeat.scaleDegree)
+      getScaleChord(
+        selectedNote,
+        selectedScale,
+        selectedMode,
+        selectedBeat.scaleDegree
+      )
     )
 
     const notes = selectedBeat.subdivisions[
@@ -59,7 +65,11 @@ export const InstrumentEditor = () => {
       ?.map(note => {
         const scaleNote = chordNotes[note.index]
         return {
-          note: { ...scaleNote, pitch: note.pitch },
+          note: {
+            ...scaleNote,
+            pitch: note.pitch,
+            relativeIndex: note.relativeIndex,
+          },
           stringIndex: note.string ?? 1,
         }
       })
@@ -78,6 +88,7 @@ export const InstrumentEditor = () => {
     ? getScaleChord(
         selectedNote,
         selectedScale,
+        selectedMode,
         selectedBeat.scaleDegree,
         selectedBeat.scaleDegrees
       )
@@ -102,7 +113,12 @@ export const InstrumentEditor = () => {
     if (!selectedBeat) return
 
     const chordNotes = getChordNotes(
-      getScaleChord(selectedNote, selectedScale, selectedBeat?.scaleDegree ?? 1)
+      getScaleChord(
+        selectedNote,
+        selectedScale,
+        selectedMode,
+        selectedBeat?.scaleDegree ?? 1
+      )
     )
     const chordIndex = chordNotes.findIndex(chordNote =>
       notesAreEqual(chordNote, note, false)
@@ -133,6 +149,7 @@ export const InstrumentEditor = () => {
         string: stringIndex,
         index: chordIndex,
         pitch: note.pitch,
+        relativeIndex: note.relativeIndex ?? 0,
       }
 
       selectedBeat?.subdivisions[selectedSubdivision].notes?.push(noteToPush)
@@ -186,7 +203,7 @@ export const InstrumentEditor = () => {
         <ChordVisualizerFullChord
           chord={selectedChord}
           strings={standardTuningNotes()}
-          showNoteIndex={true}
+          showNoteIndex={false}
           selectedNotes={notes}
           onClickNote={toggleNote}
         />

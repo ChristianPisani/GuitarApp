@@ -11,6 +11,7 @@ export const ChordsEditor = () => {
     selectedBeat,
     setBeats,
     setSelectedBeat,
+    selectedMode,
     currentBeat,
     state,
     selectedScale,
@@ -100,6 +101,7 @@ export const ChordsEditor = () => {
               chord={getScaleChord(
                 selectedNote,
                 selectedScale,
+                selectedMode,
                 beat.scaleDegree,
                 beat.scaleDegrees
               )}

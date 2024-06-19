@@ -5,15 +5,15 @@
   noteDegreeClasses,
   noteIsInScale,
   noteToString,
-} from "../../utility/noteFunctions";
-import { Note, Scale } from "../../types/musical-terms";
-import { FC } from "react";
+} from '../../utility/noteFunctions'
+import { Note, Scale } from '../../types/musical-terms'
+import { FC } from 'react'
 
 type NotePickerProps = {
-  selectedNote: Note;
-  setSelectedNote: (note: Note) => void;
-  selectedScale?: Scale;
-};
+  selectedNote: Note
+  setSelectedNote: (note: Note) => void
+  selectedScale?: Scale
+}
 
 export const NotePicker: FC<NotePickerProps> = ({
   selectedNote,
@@ -21,13 +21,13 @@ export const NotePicker: FC<NotePickerProps> = ({
   selectedScale = chromaticScale,
 }) => {
   return (
-    <div className={"flex gap-2"}>
+    <div className={'flex gap-2'}>
       {allNotes.map((note, index) => {
-        const scaleDegree = getScaleDegree(selectedNote, note, selectedScale);
-        const isInScale = noteIsInScale(selectedNote, note, selectedScale);
+        const scaleDegree = getScaleDegree(selectedNote, note, selectedScale, 1)
+        const isInScale = noteIsInScale(selectedNote, note, selectedScale)
 
         return (
-          <div className={"flex flex-col items-center gap-2"} key={index * 100}>
+          <div className={'flex flex-col items-center gap-2'} key={index * 100}>
             <p>{index + 1}</p>
             <button
               onClick={() => setSelectedNote(note)}
@@ -35,16 +35,16 @@ export const NotePicker: FC<NotePickerProps> = ({
                 noteDegreeClasses[scaleDegree]
               } ${
                 isInScale
-                  ? "shadow hover:shadow-xl hover:scale-105 transition-all note-color"
-                  : ""
+                  ? 'shadow hover:shadow-xl hover:scale-105 transition-all note-color'
+                  : ''
               }`}
             >
               {noteToString(note)}
             </button>
-            {isInScale && <p className={"font-bold"}>{scaleDegree + 1}</p>}
+            {isInScale && <p className={'font-bold'}>{scaleDegree + 1}</p>}
           </div>
-        );
+        )
       })}
     </div>
-  );
-};
+  )
+}

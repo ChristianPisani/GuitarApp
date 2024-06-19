@@ -7,6 +7,11 @@ import { ScaleDegree } from '../data/chords'
 
 export type SubdivisionNote = {
   index: number
+  // Pitch fails if you change the chord, as sometimes the correct note will be a pitch higher or lower.
+  // RelativeScaleIndex instead keeps track of where in the scale the note is in relation to its context
+  // So for example it could be in relation to a string.
+  // Where 1 is first time it appears on the string, 2 is second etc...
+  relativeIndex: number
   pitch: number
   string?: number
 }

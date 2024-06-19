@@ -14,10 +14,18 @@ import { InstrumentEditor } from './instrument-editor'
 import { PlayArrowOutlined, StopOutlined } from '@mui/icons-material'
 import { NotePicker } from '../note-picker/note-picker'
 import { ScalePicker } from '../scale-picker/scale-picker'
+import { Mode } from '../../types/musical-terms'
 
 export const SequencerUi = () => {
-  const { state, setState, setSelectedNote, setSelectedScale, bpm, setBpm } =
-    useContext(MusicContext)
+  const {
+    state,
+    setState,
+    setSelectedNote,
+    setSelectedScale,
+    setSelectedMode,
+    bpm,
+    setBpm,
+  } = useContext(MusicContext)
 
   return (
     <div
@@ -98,7 +106,22 @@ export const SequencerUi = () => {
               }))}
             />
 
-            <Select label={'Mode'} id={'mode-select'} options={[]} />
+            <Select
+              label={'Mode'}
+              id={'mode-select'}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                setSelectedMode(Number(e.target.value) as Mode)
+              }
+              options={[
+                { key: '1st', value: '1' },
+                { key: '2nd', value: '2' },
+                { key: '3rd', value: '3' },
+                { key: '4th', value: '4' },
+                { key: '5th', value: '5' },
+                { key: '6th', value: '6' },
+                { key: '7th', value: '7' },
+              ]}
+            />
           </div>
         </div>
       </div>
