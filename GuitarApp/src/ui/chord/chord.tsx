@@ -1,5 +1,6 @@
 ﻿import {
   Chord,
+  Mode,
   Note,
   NoteName,
   Scale,
@@ -29,12 +30,14 @@ import { Toggle } from '../toggle/toggle'
 export type ChordDegreeVisualizerProps = {
   degrees: ScaleDegree[]
   scale: Scale
+  mode: Mode
   note: Note
 }
 
 export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
   degrees,
   scale,
+  mode,
   note,
 }) => {
   type ChordType = 'power' | 'triad' | '7th' | '9th'
@@ -72,7 +75,7 @@ export const ChordDegreeVisualizer: FC<ChordDegreeVisualizerProps> = ({
 
       <div className={'flex h-fit w-full gap-8 overflow-x-auto'}>
         {degrees.map((degree, index) => {
-          const chord = getScaleChord(note, scale, degree, degrees)
+          const chord = getScaleChord(note, scale, mode, degree, degrees)
 
           const chordName = getChordName(chord)
           const isMajor = chordName.includes('Major')
