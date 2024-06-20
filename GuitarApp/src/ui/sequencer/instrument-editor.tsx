@@ -1,4 +1,4 @@
-﻿import {
+import {
   getChordName,
   ScaleDegree,
   scaleDegreeNotations,
@@ -20,6 +20,7 @@ import {
   notesAreEqual,
 } from '../../utility/noteFunctions'
 import { Note, StringNote } from '../../types/musical-terms'
+import { RangeSlider } from '../input/range-slider'
 
 export const InstrumentEditor = () => {
   const {
@@ -43,12 +44,16 @@ export const InstrumentEditor = () => {
 
   const [currentTrackIndex, setCurrentTrackIndex] = useState(1)
 
+  const subdivision = selectedBeat?.subdivisions[selectedSubdivision]
+
   useEffect(() => {
     setSelectedSubdivision(0)
   }, [selectedBeat])
 
   useEffect(() => {
-    if (!selectedBeat) return
+    if (!selectedBeat) {
+      return
+    }
 
     const chordNotes = getChordNotes(
       getScaleChord(
@@ -153,11 +158,6 @@ export const InstrumentEditor = () => {
       }
 
       selectedBeat?.subdivisions[selectedSubdivision].notes?.push(noteToPush)
-    } else {
-      selectedBeat?.subdivisions[selectedSubdivision].notes?.splice(
-        noteIndex,
-        1
-      )
     }
 
     updateBeat(selectedBeat)
@@ -209,18 +209,29 @@ export const InstrumentEditor = () => {
         />
         {selectedChord && (
           <>
-            <div className={'flex gap-2'}>
-              {selectedBeat?.subdivisions.map((subdivision, index) => (
-                <button
-                  className={`rounded-full border-2 border-secondary-950 w-3 h-3 ${
-                    selectedSubdivision === index ? 'bg-secondary-950' : ''
-                  }`}
-                  onClick={() => setSelectedSubdivision(index)}
-                ></button>
-              ))}
+            <div className={'flex gap-2 justify-between w-full items-center'}>
+              <button onClick={gotoPreviousSubdivision}>
+                <ChevronLeftRounded />
+              </button>
+              <div className={'flex gap-2 max-w-48 flex-wrap items-center'}>
+                {selectedBeat?.subdivisions.map((subdivision, index) => (
+                  <button
+                    className={`rounded-full border-2 border-secondary-950 w-4 h-4 ${
+                      selectedSubdivision === index ? 'bg-secondary-950' : ''
+                    }`}
+                    onClick={() => setSelectedSubdivision(index)}
+                  ></button>
+                ))}
+              </div>
+              <button onClick={gotoNextSubdivision}>
+                <ChevronRightRounded />
+              </button>
             </div>
             <div className={'flex gap-4'}>
-              <h3>Subdivisions</h3>
+              <h3>
+                Subdivisions ({selectedSubdivision + 1}/
+                {currentAmountOfSubdivisions})
+              </h3>
               <div className={'flex gap-2'}>
                 <button
                   onClick={() =>
@@ -237,17 +248,6 @@ export const InstrumentEditor = () => {
                   <AddCircleOutlined />
                 </button>
               </div>
-            </div>
-            <div className={'flex place-items-center'}>
-              <button onClick={gotoPreviousSubdivision}>
-                <ChevronLeftRounded />
-              </button>
-              <p className={'font-extrabold'}>
-                {selectedSubdivision + 1}/{currentAmountOfSubdivisions}
-              </p>
-              <button onClick={gotoNextSubdivision}>
-                <ChevronRightRounded />
-              </button>
             </div>
             <div className={'flex flex-col items-center gap-4'}>
               <h3>Intervals</h3>
@@ -281,18 +281,59 @@ export const InstrumentEditor = () => {
           </>
         )}
       </div>
-      <div className={'flex flex-col justify-end gap-8 p-8'}>
-        <div className={'grid grid-cols-2 place-items-center gap-4'}>
-          <Select
-            options={[
-              { key: 'CAGED', value: 'caged' },
-              { key: '3NPS', value: '3pns' },
-            ]}
-            label={'Visualization technique'}
-            id={'visualization-select'}
-          />
+      {subdivision && (
+        <div
+          className={
+            'flex flex-col items-center justify-start gap-2 px-4 pt-0 pb-8'
+          }
+        >
+          <h2>Sound settings</h2>
+          <div className={'w-full grid grid-cols-2 place-items-center gap-4'}>
+            <RangeSlider
+              label={'Velocity'}
+              value={subdivision?.velocity}
+              min={0}
+              max={2}
+              step={0.1}
+              onSlide={value => {
+                if (!subdivision) return
+
+                subdivision.velocity = value
+
+                updateBeat(selectedBeat)
+              }}
+            />
+            <RangeSlider
+              label={'Sustain'}
+              value={subdivision?.sustain}
+              min={0}
+              max={1}
+              step={0.1}
+              onSlide={value => {
+                if (!subdivision) return
+
+                subdivision.sustain = value
+
+                updateBeat(selectedBeat)
+              }}
+            />
+            <RangeSlider
+              label={'Strum speed'}
+              value={subdivision?.strumSpeed}
+              min={0}
+              max={0.1}
+              step={0.01}
+              onSlide={value => {
+                if (!subdivision) return
+
+                subdivision.strumSpeed = value
+
+                updateBeat(selectedBeat)
+              }}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

@@ -14,6 +14,7 @@ import { acousticGuitar } from '../../utility/instruments'
 import { playNotes } from '../../utility/instrumentFunctions'
 import useLocalStorage from 'react-use-localstorage'
 import { ScaleDegree } from '../../data/chords'
+import { getDefaultSubdivision } from '../../utility/sequencer-utilities'
 
 export const SequencerPage = () => {
   const [loadedTrackName, setLoadedTrackName] = useState('defaultTrack')
@@ -63,8 +64,10 @@ export const SequencerPage = () => {
 
   const sequencer = useSequencer({
     instrument: acousticGuitar,
-    onBeat: (beat: Beat, subdivision: number) => {
-      const notes = beat.subdivisions[subdivision].notes.map(beatNote => {
+    onBeat: (beat: Beat, subdivisionIndex: number) => {
+      const subdivision = beat.subdivisions[subdivisionIndex]
+
+      const notes = subdivision.notes.map(beatNote => {
         const scaleChord = getScaleChord(
           selectedNote,
           selectedScale,
@@ -81,7 +84,14 @@ export const SequencerPage = () => {
         }
       })
 
-      playNotes(acousticGuitar, notes, 0.02, 0.3, true)
+      playNotes(
+        acousticGuitar,
+        notes,
+        subdivision.strumSpeed,
+        subdivision.sustain,
+        subdivisionIndex % 2 !== 0,
+        subdivision.velocity
+      )
     },
     beats,
     selectedNote,
@@ -119,7 +129,7 @@ export const SequencerPage = () => {
     if (!selectedBeat || currentAmountOfSubdivisions >= maxAmountOfSubdivisions)
       return
 
-    beat.subdivisions.push({ notes: [] })
+    beat.subdivisions.push(getDefaultSubdivision())
     updateBeat(beat)
   }
 
@@ -166,7 +176,6 @@ export const SequencerPage = () => {
           'flex min-h-full w-full flex-col place-items-center bg-primary-100 p-8'
         }
       >
-        <h2 className={'p-4 md:p-8'}>Sequencer</h2>
         <div className={'flex gap-8 my-8'}>
           <h3>Beats: {beats.length}</h3>
           <button

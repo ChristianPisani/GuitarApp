@@ -83,6 +83,7 @@ export const BeatChord = (props: BeatChordProps) => {
   useEffect(() => {
     if (selected) {
       const targetElement = ref.current
+
       targetElement?.scrollIntoView({
         behavior: 'smooth',
         block: 'center',

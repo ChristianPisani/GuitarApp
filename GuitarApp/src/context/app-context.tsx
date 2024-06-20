@@ -18,6 +18,9 @@ export type SubdivisionNote = {
 
 export interface Subdivision {
   notes: SubdivisionNote[]
+  strumSpeed: number
+  velocity: number
+  sustain: number
 }
 
 export interface Beat {

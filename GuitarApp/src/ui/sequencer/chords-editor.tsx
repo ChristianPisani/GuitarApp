@@ -1,9 +1,10 @@
-﻿import { BeatChord } from './beat-chord'
+import { BeatChord } from './beat-chord'
 import React, { useContext, useEffect } from 'react'
 import { getScaleChord } from '../../utility/noteFunctions'
 import { ScaleDegree } from '../../data/chords'
 import { ScrollContainer } from 'react-indiana-drag-scroll'
-import { Beat, MusicContext, Subdivision } from '../../context/app-context'
+import { Beat, MusicContext } from '../../context/app-context'
+import { getDefaultSubdivision } from '../../utility/sequencer-utilities'
 
 export const ChordsEditor = () => {
   const {
@@ -24,10 +25,10 @@ export const ChordsEditor = () => {
       scaleDegree: degree,
       scaleDegrees: [1, 2, 3] as ScaleDegree[],
       subdivisions: [
-        { notes: [] },
-        { notes: [] },
-        { notes: [] },
-        { notes: [] },
+        getDefaultSubdivision(),
+        getDefaultSubdivision(),
+        getDefaultSubdivision(),
+        getDefaultSubdivision(),
       ],
       id: beats.length > 0 ? beats[beats.length - 1].id + 1 : 1,
       bars: 4,
@@ -51,6 +52,8 @@ export const ChordsEditor = () => {
 
       if (copy.length > 0) {
         setSelectedBeat(copy[copy.length - 1])
+      } else {
+        setSelectedBeat(undefined)
       }
 
       return undefined

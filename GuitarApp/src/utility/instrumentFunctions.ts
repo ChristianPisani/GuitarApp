@@ -25,10 +25,7 @@ export const playNotes = (
   const chordNotes = notes.map(note => noteToString(note) + note.pitch)
 
   if (descend) {
-    const reversed = [...chordNotes]
-    reversed.pop()
-    reversed.reverse()
-    chordNotes.push(...reversed)
+    chordNotes.reverse()
   }
 
   const timeNow = now()

@@ -1,7 +1,15 @@
 ﻿import { useEffect, useState } from 'react'
 import { Chord, Note, Scale } from '../types/musical-terms'
 import * as Tone from 'tone'
-import { Draw, Loop, Sampler, Synth, Transport } from 'tone'
+import {
+  Draw,
+  getDraw,
+  getTransport,
+  Loop,
+  Sampler,
+  Synth,
+  Transport,
+} from 'tone'
 import { Beat } from '../context/app-context'
 
 type SequencerHookProps = {
@@ -25,12 +33,12 @@ export const useSequencer = (props: SequencerHookProps) => {
     setIsPlaying(true)
 
     await Tone.start()
-    Tone.Transport.start()
+    getTransport().start()
   }
 
   const stopBeat = () => {
     setIsPlaying(false)
-    Tone.Transport.stop()
+    getTransport().stop()
     loop?.dispose()
     setLoop(undefined)
   }
@@ -90,7 +98,7 @@ export const useSequencer = (props: SequencerHookProps) => {
     }
 
     const newLoop = new Loop(time => {
-      Draw.schedule(() => {
+      getDraw().schedule(() => {
         setCurrentSubdivision(c => {
           const newSubdivision = (c + 1) % amountOfSubdivisions
 
@@ -108,7 +116,7 @@ export const useSequencer = (props: SequencerHookProps) => {
   }, [props.beats.length, props.bpm, isPlaying, currentBeat])
 
   useEffect(() => {
-    Transport.bpm.rampTo(props.bpm)
+    getTransport().bpm.rampTo(props.bpm)
   }, [props.bpm])
 
   return { startBeat, stopBeat, currentBeat, currentSubdivision }
