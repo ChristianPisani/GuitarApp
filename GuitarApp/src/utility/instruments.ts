@@ -1,4 +1,8 @@
-﻿import { Sampler, Synth } from 'tone'
+﻿import { Reverb, Sampler, Synth, Tremolo, Vibrato } from 'tone'
+
+const vibrato = new Vibrato(1.5, 0.5)
+const tremolo = new Tremolo(9, 0.75)
+const reverb = new Reverb({ decay: 10 })
 
 export const synth = new Synth().toDestination()
 
@@ -42,6 +46,9 @@ export const acousticGuitar = new Sampler({
     F2: 'F2.ogg',
     F3: 'F3.ogg',
   },
-  release: 1,
+  release: '4n',
+  curve: 'exponential',
   baseUrl: 'assets/sounds/guitar-acoustic/',
-}).toDestination()
+})
+
+acousticGuitar.toDestination()

@@ -1,6 +1,6 @@
 ﻿import { getChordNotes, noteToString } from './noteFunctions'
 import { Chord, Note } from '../types/musical-terms'
-import { now, Sampler, Synth } from 'tone'
+import { Chorus, now, Reverb, Sampler, Synth, Tremolo, Vibrato } from 'tone'
 
 export const playChord = (
   instrument: Sampler,

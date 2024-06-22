@@ -64,9 +64,7 @@ export const SequencerPage = () => {
 
   const sequencer = useSequencer({
     instrument: acousticGuitar,
-    onBeat: (beat: Beat, subdivisionIndex: number) => {
-      const subdivision = beat.subdivisions[subdivisionIndex]
-
+    onBeat: (beat, beatIndex, subdivision, subdivisionIndex) => {
       const notes = subdivision.notes.map(beatNote => {
         const scaleChord = getScaleChord(
           selectedNote,
@@ -122,7 +120,7 @@ export const SequencerPage = () => {
   }
 
   const addSubdivision = (beat: Beat) => {
-    const maxAmountOfSubdivisions = 16
+    const maxAmountOfSubdivisions = 32
 
     const currentAmountOfSubdivisions = beat.subdivisions.length
 

@@ -1,19 +1,16 @@
 ﻿import { useEffect, useState } from 'react'
-import { Chord, Note, Scale } from '../types/musical-terms'
+import { Note, Scale } from '../types/musical-terms'
 import * as Tone from 'tone'
-import {
-  Draw,
-  getDraw,
-  getTransport,
-  Loop,
-  Sampler,
-  Synth,
-  Transport,
-} from 'tone'
-import { Beat } from '../context/app-context'
+import { getTransport, Sampler, Synth } from 'tone'
+import { Beat, Subdivision } from '../context/app-context'
 
 type SequencerHookProps = {
-  onBeat: (beat: Beat, subdivision: number) => void
+  onBeat: (
+    beat: Beat,
+    beatIndex: number,
+    subdivision: Subdivision,
+    subdivisionIndex: number
+  ) => void
   instrument: Sampler | Synth
   beats: Beat[]
   selectedNote: Note
@@ -25,9 +22,6 @@ export const useSequencer = (props: SequencerHookProps) => {
   const [currentBeat, setCurrentBeat] = useState(0)
   const [currentSubdivision, setCurrentSubdivision] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [currentChord, setCurrentChord] = useState<Chord | undefined>(undefined)
-
-  const [loop, setLoop] = useState<Loop>()
 
   const startBeat = async () => {
     setIsPlaying(true)
@@ -39,47 +33,6 @@ export const useSequencer = (props: SequencerHookProps) => {
   const stopBeat = () => {
     setIsPlaying(false)
     getTransport().stop()
-    loop?.dispose()
-    setLoop(undefined)
-  }
-
-  useEffect(() => {
-    /* if (!isPlaying || props.beats.length === 0) {
-      return
-    }
-
-    const beatScaleDegree =
-      props.beats[Math.floor(currentBeat / amountOfSubdivisions)].scaleDegree
-    const beatChord = getScaleChord(
-      props.selectedNote,
-      props.selectedScale,
-      beatScaleDegree,
-      3
-    )
-
-    if (beatChord && currentBeat % amountOfSubdivisions === 0) {
-      setCurrentChord(beatChord)
-      // playChord(acousticGuitar, beatChord, 0.05);
-    }
-
-    props.onBeat(currentBeat) */
-  }, [currentBeat])
-
-  const onPulse = (subdivision: number) => {
-    if (props.beats.length === 0) return
-
-    const shouldChangeBeat = subdivision === 0
-
-    if (shouldChangeBeat) {
-      setCurrentBeat(c => {
-        const newBeat = (c + 1) % props.beats.length
-
-        props.onBeat(props.beats[newBeat], subdivision)
-        return (c + 1) % props.beats.length
-      })
-    } else {
-      props.onBeat(props.beats[currentBeat], subdivision)
-    }
   }
 
   useEffect(() => {
@@ -87,33 +40,36 @@ export const useSequencer = (props: SequencerHookProps) => {
       return
     }
 
-    const currentBeatBeat = props.beats[currentBeat] ?? []
-    const subdivisions = currentBeatBeat?.subdivisions ?? []
-    const amountOfSubdivisions = subdivisions?.length ?? 1
+    // Create a new sequence from the beats
+    const sequence = new Tone.Sequence({
+      callback: function (
+        time,
+        { beat, beatIndex, subdivision, subdivisionIndex }
+      ) {
+        Tone.getDraw().schedule(() => {
+          setCurrentBeat(beatIndex)
+          setCurrentSubdivision(subdivisionIndex)
+        }, time)
 
-    const interval = `${amountOfSubdivisions}n`
-
-    if (loop) {
-      loop.dispose()
-    }
-
-    const newLoop = new Loop(time => {
-      getDraw().schedule(() => {
-        setCurrentSubdivision(c => {
-          const newSubdivision = (c + 1) % amountOfSubdivisions
-
-          onPulse(newSubdivision)
-          return newSubdivision
-        })
-      }, time)
-    }, interval).start(0)
-
-    setLoop(newLoop)
+        props.onBeat(beat, beatIndex, subdivision, subdivisionIndex)
+      },
+      events: props.beats.map((beat, beatIndex) => {
+        return [
+          ...beat.subdivisions.map((subdivision, subdivisionIndex) => ({
+            beat,
+            beatIndex,
+            subdivision,
+            subdivisionIndex,
+          })),
+        ]
+      }),
+      subdivision: '1n',
+    }).start()
 
     return () => {
-      newLoop?.dispose()
+      sequence.dispose()
     }
-  }, [props.beats.length, props.bpm, isPlaying, currentBeat])
+  }, [props.beats.length, isPlaying])
 
   useEffect(() => {
     getTransport().bpm.rampTo(props.bpm)
