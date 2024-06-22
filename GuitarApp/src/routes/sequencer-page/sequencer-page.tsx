@@ -4,19 +4,73 @@ import {
   getChordNotes,
   getScaleChord,
 } from '../../utility/noteFunctions'
-import { useEffect, useState } from 'react'
+import { FC, ReactNode, useEffect, useState } from 'react'
 import { Mode, Note, Scale } from '../../types/musical-terms'
 import { majorScale } from '../../data/scales'
 import { SequencerUi } from '../../ui/sequencer/sequencer-ui'
 import { Beat, MusicContext, SequencerState } from '../../context/app-context'
 import { useSequencer } from '../../hooks/sequencer-hook'
-import { acousticGuitar } from '../../utility/instruments'
+import {
+  acousticGuitar,
+  chorus,
+  reverb,
+  tremolo,
+  vibrato,
+} from '../../utility/instruments'
 import { playNotes } from '../../utility/instrumentFunctions'
 import useLocalStorage from 'react-use-localstorage'
 import { ScaleDegree } from '../../data/chords'
 import { getDefaultSubdivision } from '../../utility/sequencer-utilities'
+import { Outlet } from 'react-router-dom'
+import { Effect, EffectOptions } from 'tone/build/esm/effect/Effect'
+import {
+  AutoFilter,
+  AutoPanner,
+  AutoWah,
+  BitCrusher,
+  Chebyshev,
+  Chorus,
+  Convolver,
+  Distortion,
+  FeedbackDelay,
+  Freeverb,
+  JCReverb,
+  Phaser,
+  PingPongDelay,
+  PitchShift,
+  Reverb,
+  Sampler,
+  StereoWidener,
+  Synth,
+  Tremolo,
+  Vibrato,
+} from 'tone'
 
-export const SequencerPage = () => {
+export type SequencerMode = 'Chord' | 'Effects'
+
+type SequencerPageProps = {}
+
+type EffectType =
+  | Reverb
+  | Tremolo
+  | Vibrato
+  | AutoFilter
+  | AutoPanner
+  | AutoWah
+  | BitCrusher
+  | Chebyshev
+  | Chorus
+  | Convolver
+  | Distortion
+  | FeedbackDelay
+  | Freeverb
+  | JCReverb
+  | Phaser
+  | PingPongDelay
+  | PitchShift
+  | StereoWidener
+
+export const SequencerPage: FC<SequencerPageProps> = ({}) => {
   const [loadedTrackName, setLoadedTrackName] = useState('defaultTrack')
   const [saveState, setSaveState] = useLocalStorage(
     loadedTrackName,
@@ -30,7 +84,10 @@ export const SequencerPage = () => {
   const [beats, setBeats] = useState<Beat[]>([])
   const [state, setState] = useState<SequencerState>('editing')
   const [bpm, setBpm] = useState(130)
-  const [currentSubdivision, setCurrentSubdivision] = useState(0)
+  const [effects, setEffects] = useState<EffectType[]>([vibrato])
+  const [instrument, setInstrument] = useState<Sampler | Synth | undefined>(
+    acousticGuitar
+  )
 
   const savableState = {
     selectedNote,
@@ -53,6 +110,19 @@ export const SequencerPage = () => {
     setBeats(loadedState.beats ?? [])
     setBpm(loadedState.bpm ?? 130)
   }, [saveState])
+
+  useEffect(() => {
+    if (!instrument) {
+      return
+    }
+
+    let chainNode: Sampler | Synth | EffectType = instrument
+    effects.forEach(effect => {
+      chainNode?.connect(effect)
+      chainNode = effect
+    })
+    chainNode?.toDestination()
+  }, [effects])
 
   const saveTrack = () => {
     setSaveState(JSON.stringify(savableState))
@@ -82,8 +152,12 @@ export const SequencerPage = () => {
         }
       })
 
+      if (!instrument) {
+        return
+      }
+
       playNotes(
-        acousticGuitar,
+        instrument,
         notes,
         subdivision.strumSpeed,
         subdivision.sustain,
@@ -208,7 +282,9 @@ export const SequencerPage = () => {
             {sequencer.currentBeat}:{sequencer.currentSubdivision}
           </h3>
         </div>
-        <SequencerUi />
+        <SequencerUi>
+          <Outlet />
+        </SequencerUi>
       </main>
     </MusicContext.Provider>
   )

@@ -8,15 +8,18 @@ import {
 } from '../../utility/noteFunctions'
 import { availableScales } from '../../data/scales'
 import { ChordsEditor } from './chords-editor'
-import { ChangeEvent, FormEvent, useContext } from 'react'
+import { ChangeEvent, FC, ReactNode, useContext } from 'react'
 import { MusicContext } from '../../context/app-context'
 import { InstrumentEditor } from './instrument-editor'
 import { PlayArrowOutlined, StopOutlined } from '@mui/icons-material'
-import { NotePicker } from '../note-picker/note-picker'
-import { ScalePicker } from '../scale-picker/scale-picker'
 import { Mode } from '../../types/musical-terms'
+import { SequencerMode } from '../../routes/sequencer-page/sequencer-page'
 
-export const SequencerUi = () => {
+type SequencerUiProps = {
+  children: ReactNode | ReactNode[]
+}
+
+export const SequencerUi: FC<SequencerUiProps> = ({ children }) => {
   const {
     state,
     setState,
@@ -45,7 +48,7 @@ export const SequencerUi = () => {
           <p className={'text-2xl'}>Composition</p>
           <p className={'text-2xl'}>Tab</p>
         </div>
-        <ChordsEditor />
+        {children}
         <div
           className={`flex flex-col place-items-start gap-8 rounded-lg rounded-br-2xl bg-primary-50
             p-8`}

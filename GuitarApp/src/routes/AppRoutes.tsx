@@ -3,6 +3,7 @@ import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
 import { FretboardVisualization } from './fretboard-visualization/FretboardVisualization'
 import { Header } from '../ui/header/header'
 import { SequencerPage } from './sequencer-page/sequencer-page'
+import { ChordsEditor } from '../ui/sequencer/chords-editor'
 
 export const AppRoutes = () => {
   const router = createBrowserRouter([
@@ -19,7 +20,18 @@ export const AppRoutes = () => {
           path: 'visualization',
           element: <FretboardVisualization />,
         },
-        { path: '', element: <SequencerPage /> },
+        {
+          path: '',
+          element: <SequencerPage />,
+          children: [
+            {
+              path: '',
+              element: <ChordsEditor />,
+            },
+            { path: 'chords', element: <ChordsEditor /> },
+            { path: 'effects', element: <></> },
+          ],
+        },
         /*{
           path: "articles",
           element: <ArticlesPage />,
