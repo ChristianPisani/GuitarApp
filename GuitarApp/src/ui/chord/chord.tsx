@@ -16,7 +16,7 @@ import {
   noteToString,
   stringNotesAreEqual,
 } from '../../utility/noteFunctions'
-import { Component, FC, JSX, ReactNode, useState } from 'react'
+import { Component, FC, JSX, ReactNode, useContext, useState } from 'react'
 import {
   getChordName,
   ScaleDegree,
@@ -26,6 +26,7 @@ import { standardTuningNotes } from '../../data/tunings'
 import { acousticGuitar } from '../../utility/instruments'
 import { playChord, playNotes } from '../../utility/instrumentFunctions'
 import { Toggle } from '../toggle/toggle'
+import { MusicContext } from '../../context/app-context'
 
 export type ChordDegreeVisualizerProps = {
   degrees: ScaleDegree[]
@@ -124,6 +125,7 @@ const ChordNoteComponent: FC<{
   onClick?: (note: Note) => void
   selected?: boolean
   careAboutStringIndex: boolean
+  onionSkinned?: boolean
 }> = ({
   currentNote,
   chordNotes,
@@ -135,6 +137,7 @@ const ChordNoteComponent: FC<{
   selected = false,
   stringIndex,
   careAboutStringIndex = false,
+  onionSkinned = false,
 }) => {
   const fingerIndex =
     chord?.intervals.indexOf(
@@ -169,7 +172,7 @@ const ChordNoteComponent: FC<{
               selected
                 ? 'bg-secondary-700 text-primary-50'
                 : 'bg-secondary-200 text-primary-950'
-            }`}
+            } ${!selected && onionSkinned ? 'bg-secondary-400' : ''}`}
         >
           {showNoteIndex ? `${fingerIndex + 1}` : noteToString(currentNote)}
         </Wrapper>
@@ -228,6 +231,8 @@ export const ChordVisualizerCustomChord: FC<
   numberOfFrets = 13,
   careAboutStringIndex = false,
 }) => {
+  const { selectedBeat } = useContext(MusicContext)
+
   const frets = []
 
   for (let i = 0; i < numberOfFrets; i++) frets.push(i)
@@ -282,6 +287,19 @@ export const ChordVisualizerCustomChord: FC<
                     selectedNote.note.relativeIndex ===
                       currentNote.relativeIndex
                 )}
+                onionSkinned={selectedBeat?.subdivisions
+                  .flatMap(subdivision => subdivision.notes)
+                  ?.some(
+                    selectedNote =>
+                      notesAreEqual(
+                        chordNotes[selectedNote.index].note,
+                        currentNote,
+                        false
+                      ) &&
+                      selectedNote.relativeIndex ===
+                        currentNote.relativeIndex &&
+                      fretIndex === selectedNote.string
+                  )}
                 fallBack={<h2 className={'select-none'}>X</h2>}
                 key={fretIndex}
                 onClick={
@@ -329,6 +347,19 @@ export const ChordVisualizerCustomChord: FC<
                         selectedNote.note.relativeIndex ===
                           currentNote.relativeIndex
                     )}
+                    onionSkinned={selectedBeat?.subdivisions
+                      .flatMap(subdivision => subdivision.notes)
+                      ?.some(
+                        selectedNote =>
+                          notesAreEqual(
+                            chordNotes[selectedNote.index].note,
+                            currentNote,
+                            false
+                          ) &&
+                          selectedNote.relativeIndex ===
+                            currentNote.relativeIndex &&
+                          stringIndex === selectedNote.string
+                      )}
                   />
                 )
               })}
