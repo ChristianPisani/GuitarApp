@@ -9,10 +9,11 @@ import { EffectType } from '../../routes/sequencer-page/sequencer-page'
 import { effectTypes } from '../../data/effects'
 import { Button } from '../button/button'
 import { RangeSlider } from '../input/range-slider'
-import { Distortion, Phaser, Reverb } from 'tone'
+import { Distortion, JCReverb, Phaser, Reverb } from 'tone'
 import { ReverbEditor } from '../effect-editors/reverb-editor'
 import { DistortionEditor } from '../effect-editors/distortion-editor'
 import { PhaserEditor } from '../effect-editors/phaser-editor'
+import { JCReverbEditor } from '../effect-editors/jcreverb-editor'
 
 export const EffectsEditor = () => {
   const {
@@ -92,7 +93,7 @@ export const EffectsEditor = () => {
             return (
               <div
                 className={`no-scroll select-none bg-primary-50 rounded p-6 text-secondary-950 flex flex-col
-                  gap-8 h-full justify-between`}
+                  gap-8 h-full max-h-64 justify-between`}
               >
                 <div>
                   <h2 className={'mb-2 min-w-40'}>{effect.name}</h2>
@@ -101,6 +102,9 @@ export const EffectsEditor = () => {
                     <DistortionEditor effect={effect} />
                   )}
                   {effect instanceof Phaser && <PhaserEditor effect={effect} />}
+                  {effect instanceof JCReverb && (
+                    <JCReverbEditor effect={effect} />
+                  )}
                 </div>
               </div>
             )
@@ -119,7 +123,7 @@ export const EffectsEditor = () => {
           <>
             {effectTypes().map(effectType => (
               <div
-                className={`bg-primary-50 rounded p-6 text-secondary-950 flex flex-col gap-8 h-full
+                className={`bg-primary-50 rounded p-6 max-h-64 text-secondary-950 flex flex-col gap-8 h-full
                   select-none justify-between`}
               >
                 <div>

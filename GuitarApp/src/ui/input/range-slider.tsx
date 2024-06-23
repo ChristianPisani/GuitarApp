@@ -7,6 +7,8 @@ type RangeSliderProps = {
 } & HTMLProps<HTMLInputElement>
 
 export const RangeSlider: FC<RangeSliderProps> = props => {
+  const { showValue = true } = props
+
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     props.onSlide?.(Number(e.target.value))
   }
@@ -18,20 +20,20 @@ export const RangeSlider: FC<RangeSliderProps> = props => {
           <div className={'h-32 min-w-16 grid place-items-center relative'}>
             <input
               {...props}
-              className={'rotate-90 min-w-32 absolute'}
+              className={'rotate-[-90deg] min-w-32 absolute'}
               onChange={onChange}
               type={'range'}
             />
           </div>
           <label className={'font-bold whitespace-nowrap mt-2'}>
-            {props.label} {props.showValue ? `(${props.value})` : ''}
+            {props.label} {showValue ? `(${props.value})` : ''}
           </label>
         </>
       )}
       {(!props.orient || props.orient === 'horizontal') && (
         <>
           <label className={'font-bold whitespace-nowrap mt-2'}>
-            {props.label} {props.showValue ? `(${props.value})` : ''}
+            {props.label} {showValue ? `(${props.value})` : ''}
           </label>
           <input {...props} onChange={onChange} type={'range'} />
         </>

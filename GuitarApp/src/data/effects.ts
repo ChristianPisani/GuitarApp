@@ -1,10 +1,15 @@
-﻿import { Distortion, Phaser, Reverb, Tremolo } from 'tone'
+﻿import { Distortion, JCReverb, Phaser, Reverb, Tremolo } from 'tone'
 
 export const effectTypes = () => [
   {
     name: 'Reverb',
     description: 'Adds reverb! Oh yeah! Hide your mistakes like a pro!',
     effect: () => new Reverb(),
+  },
+  {
+    name: 'JC Reverb',
+    description: 'Adds reverb! Oh yeah! Hide your mistakes like a pro!',
+    effect: () => new JCReverb(),
   },
   {
     name: 'Tremolo',
