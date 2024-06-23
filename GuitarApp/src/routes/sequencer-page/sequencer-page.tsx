@@ -70,6 +70,11 @@ export type EffectType =
   | PitchShift
   | StereoWidener
 
+export type EffectNode = {
+  effect: EffectType
+  enabled: boolean
+}
+
 export const SequencerPage: FC<SequencerPageProps> = ({}) => {
   const isEffectsPage = useMatch('effects')
   const isChordsPage = useMatch('chords')
@@ -88,12 +93,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
   const [beats, setBeats] = useState<Beat[]>([])
   const [state, setState] = useState<SequencerState>('editing')
   const [bpm, setBpm] = useState(130)
-  const [effects, setEffects] = useState<
-    {
-      effect: EffectType
-      enabled: boolean
-    }[]
-  >([])
+  const [effectNodes, setEffectNodes] = useState<EffectNode[]>([])
   const [instrument, setInstrument] = useState<Sampler | Synth | undefined>(
     acousticGuitar
   )
@@ -106,7 +106,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
     selectedBeat,
     state,
     bpm,
-    effects,
+    effectNodes,
   }
 
   useEffect(() => {
@@ -119,7 +119,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
     setSelectedMode(loadedState.selectedMode ?? 1)
     setBeats(loadedState.beats ?? [])
     setBpm(loadedState.bpm ?? 130)
-    setEffects(loadedState.effects ?? [])
+    setEffectNodes(loadedState.effects ?? [])
   }, [saveState])
 
   useEffect(() => {
@@ -127,12 +127,12 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
       return
     }
 
-    effects.forEach(effect => {
+    effectNodes.forEach(effect => {
       effect.effect.disconnect()
     })
 
     let chainNode: Sampler | Synth | EffectType = instrument
-    effects
+    effectNodes
       .filter(effect => effect.enabled)
       .forEach(effect => {
         chainNode?.connect(effect.effect)
@@ -140,7 +140,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
       })
     chainNode?.toDestination()
     console.log('Effects changed')
-  }, [effects])
+  }, [effectNodes])
 
   const saveTrack = () => {
     setSaveState(JSON.stringify(savableState))
@@ -258,7 +258,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
         removeBeat,
         setBpm,
         toggleInterval,
-        setEffects,
+        setEffectNodes,
         ...savableState,
       }}
     >

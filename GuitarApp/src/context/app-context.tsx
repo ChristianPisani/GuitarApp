@@ -4,7 +4,7 @@ import { createContext, Dispatch, SetStateAction } from 'react'
 import { allNotes } from '../utility/noteFunctions'
 import { majorScale } from '../data/scales'
 import { ScaleDegree } from '../data/chords'
-import { EffectType } from '../routes/sequencer-page/sequencer-page'
+import { EffectNode, EffectType } from '../routes/sequencer-page/sequencer-page'
 
 export type SubdivisionNote = {
   index: number
@@ -60,8 +60,8 @@ interface MusicContextProps {
 
   toggleInterval: (beat: Beat, interval: ScaleDegree) => void
 
-  effects: { effect: EffectType; enabled: boolean }[]
-  setEffects: (effects: { effect: EffectType; enabled: boolean }[]) => void
+  effectNodes: EffectNode[]
+  setEffectNodes: (effectNodes: EffectNode[]) => void
 }
 
 export const MusicContext = createContext<MusicContextProps>({
@@ -92,6 +92,6 @@ export const MusicContext = createContext<MusicContextProps>({
 
   toggleInterval: (beat, interval) => undefined,
 
-  effects: [],
-  setEffects: () => undefined,
+  effectNodes: [],
+  setEffectNodes: () => undefined,
 })

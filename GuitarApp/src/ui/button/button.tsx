@@ -23,7 +23,7 @@ export const Button: FC<ButtonProps> = props => {
         onClick={props.onClick}
         id={id}
         className={`shadow-accent grid place-items-center rounded-full border-4 border-secondary-950
-          px-12 py-2 hover:bg-fuchsia-200`}
+        px-12 py-2 hover:bg-fuchsia-200 ${props.className}`}
       >
         {labelPlacement === 'inside' && label}
         {icon}
