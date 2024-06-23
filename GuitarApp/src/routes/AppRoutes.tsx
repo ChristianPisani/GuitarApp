@@ -4,6 +4,7 @@ import { FretboardVisualization } from './fretboard-visualization/FretboardVisua
 import { Header } from '../ui/header/header'
 import { SequencerPage } from './sequencer-page/sequencer-page'
 import { ChordsEditor } from '../ui/sequencer/chords-editor'
+import { EffectsEditor } from '../ui/sequencer/effects-editor'
 
 export const AppRoutes = () => {
   const router = createBrowserRouter([
@@ -29,7 +30,7 @@ export const AppRoutes = () => {
               element: <ChordsEditor />,
             },
             { path: 'chords', element: <ChordsEditor /> },
-            { path: 'effects', element: <></> },
+            { path: 'effects', element: <EffectsEditor /> },
           ],
         },
         /*{

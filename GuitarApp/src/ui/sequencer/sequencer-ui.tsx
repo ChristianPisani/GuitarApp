@@ -14,12 +14,17 @@ import { InstrumentEditor } from './instrument-editor'
 import { PlayArrowOutlined, StopOutlined } from '@mui/icons-material'
 import { Mode } from '../../types/musical-terms'
 import { SequencerMode } from '../../routes/sequencer-page/sequencer-page'
+import { Link } from 'react-router-dom'
 
 type SequencerUiProps = {
   children: ReactNode | ReactNode[]
+  sequencerMode: SequencerMode
 }
 
-export const SequencerUi: FC<SequencerUiProps> = ({ children }) => {
+export const SequencerUi: FC<SequencerUiProps> = ({
+  children,
+  sequencerMode,
+}) => {
   const {
     state,
     setState,
@@ -43,10 +48,18 @@ export const SequencerUi: FC<SequencerUiProps> = ({ children }) => {
       >
         <div className={'flex gap-8 px-8 py-7 text-primary-100 items-center'}>
           <h2 className={'text-primary-100'}>Mode</h2>
-          <p className={'text-2xl font-bold text-primary-50'}>Chord</p>
-          <p className={'text-2xl'}>Sequencer</p>
-          <p className={'text-2xl'}>Composition</p>
-          <p className={'text-2xl'}>Tab</p>
+          <Link
+            to={'chords'}
+            className={`text-2xl ${sequencerMode === 'Chords' && 'font-bold text-primary-50'}`}
+          >
+            Chords
+          </Link>
+          <Link
+            to={'effects'}
+            className={`text-2xl ${sequencerMode === 'Effects' && 'font-bold text-primary-50'}`}
+          >
+            Effects
+          </Link>
         </div>
         {children}
         <div
@@ -62,6 +75,7 @@ export const SequencerUi: FC<SequencerUiProps> = ({ children }) => {
                 text={'Play'}
                 id={'play-button'}
                 icon={<PlayArrowOutlined />}
+                labelPlacement={'over'}
               ></Button>
             )}
             {state === 'playing' && (
@@ -72,6 +86,7 @@ export const SequencerUi: FC<SequencerUiProps> = ({ children }) => {
                 text={'Stop'}
                 id={'stop-button'}
                 icon={<StopOutlined />}
+                labelPlacement={'over'}
               ></Button>
             )}
             <NumberInput

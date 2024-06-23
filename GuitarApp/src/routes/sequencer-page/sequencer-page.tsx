@@ -21,7 +21,7 @@ import { playNotes } from '../../utility/instrumentFunctions'
 import useLocalStorage from 'react-use-localstorage'
 import { ScaleDegree } from '../../data/chords'
 import { getDefaultSubdivision } from '../../utility/sequencer-utilities'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useMatch } from 'react-router-dom'
 import { Effect, EffectOptions } from 'tone/build/esm/effect/Effect'
 import {
   AutoFilter,
@@ -46,11 +46,11 @@ import {
   Vibrato,
 } from 'tone'
 
-export type SequencerMode = 'Chord' | 'Effects'
+export type SequencerMode = 'Chords' | 'Effects'
 
 type SequencerPageProps = {}
 
-type EffectType =
+export type EffectType =
   | Reverb
   | Tremolo
   | Vibrato
@@ -71,6 +71,10 @@ type EffectType =
   | StereoWidener
 
 export const SequencerPage: FC<SequencerPageProps> = ({}) => {
+  const isEffectsPage = useMatch('effects')
+  const isChordsPage = useMatch('chords')
+  const sequencerMode = isEffectsPage ? 'Effects' : 'Chords'
+
   const [loadedTrackName, setLoadedTrackName] = useState('defaultTrack')
   const [saveState, setSaveState] = useLocalStorage(
     loadedTrackName,
@@ -84,7 +88,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
   const [beats, setBeats] = useState<Beat[]>([])
   const [state, setState] = useState<SequencerState>('editing')
   const [bpm, setBpm] = useState(130)
-  const [effects, setEffects] = useState<EffectType[]>([vibrato])
+  const [effects, setEffects] = useState<EffectType[]>([])
   const [instrument, setInstrument] = useState<Sampler | Synth | undefined>(
     acousticGuitar
   )
@@ -97,6 +101,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
     selectedBeat,
     state,
     bpm,
+    effects,
   }
 
   useEffect(() => {
@@ -109,6 +114,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
     setSelectedMode(loadedState.selectedMode ?? 1)
     setBeats(loadedState.beats ?? [])
     setBpm(loadedState.bpm ?? 130)
+    setEffects(loadedState.effects ?? [])
   }, [saveState])
 
   useEffect(() => {
@@ -240,6 +246,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
         removeBeat,
         setBpm,
         toggleInterval,
+        setEffects,
         ...savableState,
       }}
     >
@@ -282,7 +289,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
             {sequencer.currentBeat}:{sequencer.currentSubdivision}
           </h3>
         </div>
-        <SequencerUi>
+        <SequencerUi sequencerMode={sequencerMode}>
           <Outlet />
         </SequencerUi>
       </main>

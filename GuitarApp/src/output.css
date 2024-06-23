@@ -646,6 +646,10 @@ video {
   margin-bottom: 0px;
 }
 
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
 .ms-3 {
   margin-inline-start: 0.75rem;
 }
@@ -696,6 +700,10 @@ video {
 
 .h-16 {
   height: 4rem;
+}
+
+.h-32 {
+  height: 8rem;
 }
 
 .h-4 {
@@ -780,6 +788,18 @@ video {
   width: 100%;
 }
 
+.min-w-16 {
+  min-width: 4rem;
+}
+
+.min-w-32 {
+  min-width: 8rem;
+}
+
+.min-w-40 {
+  min-width: 10rem;
+}
+
 .max-w-48 {
   max-width: 12rem;
 }
@@ -798,6 +818,11 @@ video {
 
 .max-w-full {
   max-width: 100%;
+}
+
+.rotate-90 {
+  --tw-rotate: 90deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
 .scale-110 {
@@ -822,6 +847,10 @@ video {
 
 .grid-cols-2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .grid-cols-\[2fr_5fr\] {
@@ -1067,9 +1096,9 @@ video {
   background-color: hsl(var(--secondary-200) / var(--tw-bg-opacity));
 }
 
-.bg-secondary-500 {
+.bg-secondary-400 {
   --tw-bg-opacity: 1;
-  background-color: hsl(var(--secondary-500) / var(--tw-bg-opacity));
+  background-color: hsl(var(--secondary-400) / var(--tw-bg-opacity));
 }
 
 .bg-secondary-700 {
@@ -1084,11 +1113,6 @@ video {
 
 .bg-transparent {
   background-color: transparent;
-}
-
-.bg-secondary-400 {
-  --tw-bg-opacity: 1;
-  background-color: hsl(var(--secondary-400) / var(--tw-bg-opacity));
 }
 
 .p-16 {
@@ -1257,26 +1281,6 @@ video {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
-.outline {
-  outline-style: solid;
-}
-
-.outline-dashed {
-  outline-style: dashed;
-}
-
-.outline-dotted {
-  outline-style: dotted;
-}
-
-.outline-2 {
-  outline-width: 2px;
-}
-
-.outline-4 {
-  outline-width: 4px;
-}
-
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
@@ -1416,6 +1420,11 @@ body {
   --tw-scale-x: 1.05;
   --tw-scale-y: 1.05;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.hover\:bg-fuchsia-200:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(245 208 254 / var(--tw-bg-opacity));
 }
 
 .hover\:bg-gray-50:hover {
