@@ -88,7 +88,12 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
   const [beats, setBeats] = useState<Beat[]>([])
   const [state, setState] = useState<SequencerState>('editing')
   const [bpm, setBpm] = useState(130)
-  const [effects, setEffects] = useState<EffectType[]>([])
+  const [effects, setEffects] = useState<
+    {
+      effect: EffectType
+      enabled: boolean
+    }[]
+  >([])
   const [instrument, setInstrument] = useState<Sampler | Synth | undefined>(
     acousticGuitar
   )
@@ -122,12 +127,19 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
       return
     }
 
-    let chainNode: Sampler | Synth | EffectType = instrument
     effects.forEach(effect => {
-      chainNode?.connect(effect)
-      chainNode = effect
+      effect.effect.disconnect()
     })
+
+    let chainNode: Sampler | Synth | EffectType = instrument
+    effects
+      .filter(effect => effect.enabled)
+      .forEach(effect => {
+        chainNode?.connect(effect.effect)
+        chainNode = effect.effect
+      })
     chainNode?.toDestination()
+    console.log('Effects changed')
   }, [effects])
 
   const saveTrack = () => {

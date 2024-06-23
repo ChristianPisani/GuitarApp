@@ -16,56 +16,25 @@ import { PhaserEditor } from '../effect-editors/phaser-editor'
 import { JCReverbEditor } from '../effect-editors/jcreverb-editor'
 
 export const EffectsEditor = () => {
-  const {
-    beats,
-    selectedBeat,
-    setBeats,
-    setSelectedBeat,
-    selectedMode,
-    currentBeat,
-    state,
-    selectedScale,
-    selectedNote,
-    effects,
-    setEffects,
-  } = useContext(MusicContext)
+  const { effects, setEffects } = useContext(MusicContext)
 
-  const [selectedEffectIndex, setSelectedEffectIndex] = useState<
-    number | undefined
-  >()
   const [effectSelectorOpen, setEffectSelectorOpen] = useState(false)
 
   const addEffect = (effect: EffectType) => {
-    effects.push(effect)
+    effects.push({ effect, enabled: true })
     setEffects([...effects])
     setEffectSelectorOpen(false)
   }
 
-  const removeEffect = (index: number, divRef?: HTMLDivElement) => {
+  const removeEffect = (index: number) => {
+    effects[index].effect.dispose()
     const copy = [...effects]
     copy.splice(index, 1)
 
-    // Want to animate out, so just wait until that is completed before actually deleting the element
-    divRef?.addEventListener('animationend', () => {
-      setEffects(copy)
-
-      if (copy.length > 0) {
-        if ((selectedEffectIndex ?? 0) >= copy.length) {
-          setSelectedEffectIndex(copy.length - 1)
-        }
-      } else {
-        setSelectedBeat(undefined)
-      }
-
-      return undefined
-    })
+    setEffects(copy)
   }
 
   const onEffectClick = (beat: Beat) => {}
-
-  useEffect(() => {
-    if (state !== 'playing') return
-  }, [])
 
   return (
     <div className={'w-auto overflow-hidden h-full'}>
@@ -91,21 +60,47 @@ export const EffectsEditor = () => {
         {!effectSelectorOpen &&
           effects.map((effect, index) => {
             return (
-              <div
-                className={`no-scroll select-none bg-primary-50 rounded p-6 text-secondary-950 flex flex-col
-                  gap-8 h-full max-h-64 justify-between`}
-              >
-                <div>
-                  <h2 className={'mb-2 min-w-40'}>{effect.name}</h2>
-                  {effect instanceof Reverb && <ReverbEditor reverb={effect} />}
-                  {effect instanceof Distortion && (
-                    <DistortionEditor effect={effect} />
-                  )}
-                  {effect instanceof Phaser && <PhaserEditor effect={effect} />}
-                  {effect instanceof JCReverb && (
-                    <JCReverbEditor effect={effect} />
-                  )}
+              <div className={'flex flex-col gap-4'}>
+                <div
+                  className={`no-scroll select-none bg-gradient-to-br from-gray-600 to-gray-700 text-gray-200
+                    border-4 border-gray-400 rounded p-6 flex flex-col gap-4 h-fit justify-between`}
+                >
+                  <div
+                    className={
+                      'flex justify-between w-full items-center relative'
+                    }
+                  >
+                    <h2>{effect.effect.name}</h2>
+                    <button
+                      className={`rounded-full border-4 border-gray-50 bg-gray-100 w-8 h-8 shadow-xl
+                      shadow-gray-900 bg-gradient-to-br from-gray-50 to-gray-300 after:absolute
+                      after:right-10 after:bottom-2 after:w-2 after:h-2 ${
+                        effect.enabled
+                          ? 'after:bg-green-400'
+                          : 'after:bg-red-600'
+                      } after:rounded-full`}
+                      onClick={() => {
+                        effect.enabled = !effect.enabled
+                        setEffects([...effects])
+                      }}
+                    />
+                  </div>
+                  <div>
+                    {effect.effect instanceof Reverb && (
+                      <ReverbEditor reverb={effect.effect} />
+                    )}
+                    {effect.effect instanceof Distortion && (
+                      <DistortionEditor effect={effect.effect} />
+                    )}
+                    {effect.effect instanceof Phaser && (
+                      <PhaserEditor effect={effect.effect} />
+                    )}
+                    {effect.effect instanceof JCReverb && (
+                      <JCReverbEditor effect={effect.effect} />
+                    )}
+                  </div>
                 </div>
+                <button onClick={() => removeEffect(index)}>Remove</button>
               </div>
             )
           })}

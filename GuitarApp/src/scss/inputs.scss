@@ -16,26 +16,28 @@
   cursor: default;
   box-sizing: content-box;
   width: 100%;
-  height: var(--height);
+  height: 0.1rem;
   background: rgb(30,30,30);
-  border: 0.5rem solid black;
+  border: 0.25rem solid black;
   border-radius: 0.25rem;
+  margin-top: 1rem;
 }
 [type=range]::-webkit-slider-thumb {
   box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2), 0 0 4px rgba(13, 13, 13, 0.2);
-  border: 2px solid;
-  border-radius: 0;
+  border: 0.25rem solid black;
+  border-radius: 0.25rem;
   box-sizing: border-box;
   cursor: default;
   height: var(--height);
+  margin-top: -0.75rem;
   width: 2.25rem;
   -webkit-appearance: none;
   background: repeating-linear-gradient(
                   to right,
                   black,
-                  black 5px,
-                  transparent 5px,
-                  transparent 10px
+                  black 0.25rem,
+                  transparent 0.25rem,
+                  transparent 0.5rem
   );
   background-color: gray; //#607d8b;
 }

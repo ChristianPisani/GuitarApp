@@ -60,8 +60,8 @@ interface MusicContextProps {
 
   toggleInterval: (beat: Beat, interval: ScaleDegree) => void
 
-  effects: EffectType[]
-  setEffects: (effects: EffectType[]) => void
+  effects: { effect: EffectType; enabled: boolean }[]
+  setEffects: (effects: { effect: EffectType; enabled: boolean }[]) => void
 }
 
 export const MusicContext = createContext<MusicContextProps>({
