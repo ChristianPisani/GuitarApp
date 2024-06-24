@@ -1,11 +1,28 @@
 ﻿import { RangeSlider } from '../input/range-slider'
-import React, { FC, useState } from 'react'
-import { JCReverb, Reverb } from 'tone'
+import React, { FC, useContext, useEffect, useState } from 'react'
+import { JCReverb, Phaser, Reverb } from 'tone'
+import { MusicContext } from '../../context/app-context'
 
-export const JCReverbEditor: FC<{ effect: JCReverb }> = ({ effect }) => {
+export const JCReverbEditor: FC<{ effectIndex: number }> = ({
+  effectIndex,
+}) => {
   const [roomSize, setRoomSize] = useState<number>(0.5)
   const [wet, setWet] = useState<number>(0.5)
-  const [preDelay, setPreDelay] = useState<number>(0.01)
+
+  const { effectNodes, setEffectNodes } = useContext(MusicContext)
+
+  const effect = effectNodes[effectIndex]?.effect
+
+  useEffect(() => {
+    if (!(effect instanceof JCReverb)) return
+
+    setRoomSize(
+      Number(effect.roomSize.toString()) ? Number(effect.roomSize) : 0
+    )
+    setWet(effect.wet.value)
+  }, [effect])
+
+  if (!(effect instanceof JCReverb)) return <></>
 
   return (
     <div className={'flex gap-4'}>

@@ -1,10 +1,28 @@
 ﻿import { RangeSlider } from '../input/range-slider'
-import React, { FC, useState } from 'react'
-import { Distortion, Reverb } from 'tone'
+import React, { FC, useContext, useEffect, useState } from 'react'
+import { Distortion, JCReverb, Reverb } from 'tone'
+import { MusicContext } from '../../context/app-context'
 
-export const DistortionEditor: FC<{ effect: Distortion }> = ({ effect }) => {
+export const DistortionEditor: FC<{ effectIndex: number }> = ({
+  effectIndex,
+}) => {
   const [distortion, setDistortion] = useState<number>(0.5)
   const [wet, setWet] = useState<number>(0.5)
+
+  const { effectNodes, setEffectNodes } = useContext(MusicContext)
+
+  const effect = effectNodes[effectIndex]?.effect
+
+  useEffect(() => {
+    if (!(effect instanceof Distortion)) return
+
+    setDistortion(
+      Number(effect.distortion.toString()) ? Number(effect.distortion) : 0
+    )
+    setWet(effect.wet.value)
+  }, [effect])
+
+  if (!(effect instanceof Distortion)) return <></>
 
   return (
     <div className={'flex gap-4'}>

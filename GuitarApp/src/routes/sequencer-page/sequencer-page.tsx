@@ -3,6 +3,8 @@ import {
   allNotes,
   getChordNotes,
   getScaleChord,
+  getStringNotes,
+  notesAreEqual,
 } from '../../utility/noteFunctions'
 import { FC, ReactNode, useEffect, useState } from 'react'
 import { Mode, Note, Scale } from '../../types/musical-terms'
@@ -45,6 +47,7 @@ import {
   Tremolo,
   Vibrato,
 } from 'tone'
+import { standardTuningNotes } from '../../data/tunings'
 
 export type SequencerMode = 'Chords' | 'Effects'
 
@@ -139,7 +142,6 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
         chainNode = effect.effect
       })
     chainNode?.toDestination()
-    console.log('Effects changed')
   }, [effectNodes])
 
   const saveTrack = () => {
@@ -149,6 +151,11 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
   const loadTrack = (trackName: string) => {
     setLoadedTrackName(trackName)
   }
+
+  // To play the correct pitch.
+  const stringNotes = standardTuningNotes().map(note =>
+    getStringNotes(note, 24)
+  )
 
   const sequencer = useSequencer({
     instrument: acousticGuitar,
@@ -163,8 +170,16 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
         const chordNotes = getChordNotes(scaleChord)
         const chordNote = chordNotes[beatNote.index]
 
+        const stringNote = beatNote.string
+          ? stringNotes[beatNote.string].filter(stringNote =>
+              notesAreEqual(stringNote, chordNote, false)
+            )[beatNote.relativeIndex]
+          : undefined
+
+        console.log({ beatNote })
+
         return {
-          pitch: beatNote.pitch,
+          pitch: stringNote?.pitch ?? beatNote.pitch,
           sharp: chordNote.sharp,
           name: chordNote.name,
         }
@@ -259,6 +274,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
         setBpm,
         toggleInterval,
         setEffectNodes,
+        instrument,
         ...savableState,
       }}
     >

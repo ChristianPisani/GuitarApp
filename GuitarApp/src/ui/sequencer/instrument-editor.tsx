@@ -21,6 +21,7 @@ import {
 } from '../../utility/noteFunctions'
 import { Note, StringNote } from '../../types/musical-terms'
 import { RangeSlider } from '../input/range-slider'
+import { playNotes } from '../../utility/instrumentFunctions'
 
 export const InstrumentEditor = () => {
   const {
@@ -37,6 +38,7 @@ export const InstrumentEditor = () => {
     removeSubdivision,
     updateBeat,
     toggleInterval,
+    instrument,
   } = useContext(MusicContext)
 
   const [selectedSubdivision, setSelectedSubdivision] = useState(0)
@@ -156,6 +158,8 @@ export const InstrumentEditor = () => {
         pitch: note.pitch,
         relativeIndex: note.relativeIndex ?? 0,
       }
+
+      instrument && playNotes(instrument, [note])
 
       selectedBeat?.subdivisions[selectedSubdivision].notes?.push(noteToPush)
     }

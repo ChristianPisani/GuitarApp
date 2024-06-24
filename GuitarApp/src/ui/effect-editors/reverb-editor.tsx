@@ -1,11 +1,28 @@
 ﻿import { RangeSlider } from '../input/range-slider'
-import React, { FC, useState } from 'react'
+import React, { FC, useContext, useEffect, useState } from 'react'
 import { Reverb } from 'tone'
+import { MusicContext } from '../../context/app-context'
 
-export const ReverbEditor: FC<{ reverb: Reverb }> = ({ reverb }) => {
+export const ReverbEditor: FC<{ effectIndex: number }> = ({ effectIndex }) => {
   const [decay, setDecay] = useState<number>(0.5)
   const [wet, setWet] = useState<number>(0.5)
   const [preDelay, setPreDelay] = useState<number>(0.01)
+
+  const { effectNodes, setEffectNodes } = useContext(MusicContext)
+
+  const effect = effectNodes[effectIndex]?.effect
+
+  useEffect(() => {
+    if (!(effect instanceof Reverb)) return
+
+    setDecay(Number(effect.decay.toString()) ? Number(effect.decay) : 0)
+    setWet(effect.wet.value)
+    setPreDelay(
+      Number(effect.preDelay.toString()) ? Number(effect.preDelay) : 0
+    )
+  }, [effect])
+
+  if (!(effect instanceof Reverb)) return <></>
 
   return (
     <div className={'flex gap-4'}>
@@ -18,7 +35,7 @@ export const ReverbEditor: FC<{ reverb: Reverb }> = ({ reverb }) => {
         min={0}
         step={0.1}
         onSlide={value => {
-          reverb.decay = value
+          effect.decay = value
           setDecay(value)
         }}
       />
@@ -31,7 +48,7 @@ export const ReverbEditor: FC<{ reverb: Reverb }> = ({ reverb }) => {
         min={0}
         step={0.1}
         onSlide={value => {
-          reverb.wet.value = value
+          effect.wet.value = value
           setWet(value)
         }}
       />
@@ -44,7 +61,7 @@ export const ReverbEditor: FC<{ reverb: Reverb }> = ({ reverb }) => {
         min={0}
         step={0.01}
         onSlide={value => {
-          reverb.preDelay = value
+          effect.preDelay = value
           setPreDelay(value)
         }}
       />

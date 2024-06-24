@@ -5,6 +5,7 @@ import { allNotes } from '../utility/noteFunctions'
 import { majorScale } from '../data/scales'
 import { ScaleDegree } from '../data/chords'
 import { EffectNode, EffectType } from '../routes/sequencer-page/sequencer-page'
+import { Sampler, Synth } from 'tone'
 
 export type SubdivisionNote = {
   index: number
@@ -62,6 +63,8 @@ interface MusicContextProps {
 
   effectNodes: EffectNode[]
   setEffectNodes: (effectNodes: EffectNode[]) => void
+
+  instrument: Sampler | Synth | undefined
 }
 
 export const MusicContext = createContext<MusicContextProps>({
@@ -94,4 +97,6 @@ export const MusicContext = createContext<MusicContextProps>({
 
   effectNodes: [],
   setEffectNodes: () => undefined,
+
+  instrument: undefined,
 })

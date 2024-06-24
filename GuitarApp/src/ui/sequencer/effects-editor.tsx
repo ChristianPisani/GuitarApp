@@ -23,18 +23,13 @@ import {
   useDraggable,
   useDroppable,
 } from '@dnd-kit/core'
+import { DragIndicator } from '@mui/icons-material'
 
 type EffectEditorProps = {
   effectNodeIndex: number
-  isInEditMode: boolean
-  isDragging: boolean
 }
 
-const EffectEditor: FC<EffectEditorProps> = ({
-  effectNodeIndex,
-  isInEditMode,
-  isDragging,
-}) => {
+const EffectEditor: FC<EffectEditorProps> = ({ effectNodeIndex }) => {
   const { effectNodes, setEffectNodes } = useContext(MusicContext)
 
   const effectNode = effectNodes[effectNodeIndex]
@@ -48,7 +43,7 @@ const EffectEditor: FC<EffectEditorProps> = ({
       }
     : undefined
 
-  const dragListeners = isInEditMode ? listeners : undefined
+  const dragListeners = listeners
 
   const removeEffect = (index: number) => {
     effectNodes[index].effect.dispose()
@@ -73,7 +68,7 @@ const EffectEditor: FC<EffectEditorProps> = ({
         ref={setDroppableNodeRef}
         className={'absolute inset-[-1rem] min-w-32 z-[-1] min-h-64'}
       />
-      <div ref={setNodeRef} style={style} {...dragListeners} {...attributes}>
+      <div ref={setNodeRef} style={style} {...attributes}>
         <div className={'flex flex-col gap-4'}>
           <div
             className={`no-scroll select-none bg-gradient-to-br from-gray-600 to-gray-700 text-gray-200
@@ -97,17 +92,24 @@ const EffectEditor: FC<EffectEditorProps> = ({
             </div>
             <div>
               {effectNode.effect instanceof Reverb && (
-                <ReverbEditor reverb={effectNode.effect} />
+                <ReverbEditor effectIndex={effectNodeIndex} />
               )}
               {effectNode.effect instanceof Distortion && (
-                <DistortionEditor effect={effectNode.effect} />
+                <DistortionEditor effectIndex={effectNodeIndex} />
               )}
               {effectNode.effect instanceof Phaser && (
-                <PhaserEditor effect={effectNode.effect} />
+                <PhaserEditor effectIndex={effectNodeIndex} />
               )}
               {effectNode.effect instanceof JCReverb && (
-                <JCReverbEditor effect={effectNode.effect} />
+                <JCReverbEditor effectIndex={effectNodeIndex} />
               )}
+            </div>
+            <div
+              className={`w-fit self-center border-2 rounded px-4 border-gray-300 text-gray-300
+                hover:border-gray-100`}
+              {...dragListeners}
+            >
+              <DragIndicator className={'rotate-90'} fontSize={'large'} />
             </div>
           </div>
           <button onClick={() => removeEffect(effectNodeIndex)}>Remove</button>
@@ -121,8 +123,6 @@ export const EffectsEditor = () => {
   const { effectNodes, setEffectNodes } = useContext(MusicContext)
 
   const [effectSelectorOpen, setEffectSelectorOpen] = useState(false)
-  const [isDragging, setIsDragging] = useState(false)
-  const [isInEditMode, setIsInEditMode] = useState(false)
 
   const addEffect = (effect: EffectType) => {
     effectNodes.push({ effect, enabled: true })
@@ -131,8 +131,6 @@ export const EffectsEditor = () => {
   }
 
   const onDragEnd = (event: DragEndEvent) => {
-    setIsDragging(false)
-
     if (event.over) {
       const dropIndex = Number(
         event.over.id.toString().replace('droppable', '')
@@ -151,14 +149,6 @@ export const EffectsEditor = () => {
 
   return (
     <div className={'w-auto overflow-hidden h-full relative'}>
-      {effectNodes.length > 1 && (
-        <Button
-          text={!isInEditMode ? 'Change order' : 'Done'}
-          className={'left-8 bg-primary-100 absolute top-0 z-10'}
-          id={'edit-mode-button'}
-          onClick={() => setIsInEditMode(!isInEditMode)}
-        />
-      )}
       <ScrollContainer
         hideScrollbars={true}
         mouseScroll={{ ignoreElements: '.no-scroll' }}
@@ -180,19 +170,10 @@ export const EffectsEditor = () => {
         )}
 
         {!effectSelectorOpen && effectNodes.length > 0 && (
-          <DndContext
-            onDragEnd={onDragEnd}
-            onDragStart={() => setIsDragging(true)}
-          >
+          <DndContext onDragEnd={onDragEnd}>
             <div className={'flex gap-16'}>
               {effectNodes.map((_, index) => {
-                return (
-                  <EffectEditor
-                    effectNodeIndex={index}
-                    isInEditMode={isInEditMode}
-                    isDragging={isDragging}
-                  />
-                )
+                return <EffectEditor effectNodeIndex={index} />
               })}
             </div>
           </DndContext>
@@ -226,7 +207,7 @@ export const EffectsEditor = () => {
               </div>
             ))}
             <Button
-              className={'bg-fuchsia-300'}
+              className={'bg-primary-300'}
               onClick={() => setEffectSelectorOpen(false)}
               text={'Cancel'}
               id={'cancel-add-effect'}

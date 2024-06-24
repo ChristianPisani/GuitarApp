@@ -1,12 +1,32 @@
 ﻿import { RangeSlider } from '../input/range-slider'
-import React, { FC, useState } from 'react'
+import React, { FC, useContext, useEffect, useState } from 'react'
 import { Phaser, Reverb } from 'tone'
+import { MusicContext } from '../../context/app-context'
 
-export const PhaserEditor: FC<{ effect: Phaser }> = ({ effect }) => {
+export const PhaserEditor: FC<{ effectIndex: number }> = ({ effectIndex }) => {
   const [frequency, setFrequency] = useState<number>(15)
   const [baseFrequency, setBaseFrequency] = useState<number>(1000)
   const [wet, setWet] = useState<number>(0.5)
   const [octaves, setOctaves] = useState<number>(1)
+
+  const { effectNodes, setEffectNodes } = useContext(MusicContext)
+
+  const effect = effectNodes[effectIndex]?.effect
+
+  useEffect(() => {
+    if (!(effect instanceof Phaser)) return
+
+    setFrequency(
+      Number(effect.frequency.toString()) ? Number(effect.frequency) : 0
+    )
+    setWet(effect.wet.value)
+    setBaseFrequency(
+      Number(effect.baseFrequency.toString()) ? Number(effect.baseFrequency) : 0
+    )
+    setOctaves(Number(effect.octaves.toString()) ? Number(effect.octaves) : 0)
+  }, [effect])
+
+  if (!(effect instanceof Phaser)) return <></>
 
   return (
     <div className={'flex gap-4'}>
