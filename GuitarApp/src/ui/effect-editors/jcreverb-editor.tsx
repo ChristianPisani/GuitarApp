@@ -16,9 +16,7 @@ export const JCReverbEditor: FC<{ effectIndex: number }> = ({
   useEffect(() => {
     if (!(effect instanceof JCReverb)) return
 
-    setRoomSize(
-      Number(effect.roomSize.toString()) ? Number(effect.roomSize) : 0
-    )
+    setRoomSize(effect.roomSize.value)
     setWet(effect.wet.value)
   }, [effect])
 

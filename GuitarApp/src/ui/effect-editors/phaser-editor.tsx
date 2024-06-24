@@ -16,9 +16,7 @@ export const PhaserEditor: FC<{ effectIndex: number }> = ({ effectIndex }) => {
   useEffect(() => {
     if (!(effect instanceof Phaser)) return
 
-    setFrequency(
-      Number(effect.frequency.toString()) ? Number(effect.frequency) : 0
-    )
+    setFrequency(Number(effect.frequency.value))
     setWet(effect.wet.value)
     setBaseFrequency(
       Number(effect.baseFrequency.toString()) ? Number(effect.baseFrequency) : 0
