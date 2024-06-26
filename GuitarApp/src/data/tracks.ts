@@ -503,13 +503,13 @@ const playingGod = {
           velocity: 0.8,
           strumSpeed: 0.02,
         },
-        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
         {
           notes: [{ string: 0, index: 1, pitch: 2, relativeIndex: 0 }],
           sustain: 0.2,
           velocity: 0.8,
           strumSpeed: 0.02,
         },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
       ],
       id: 2,
       bars: 4,
@@ -534,6 +534,10 @@ const playingGod = {
       ],
       id: 3,
       bars: 4,
+      beatScale: {
+        name: 'Major (Ionian)',
+        intervals: ['w', 'w', 'h', 'w', 'w', 'w', 'h'],
+      },
     },
     {
       scaleDegree: 5,
@@ -546,6 +550,10 @@ const playingGod = {
       ],
       id: 4,
       bars: 4,
+      beatScale: {
+        name: 'Major (Ionian)',
+        intervals: ['w', 'w', 'h', 'w', 'w', 'w', 'h'],
+      },
     },
   ],
   selectedBeat: {
@@ -568,6 +576,10 @@ const playingGod = {
     ],
     id: 3,
     bars: 4,
+    beatScale: {
+      name: 'Major (Ionian)',
+      intervals: ['w', 'w', 'h', 'w', 'w', 'w', 'h'],
+    },
   },
   state: 'editing',
   bpm: 130,

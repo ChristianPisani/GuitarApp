@@ -116,7 +116,7 @@ export const SequencerUi: FC<SequencerUiProps> = ({
             <ScalePicker
               selectedScale={selectedScale}
               onChange={scale => {
-                setSelectedScale(scale)
+                setSelectedScale(scale ?? availableScales[0])
               }}
             />
 
