@@ -27,6 +27,7 @@ import { acousticGuitar } from '../../utility/instruments'
 import { playChord, playNotes } from '../../utility/instrumentFunctions'
 import { Toggle } from '../toggle/toggle'
 import { MusicContext } from '../../context/app-context'
+import { AnimatedString } from '../animated-string/animated-string'
 
 export type ChordDegreeVisualizerProps = {
   degrees: ScaleDegree[]
@@ -156,10 +157,7 @@ const ChordNoteComponent: FC<{
   const currentChordNote = chordNotes.find(sn => sn.stringIndex === stringIndex)
 
   return (
-    <div
-      className={`h-full w-2 font-bold ${showString ? 'bg-gray-900' : ''} relative grid
-      place-items-center transition-all ${onClick ? 'hover:scale-105' : ''}`}
-    >
+    <div className={'grid w-full h-full place-items-center'}>
       {(!careAboutStringIndex &&
         chordNotes.some(cn => notesAreEqual(cn.note, currentNote))) ||
       stringNotesAreEqual(currentChordNote, {
@@ -167,8 +165,8 @@ const ChordNoteComponent: FC<{
         stringIndex,
       }) ? (
         <Wrapper
-          className={`absolute select-none text-center text-xl text-inherit grid h-8 w-8
-            place-items-center rounded-full ${
+          className={`select-none text-center text-xl text-inherit grid h-8 w-8 place-items-center
+            rounded-full ${
               selected
                 ? 'bg-secondary-700 text-primary-50'
                 : 'bg-secondary-200 text-primary-950'
@@ -312,13 +310,22 @@ export const ChordVisualizerCustomChord: FC<
           })}
         </div>
         <div
-          className={`rounded-4xl grid h-full w-full place-items-center overflow-hidden border-8
-            border-gray-900`}
+          className={`relative rounded-4xl grid auto-rows-fr h-full w-full place-items-center
+            overflow-hidden border-8 border-gray-900 z-0`}
         >
+          <div className={'absolute inset-0 grid auto-rows-fr'}>
+            {fretNoOpen.map(fret => (
+              <div className={'h-full w-full border-y-2 border-gray-900'} />
+            ))}
+          </div>
+          <div className={'absolute inset-0 flex items-center justify-around'}>
+            {strings.map((fret, stringIndex) => (
+              <AnimatedString stringIndex={stringIndex} />
+            ))}
+          </div>
           {fretNoOpen.map((fret, fretIndex) => (
             <div
-              className={`relative flex h-full w-full items-center justify-around border-y-2
-                border-gray-900`}
+              className={'flex h-full w-full items-center justify-around z-10'}
               key={fretIndex}
             >
               {strings.map((string: Note, stringIndex) => {
@@ -331,7 +338,7 @@ export const ChordVisualizerCustomChord: FC<
                     chord={chord}
                     stringIndex={stringIndex}
                     showNoteIndex={showNoteIndex}
-                    showString={true}
+                    showString={false}
                     fallBack={null}
                     key={stringIndex}
                     careAboutStringIndex={careAboutStringIndex}

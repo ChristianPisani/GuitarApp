@@ -48,6 +48,7 @@ import {
   Vibrato,
 } from 'tone'
 import { standardTuningNotes } from '../../data/tunings'
+import { AnimatedString } from '../../ui/animated-string/animated-string'
 
 export type SequencerMode = 'Chords' | 'Effects'
 
