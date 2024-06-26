@@ -157,7 +157,11 @@ const ChordNoteComponent: FC<{
   const currentChordNote = chordNotes.find(sn => sn.stringIndex === stringIndex)
 
   return (
-    <div className={'grid w-full h-full place-items-center'}>
+    <div
+      className={
+        'grid w-full h-full place-items-center drop-shadow-[6px_0_4px_rgba(0,0,0,0.25)]'
+      }
+    >
       {(!careAboutStringIndex &&
         chordNotes.some(cn => notesAreEqual(cn.note, currentNote))) ||
       stringNotesAreEqual(currentChordNote, {
@@ -165,12 +169,10 @@ const ChordNoteComponent: FC<{
         stringIndex,
       }) ? (
         <Wrapper
-          className={`select-none text-center text-xl text-inherit grid h-8 w-8 place-items-center
-            rounded-full ${
-              selected
-                ? 'bg-secondary-700 text-primary-50'
-                : 'bg-secondary-200 text-primary-950'
-            } ${!selected && onionSkinned ? 'bg-secondary-400' : ''}`}
+          className={`select-none text-center text-xl grid h-8 w-8 place-items-center rounded-full
+            ${selected ? 'bg-amber-950 text-amber-100' : 'bg-amber-200'} ${
+              !selected && onionSkinned ? 'bg-amber-500 text-amber-950' : ''
+            }`}
         >
           {showNoteIndex ? `${fingerIndex + 1}` : noteToString(currentNote)}
         </Wrapper>
@@ -250,6 +252,14 @@ export const ChordVisualizerCustomChord: FC<
     )
   )
 
+  const markedFrets: { [id: number]: boolean } = {
+    3: true,
+    5: true,
+    7: true,
+    9: true,
+    12: true,
+  }
+
   return (
     <div
       className={`inline-grid min-h-[500px] w-72 grid-cols-[auto_1fr_auto] place-items-center
@@ -311,14 +321,32 @@ export const ChordVisualizerCustomChord: FC<
         </div>
         <div
           className={`relative rounded-4xl grid auto-rows-fr h-full w-full place-items-center
-            overflow-hidden border-8 border-gray-900 z-0`}
+            overflow-hidden border-8 border-gray-900 bg-[#BA6210] z-0`}
         >
           <div className={'absolute inset-0 grid auto-rows-fr'}>
             {fretNoOpen.map(fret => (
-              <div className={'h-full w-full border-y-2 border-gray-900'} />
+              <div
+                className={
+                  'h-full w-full border-y-2 border-gray-950 flex justify-around items-center'
+                }
+              >
+                {markedFrets[fret] && fret % 12 !== 0 && (
+                  <div className={'h-4 w-4 rounded-full bg-primary-50'} />
+                )}
+                {markedFrets[fret] && fret % 12 === 0 && (
+                  <>
+                    <div className={'h-4 w-4 rounded-full bg-primary-50'} />
+                    <div className={'h-4 w-4 rounded-full bg-primary-50'} />
+                    <div className={'h-4 w-4 rounded-full bg-primary-50'} />
+                  </>
+                )}
+              </div>
             ))}
           </div>
-          <div className={'absolute inset-0 flex items-center justify-around'}>
+          <div
+            className={`absolute inset-0 flex items-center justify-around text-primary-50
+              drop-shadow-[6px_0_4px_rgba(0,0,0,0.25)]`}
+          >
             {strings.map((fret, stringIndex) => (
               <AnimatedString stringIndex={stringIndex} />
             ))}
@@ -373,6 +401,14 @@ export const ChordVisualizerCustomChord: FC<
             </div>
           ))}
         </div>
+      </div>
+
+      <div className={'grid h-full items-center text-end py-2'}>
+        {frets.map(fret => (
+          <div
+            className={`h-2 w-2 rounded-full ${!!markedFrets[fret] ? 'bg-secondary-950' : ''}`}
+          ></div>
+        ))}
       </div>
     </div>
   )

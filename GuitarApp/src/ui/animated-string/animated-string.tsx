@@ -39,7 +39,7 @@ export const AnimatedString: FC<{ stringIndex: number }> = ({
       context.lineTo(x, y)
     }
 
-    context.strokeStyle = 'black'
+    context.strokeStyle = '#f4ae50'
     context.lineWidth = Math.round(6 - stringIndex / 2)
     context.stroke()
   }
