@@ -60,7 +60,7 @@ export const InstrumentEditor = () => {
     const chordNotes = getChordNotes(
       getScaleChord(
         selectedNote,
-        selectedScale,
+        selectedBeat?.beatScale ?? selectedScale,
         selectedMode,
         selectedBeat.scaleDegree
       )
@@ -94,7 +94,7 @@ export const InstrumentEditor = () => {
   const selectedChord = selectedBeat
     ? getScaleChord(
         selectedNote,
-        selectedScale,
+        selectedBeat?.beatScale ?? selectedScale,
         selectedMode,
         selectedBeat.scaleDegree,
         selectedBeat.scaleDegrees
@@ -122,7 +122,7 @@ export const InstrumentEditor = () => {
     const chordNotes = getChordNotes(
       getScaleChord(
         selectedNote,
-        selectedScale,
+        selectedBeat?.beatScale ?? selectedScale,
         selectedMode,
         selectedBeat?.scaleDegree ?? 1
       )

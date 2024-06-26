@@ -35,11 +35,14 @@ export const AnimatedString: FC<{ stringIndex: number }> = ({
       const x =
         stringX +
         amplitude *
-          Math.sin((y / (context.canvas.height / 2)) * 2 * Math.PI + time)
+          Math.sin(
+            (y / (context.canvas.height / (stringIndex + 1))) * 2 * Math.PI +
+              time
+          )
       context.lineTo(x, y)
     }
 
-    context.strokeStyle = '#f4ae50'
+    context.strokeStyle = stringIndex > 2 ? 'rgb(240,240,240)' : '#fdd7a3'
     context.lineWidth = Math.round(6 - stringIndex / 2)
     context.stroke()
   }

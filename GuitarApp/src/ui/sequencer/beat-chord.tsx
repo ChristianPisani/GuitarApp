@@ -16,6 +16,8 @@ import {
   scaleDegreeNotations,
 } from '../../data/chords'
 import { Beat, MusicContext } from '../../context/app-context'
+import { ScalePicker } from '../scale-picker/scale-picker'
+import { Button } from '../button/button'
 
 type BeatChordProps = {
   showLines: boolean
@@ -109,73 +111,95 @@ export const BeatChord = (props: BeatChordProps) => {
           } as CSSProperties
         }
       >
-        {mode === 'beats' && (
-          <>
-            {beatsArray.map((_, index) => (
-              <button
-                key={beat.id + 'button' + index}
-                onClick={() => setSelectedBeatIndex(index)}
-                className={`beat-chord-circle text-primary-100 grid place-items-center w-8 h-8
-                shadow-accent-2 absolute border-2 border-primary-200 rounded-full ${
-                  selected ? '' : 'out'
-                } ${index < beat.bars ? '' : 'inactive'} ${
-                  selectedBeatIndex === index ? 'glow' : ''
-                }`}
-                style={{ '--index': index } as CSSProperties}
-              >
-                {index + 1}
-              </button>
-            ))}
-            <button
-              onClick={() => removeBar(beat)}
-              className={`remove-button beat-chord-circle w-12 h-12 absolute border-2 text-primary-100
-              border-primary-100 rounded-full ${selected ? '' : 'out'} hover:bg-primary-100
-              hover:text-primary-900`}
-            >
-              -
-            </button>
-            <button
-              onClick={() => addBar(beat)}
-              className={`add-button beat-chord-circle w-12 h-12 absolute border-2 text-primary-50
-              border-primary-100 rounded-full ${selected ? '' : 'out'} transition-all
-              hover:bg-primary-100 hover:text-primary-900`}
-            >
-              +
-            </button>
-          </>
-        )}
-        {mode === 'chord' && (
-          <>
-            {Array(7)
-              .fill(1)
-              .map((_, index) => (
+        <div className={'grid place-items-center relative transition-all'}>
+          {mode === 'beats' && (
+            <>
+              {beatsArray.map((_, index) => (
                 <button
-                  key={beat.id + 'degreebutton' + index}
-                  onClick={() => updateScaleDegree((index + 1) as ScaleDegree)}
+                  key={beat.id + 'button' + index}
+                  onClick={() => setSelectedBeatIndex(index)}
                   className={`beat-chord-circle text-primary-100 grid place-items-center w-8 h-8
                   shadow-accent-2 absolute border-2 border-primary-200 rounded-full ${
                     selected ? '' : 'out'
-                  } ${beat.scaleDegree === index + 1 ? 'glow' : ''}`}
-                  style={{ '--index': index, '--total': 6 } as CSSProperties}
+                  } ${index < beat.bars ? '' : 'inactive'} ${
+                    selectedBeatIndex === index ? 'glow' : ''
+                  }`}
+                  style={{ '--index': index } as CSSProperties}
                 >
-                  {scaleDegreeNotations((index + 1) as ScaleDegree)}
+                  {index + 1}
                 </button>
               ))}
-          </>
-        )}
-        <button
-          onClick={e => {
-            props.onClick()
-          }}
-          className={`${selected ? 'glow' : ''} flex aspect-square w-40 select-none flex-col
-          justify-center items-center rounded-full border-4 border-primary-100 p-6
-          text-primary-100 transition-all hover:text-primary-50 shadow-accent-2`}
-        >
-          <p className={'text-xl'}>{scaleDegreeNotations(beat.scaleDegree)}</p>
-          <p className={'text-2xl font-bold'}>{getChordName(chord)}</p>
-        </button>
+              <button
+                onClick={() => removeBar(beat)}
+                className={`remove-button beat-chord-circle w-12 h-12 absolute border-2 text-primary-100
+                border-primary-100 rounded-full ${selected ? '' : 'out'} hover:bg-primary-100
+                hover:text-primary-900`}
+              >
+                -
+              </button>
+              <button
+                onClick={() => addBar(beat)}
+                className={`add-button beat-chord-circle w-12 h-12 absolute border-2 text-primary-50
+                border-primary-100 rounded-full ${selected ? '' : 'out'} transition-all
+                hover:bg-primary-100 hover:text-primary-900`}
+              >
+                +
+              </button>
+            </>
+          )}
+          {mode === 'chord' && (
+            <>
+              {Array(7)
+                .fill(1)
+                .map((_, index) => (
+                  <button
+                    key={beat.id + 'degreebutton' + index}
+                    onClick={() =>
+                      updateScaleDegree((index + 1) as ScaleDegree)
+                    }
+                    className={`beat-chord-circle text-primary-100 grid place-items-center w-8 h-8
+                    shadow-accent-2 absolute border-2 border-primary-200 rounded-full ${
+                      selected ? '' : 'out'
+                    } ${beat.scaleDegree === index + 1 ? 'glow' : ''}`}
+                    style={{ '--index': index, '--total': 6 } as CSSProperties}
+                  >
+                    {scaleDegreeNotations((index + 1) as ScaleDegree)}
+                  </button>
+                ))}
+            </>
+          )}
 
-        {selected && onDelete && (
+          <button
+            onClick={e => {
+              props.onClick()
+            }}
+            className={`${selected ? 'glow' : ''} flex aspect-square w-40 select-none flex-col
+            justify-center items-center rounded-full border-4 border-primary-100 p-6
+            text-primary-100 transition-all hover:text-primary-50 shadow-accent-2`}
+          >
+            <p className={'text-xl'}>
+              {scaleDegreeNotations(beat.scaleDegree)}
+            </p>
+            <p className={'text-2xl font-bold'}>{getChordName(chord)}</p>
+          </button>
+        </div>
+
+        {state === 'editing' && selected && (
+          <ScalePicker
+            bgColor={'bg-primary-100 text-fuchsia-950 border-fuchsia-200'}
+            onChange={scale => {
+              beat.beatScale = scale
+              updateBeat(beat)
+            }}
+            selectedScale={beat.beatScale}
+            defaultValue={'Change scale'}
+          />
+        )}
+        {(state === 'playing' || !selected) && beat.beatScale && (
+          <p className={'absolute bottom-[-2.5rem]'}>{beat.beatScale.name}</p>
+        )}
+
+        {state === 'editing' && selected && onDelete && (
           <button className={'absolute bottom-[-2.5rem]'} onClick={onRemove}>
             Remove
           </button>

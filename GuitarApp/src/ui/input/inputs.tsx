@@ -11,6 +11,7 @@ export type NumberInputProps = {} & InputWrapperProps &
 
 export type SelectProps = {
   options: { key: string; value: string }[]
+  bgColor?: string
 } & InputWrapperProps &
   HTMLProps<HTMLSelectElement>
 
@@ -31,15 +32,15 @@ export const NumberInput: FC<NumberInputProps> = props => {
 }
 
 export const Select: FC<SelectProps> = props => {
-  const { label, id, options } = props
+  const { label, id, options, bgColor } = props
 
   return (
     <InputWrapper label={label} id={id}>
       <select
         {...props}
         id={id}
-        className={`shadow-accent rounded-full border-4 border-secondary-950 bg-transparent px-2
-          py-2 text-center text-2xl font-extrabold`}
+        className={`shadow-accent rounded-full border-4 border-secondary-950 px-2 py-2 text-center
+        text-2xl font-extrabold ${bgColor ? bgColor : 'bg-transparent'}`}
       >
         {options.map(option => (
           <option key={option.key} value={option.value}>

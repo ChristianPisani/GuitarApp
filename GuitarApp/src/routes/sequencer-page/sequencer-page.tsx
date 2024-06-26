@@ -111,6 +111,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
 
     if (!loadedState) return
 
+    setSelectedBeat(loadedState.beats[0] ?? undefined)
     setSelectedNote(loadedState.selectedNote ?? allNotes[0])
     setSelectedScale(loadedState.selectedScale ?? majorScale)
     setSelectedMode(loadedState.selectedMode ?? 1)
@@ -139,12 +140,17 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
   }, [effectNodes])
 
   const addDefaultTracksToLocalStorage = () => {
-    defaultTracks.forEach(defaultTrack =>
+    defaultTracks.forEach(defaultTrack => {
+      if (localStorage.getItem(defaultTrack.name)) {
+        console.log('Got item')
+      }
+      console.log('Setting item')
+
       localStorage.setItem(
         defaultTrack.name,
         JSON.stringify(defaultTrack.track)
       )
-    )
+    })
   }
 
   useEffect(() => {
@@ -170,7 +176,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
       const notes = subdivision.notes.map(beatNote => {
         const scaleChord = getScaleChord(
           selectedNote,
-          selectedScale,
+          beat.beatScale ?? selectedScale,
           selectedMode,
           beat.scaleDegree
         )

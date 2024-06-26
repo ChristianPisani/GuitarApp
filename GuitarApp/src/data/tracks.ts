@@ -358,7 +358,222 @@
   state: 'editing',
   bpm: 130,
 }
-
+const playingGod = {
+  selectedNote: { name: 'E', sharp: false, pitch: 2 },
+  selectedScale: {
+    name: 'Minor (Aeolian)',
+    intervals: ['w', 'h', 'w', 'w', 'h', 'w', 'w'],
+  },
+  selectedMode: 1,
+  beats: [
+    {
+      scaleDegree: 1,
+      scaleDegrees: [1, 2, 3],
+      subdivisions: [
+        {
+          notes: [
+            { string: 0, index: 0, pitch: 3, relativeIndex: 1 },
+            { string: 1, index: 1, pitch: 3, relativeIndex: 0 },
+          ],
+          sustain: 0.7,
+          velocity: 0.8,
+          strumSpeed: 0.02,
+        },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+        {
+          notes: [{ string: 3, index: 0, pitch: 4, relativeIndex: 0 }],
+          sustain: 0.2,
+          velocity: 0.8,
+          strumSpeed: 0.02,
+        },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+        {
+          notes: [{ string: 4, index: 2, pitch: 3, relativeIndex: 0 }],
+          sustain: 0.2,
+          velocity: 0.8,
+          strumSpeed: 0.02,
+        },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+        {
+          notes: [{ string: 5, index: 0, pitch: 4, relativeIndex: 0 }],
+          sustain: 0.2,
+          velocity: 0.8,
+          strumSpeed: 0.02,
+        },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+        {
+          notes: [{ string: 4, index: 2, pitch: 3, relativeIndex: 0 }],
+          sustain: 0.2,
+          velocity: 0.8,
+          strumSpeed: 0.02,
+        },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+        {
+          notes: [{ string: 3, index: 1, pitch: 3, relativeIndex: 0 }],
+          sustain: 0.2,
+          velocity: 0.8,
+          strumSpeed: 0.02,
+        },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+        {
+          notes: [{ string: 4, index: 2, pitch: 3, relativeIndex: 0 }],
+          sustain: 0.2,
+          velocity: 0.8,
+          strumSpeed: 0.02,
+        },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+      ],
+      id: 1,
+      bars: 4,
+    },
+    {
+      scaleDegree: 6,
+      scaleDegrees: [1, 2, 3, 4, 5, 6, 7],
+      subdivisions: [
+        {
+          notes: [
+            { string: 0, index: 0, pitch: 3, relativeIndex: 0 },
+            { string: 5, index: 0, pitch: 5, relativeIndex: 0 },
+          ],
+          sustain: 0.9,
+          velocity: 0.8,
+          strumSpeed: 0.02,
+        },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+        {
+          notes: [
+            { string: 0, index: 0, pitch: 3, relativeIndex: 0 },
+            { string: 4, index: 6, pitch: 4, relativeIndex: 0 },
+          ],
+          sustain: 0.2,
+          velocity: 0.8,
+          strumSpeed: 0.02,
+        },
+        {
+          notes: [{ string: 4, index: 3, pitch: 4, relativeIndex: 1 }],
+          sustain: 0.2,
+          velocity: 0.8,
+          strumSpeed: 0.02,
+        },
+        { notes: [], sustain: 0.7, velocity: 0.8, strumSpeed: 0.02 },
+        {
+          notes: [{ string: 0, index: 1, pitch: 2, relativeIndex: 0 }],
+          sustain: 0.2,
+          velocity: 0.8,
+          strumSpeed: 0.02,
+        },
+        {
+          notes: [{ string: 4, index: 3, pitch: 4, relativeIndex: 1 }],
+          sustain: 0.2,
+          velocity: 0.8,
+          strumSpeed: 0.02,
+        },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+        {
+          notes: [{ string: 0, index: 1, pitch: 2, relativeIndex: 0 }],
+          sustain: 0.2,
+          velocity: 0.8,
+          strumSpeed: 0.02,
+        },
+        {
+          notes: [
+            { string: 0, index: 1, pitch: 2, relativeIndex: 0 },
+            { string: 4, index: 3, pitch: 4, relativeIndex: 1 },
+          ],
+          sustain: 0.2,
+          velocity: 0.8,
+          strumSpeed: 0.02,
+        },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+        {
+          notes: [{ string: 0, index: 1, pitch: 2, relativeIndex: 0 }],
+          sustain: 0.2,
+          velocity: 0.8,
+          strumSpeed: 0.02,
+        },
+        {
+          notes: [
+            { string: 4, index: 3, pitch: 4, relativeIndex: 1 },
+            { string: 5, index: 1, pitch: 5, relativeIndex: 1 },
+          ],
+          sustain: 0.9,
+          velocity: 0.8,
+          strumSpeed: 0.02,
+        },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+        {
+          notes: [{ string: 0, index: 1, pitch: 2, relativeIndex: 0 }],
+          sustain: 0.2,
+          velocity: 0.8,
+          strumSpeed: 0.02,
+        },
+      ],
+      id: 2,
+      bars: 4,
+    },
+    {
+      scaleDegree: 5,
+      scaleDegrees: [1, 2, 3, 4, 5, 6, 7],
+      subdivisions: [
+        {
+          notes: [
+            { string: 0, index: 0, pitch: 2, relativeIndex: 0 },
+            { string: 2, index: 0, pitch: 3, relativeIndex: 0 },
+            { string: 3, index: 1, pitch: 4, relativeIndex: 0 },
+          ],
+          sustain: 1,
+          velocity: 0.8,
+          strumSpeed: 0.02,
+        },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+      ],
+      id: 3,
+      bars: 4,
+    },
+    {
+      scaleDegree: 5,
+      scaleDegrees: [1, 2, 3, 4],
+      subdivisions: [
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+        { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+      ],
+      id: 4,
+      bars: 4,
+    },
+  ],
+  selectedBeat: {
+    scaleDegree: 5,
+    scaleDegrees: [1, 2, 3, 4, 5, 6, 7],
+    subdivisions: [
+      {
+        notes: [
+          { string: 0, index: 0, pitch: 2, relativeIndex: 0 },
+          { string: 2, index: 0, pitch: 3, relativeIndex: 0 },
+          { string: 3, index: 1, pitch: 4, relativeIndex: 0 },
+        ],
+        sustain: 1,
+        velocity: 0.8,
+        strumSpeed: 0.02,
+      },
+      { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+      { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+      { notes: [], sustain: 0.2, velocity: 0.8, strumSpeed: 0.02 },
+    ],
+    id: 3,
+    bars: 4,
+  },
+  state: 'editing',
+  bpm: 130,
+  effectNodes: [],
+}
 export const defaultTracks = [
   { name: 'Simple open chord progression', track: simpleOpenChordsProgression },
+  { name: 'Playing God', track: playingGod },
 ]

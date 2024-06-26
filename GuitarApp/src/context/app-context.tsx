@@ -31,6 +31,7 @@ export interface Beat {
   subdivisions: Subdivision[]
   id: number
   bars: number
+  beatScale?: Scale
 }
 
 export type SequencerState = 'playing' | 'paused' | 'stopped' | 'editing'

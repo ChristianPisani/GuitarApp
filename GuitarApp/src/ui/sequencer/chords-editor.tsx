@@ -63,7 +63,7 @@ export const ChordsEditor = () => {
   const onBeatChordClick = (beat: Beat) => {
     if (state !== 'editing') return
 
-    const selected = beat.id === selectedBeat?.id
+    const selected = false //beat.id === selectedBeat?.id
 
     if (selected) setSelectedBeat(undefined)
     else setSelectedBeat(beat)
@@ -103,7 +103,7 @@ export const ChordsEditor = () => {
               onDelete={ref => removeChord(index, ref)}
               chord={getScaleChord(
                 selectedNote,
-                selectedScale,
+                beat?.beatScale ?? selectedScale,
                 selectedMode,
                 beat.scaleDegree,
                 beat.scaleDegrees

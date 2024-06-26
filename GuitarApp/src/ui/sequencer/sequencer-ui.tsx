@@ -15,6 +15,7 @@ import { PlayArrowOutlined, StopOutlined } from '@mui/icons-material'
 import { Mode } from '../../types/musical-terms'
 import { SequencerMode } from '../../routes/sequencer-page/sequencer-page'
 import { Link } from 'react-router-dom'
+import { ScalePicker } from '../scale-picker/scale-picker'
 
 type SequencerUiProps = {
   children: ReactNode | ReactNode[]
@@ -30,6 +31,7 @@ export const SequencerUi: FC<SequencerUiProps> = ({
     setState,
     setSelectedNote,
     setSelectedScale,
+    selectedScale,
     setSelectedMode,
     bpm,
     setBpm,
@@ -111,17 +113,11 @@ export const SequencerUi: FC<SequencerUiProps> = ({
                 value: index.toString(),
               }))}
             />
-            <Select
-              label={'Scale'}
-              id={'scale-select'}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                const scale = availableScales[Number(e.target.value)]
-                if (scale) setSelectedScale(scale)
+            <ScalePicker
+              selectedScale={selectedScale}
+              onChange={scale => {
+                setSelectedScale(scale)
               }}
-              options={availableScales.map((scale, index) => ({
-                key: scale.name,
-                value: index.toString(),
-              }))}
             />
 
             <Select
