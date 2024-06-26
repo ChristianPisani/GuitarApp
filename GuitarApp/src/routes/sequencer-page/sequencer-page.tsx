@@ -6,25 +6,18 @@ import {
   getStringNotes,
   notesAreEqual,
 } from '../../utility/noteFunctions'
-import { FC, ReactNode, useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Mode, Note, Scale } from '../../types/musical-terms'
 import { majorScale } from '../../data/scales'
 import { SequencerUi } from '../../ui/sequencer/sequencer-ui'
 import { Beat, MusicContext, SequencerState } from '../../context/app-context'
 import { useSequencer } from '../../hooks/sequencer-hook'
-import {
-  acousticGuitar,
-  chorus,
-  reverb,
-  tremolo,
-  vibrato,
-} from '../../utility/instruments'
+import { acousticGuitar } from '../../utility/instruments'
 import { playNotes } from '../../utility/instrumentFunctions'
 import useLocalStorage from 'react-use-localstorage'
 import { ScaleDegree } from '../../data/chords'
 import { getDefaultSubdivision } from '../../utility/sequencer-utilities'
 import { Outlet, useMatch } from 'react-router-dom'
-import { Effect, EffectOptions } from 'tone/build/esm/effect/Effect'
 import {
   AutoFilter,
   AutoPanner,
@@ -48,7 +41,7 @@ import {
   Vibrato,
 } from 'tone'
 import { standardTuningNotes } from '../../data/tunings'
-import { AnimatedString } from '../../ui/animated-string/animated-string'
+import { defaultTracks } from '../../data/tracks'
 
 export type SequencerMode = 'Chords' | 'Effects'
 
@@ -84,7 +77,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
   const isChordsPage = useMatch('chords')
   const sequencerMode = isEffectsPage ? 'Effects' : 'Chords'
 
-  const [loadedTrackName, setLoadedTrackName] = useState('defaultTrack')
+  const [loadedTrackName, setLoadedTrackName] = useState(defaultTracks[0].name)
   const [saveState, setSaveState] = useLocalStorage(
     loadedTrackName,
     JSON.stringify('')
@@ -144,6 +137,19 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
       })
     chainNode?.toDestination()
   }, [effectNodes])
+
+  const addDefaultTracksToLocalStorage = () => {
+    defaultTracks.forEach(defaultTrack =>
+      localStorage.setItem(
+        defaultTrack.name,
+        JSON.stringify(defaultTrack.track)
+      )
+    )
+  }
+
+  useEffect(() => {
+    addDefaultTracksToLocalStorage()
+  }, [])
 
   const saveTrack = () => {
     setSaveState(JSON.stringify(savableState))

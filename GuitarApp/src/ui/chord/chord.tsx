@@ -120,7 +120,6 @@ const ChordNoteComponent: FC<{
   chord: Chord | undefined
   chordNotes: StringNote[]
   showNoteIndex: boolean
-  showString: boolean
   stringIndex: number
   fallBack: ReactNode | null
   onClick?: (note: Note) => void
@@ -132,7 +131,6 @@ const ChordNoteComponent: FC<{
   chordNotes,
   chord,
   showNoteIndex,
-  showString,
   fallBack,
   onClick,
   selected = false,
@@ -285,7 +283,6 @@ export const ChordVisualizerCustomChord: FC<
                 chordNotes={chordNotes}
                 showNoteIndex={showNoteIndex}
                 stringIndex={fretIndex}
-                showString={false}
                 careAboutStringIndex={careAboutStringIndex}
                 selected={selectedNotes?.some(
                   selectedNote =>
@@ -366,7 +363,6 @@ export const ChordVisualizerCustomChord: FC<
                     chord={chord}
                     stringIndex={stringIndex}
                     showNoteIndex={showNoteIndex}
-                    showString={false}
                     fallBack={null}
                     key={stringIndex}
                     careAboutStringIndex={careAboutStringIndex}
