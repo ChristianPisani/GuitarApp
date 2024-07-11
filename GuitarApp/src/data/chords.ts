@@ -53,7 +53,7 @@ export const getTriad = (type: TriadType) => {
   return chordNames.find(triad => triad.name === type)
 }
 
-export const getChordName = (chord: Chord) => {
+export const getChordName = (chord: Chord, includeExtensions = true) => {
   const matchingTriad = chordNames.find(triad =>
     triad.intervals.every(interval => chord.intervals.includes(interval))
   )
@@ -62,7 +62,7 @@ export const getChordName = (chord: Chord) => {
     chord.intervals.includes(extension.interval)
   )
   const matchingExtensionName =
-    matchingExtensions.length > 0
+    includeExtensions && matchingExtensions.length > 0
       ? matchingExtensions[matchingExtensions.length - 1].name
       : ''
 

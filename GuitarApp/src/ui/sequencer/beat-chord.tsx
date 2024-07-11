@@ -177,10 +177,10 @@ export const BeatChord = (props: BeatChordProps) => {
             justify-center items-center rounded-full border-4 border-primary-100 p-6
             text-primary-100 transition-all hover:text-primary-50 shadow-accent-2`}
           >
-            <p className={'text-xl'}>
+            <p className={'text-2xl font-bold'}>
               {scaleDegreeNotations(beat.scaleDegree)}
             </p>
-            <p className={'text-2xl font-bold'}>{getChordName(chord)}</p>
+            <p className={'text-xl'}>{getChordName(chord, false)}</p>
           </button>
         </div>
 
@@ -208,7 +208,7 @@ export const BeatChord = (props: BeatChordProps) => {
       {showLines && (
         <div
           className={
-            'glow h-0 w-48 border-t-8 border-dotted border-primary-100 text-primary-100'
+            'glow h-0 w-16 border-t-8 border-dotted border-primary-100 text-primary-100'
           }
         ></div>
       )}
