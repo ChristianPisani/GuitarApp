@@ -586,6 +586,6 @@ const playingGod = {
   effectNodes: [],
 }
 export const defaultTracks = [
-  { name: 'Simple open chord progression', track: simpleOpenChordsProgression },
-  { name: 'Playing God', track: playingGod },
+  //{ name: 'Simple open chord progression', track: simpleOpenChordsProgression },
+  //{ name: 'Playing God', track: playingGod },
 ]

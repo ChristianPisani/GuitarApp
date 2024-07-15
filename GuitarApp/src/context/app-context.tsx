@@ -25,13 +25,17 @@ export interface Subdivision {
   sustain: number
 }
 
-export interface Beat {
+export interface Bar {
   scaleDegree: ScaleDegree
-  scaleDegrees: ScaleDegree[]
+  chordExtensionScaleDegrees: ScaleDegree[]
   subdivisions: Subdivision[]
+  scale?: Scale
   id: number
-  bars: number
-  beatScale?: Scale
+}
+
+export interface Beat {
+  id: number
+  bars: Bar[]
 }
 
 export type SequencerState = 'playing' | 'paused' | 'stopped' | 'editing'
@@ -49,18 +53,19 @@ interface MusicContextProps {
   setBeats: Dispatch<SetStateAction<Beat[]>>
   selectedBeat: Beat | undefined
   setSelectedBeat: Dispatch<SetStateAction<Beat | undefined>>
+  selectedBarIndex: number | undefined
+  setSelectedBarIndex: Dispatch<SetStateAction<number | undefined>>
 
   state: SequencerState
   setState: (state: SequencerState) => void
 
   currentBeat: number
   currentSubdivision: number
-  addSubdivision: (beat: Beat) => void
-  removeSubdivision: (beat: Beat) => void
+  addSubdivision: (beat: Beat, barIndex: number) => void
+  removeSubdivision: (beat: Beat, barIndex: number) => void
   updateBeat: (beat: Beat) => void
-  removeBeat: (beat: Beat) => void
 
-  toggleInterval: (beat: Beat, interval: ScaleDegree) => void
+  toggleInterval: (beat: Beat, barIndex: number, interval: ScaleDegree) => void
 
   effectNodes: EffectNode[]
   setEffectNodes: (effectNodes: EffectNode[]) => void
@@ -81,6 +86,8 @@ export const MusicContext = createContext<MusicContextProps>({
   setSelectedMode: () => null,
   setBeats: () => null,
   setSelectedBeat: () => null,
+  selectedBarIndex: undefined,
+  setSelectedBarIndex: () => undefined,
 
   state: 'editing',
   setState: () => null,
@@ -92,7 +99,6 @@ export const MusicContext = createContext<MusicContextProps>({
   removeSubdivision: beat => undefined,
 
   updateBeat: beat => undefined,
-  removeBeat: beat => undefined,
 
   toggleInterval: (beat, interval) => undefined,
 

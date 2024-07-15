@@ -13,7 +13,7 @@ export const ScalePicker = (props: {
 
   return (
     <Select
-      label={'Scale'}
+      label={''}
       id={'scale-select'}
       value={selectedScale?.name ?? defaultValue}
       onChange={(e: ChangeEvent<HTMLSelectElement>) => {

@@ -1,10 +1,13 @@
-import { BeatChord } from './beat-chord'
-import React, { useContext, useEffect } from 'react'
+import { BeatBar, BeatChord } from './beat-chord'
+import React, { createRef, useContext, useEffect } from 'react'
 import { getScaleChord } from '../../utility/noteFunctions'
 import { ScaleDegree } from '../../data/chords'
 import { ScrollContainer } from 'react-indiana-drag-scroll'
-import { Beat, MusicContext } from '../../context/app-context'
+import { MusicContext } from '../../context/app-context'
 import { getDefaultSubdivision } from '../../utility/sequencer-utilities'
+
+var BAR_ID = 0
+var BEAT_ID = 100000
 
 export const ChordsEditor = () => {
   const {
@@ -17,66 +20,43 @@ export const ChordsEditor = () => {
     state,
     selectedScale,
     selectedNote,
+    selectedBarIndex,
+    setSelectedBarIndex,
   } = useContext(MusicContext)
   const addChord = () => {
-    const degree = (Math.round(Math.random() * 6) + 1) as ScaleDegree
+    const degree: ScaleDegree = 1
 
-    const newBeat = {
+    const defaultBeatBar = () => ({
       scaleDegree: degree,
       scaleDegrees: [1, 2, 3] as ScaleDegree[],
-      subdivisions: [
-        getDefaultSubdivision(),
-        getDefaultSubdivision(),
-        getDefaultSubdivision(),
-        getDefaultSubdivision(),
-      ],
-      id: beats.length > 0 ? beats[beats.length - 1].id + 1 : 1,
-      bars: 4,
+      subdivisions: [getDefaultSubdivision()],
+      id: BAR_ID++,
+    })
+
+    const bars: BeatBar[] = [
+      defaultBeatBar(),
+      defaultBeatBar(),
+      defaultBeatBar(),
+      defaultBeatBar(),
+    ]
+
+    const newBeat = {
+      id: BEAT_ID++,
+      bars,
     }
 
     setBeats([...beats, newBeat])
     setSelectedBeat(newBeat)
   }
 
-  const removeChord = (index: number, divRef?: HTMLDivElement) => {
-    const copy = [...beats]
-    copy.splice(index, 1)
-
-    if (copy.length > 0) {
-      setSelectedBeat(copy[copy.length - 1])
-    }
-
-    // Want to animate out, so just wait until that is completed before actually deleting the element
-    divRef?.addEventListener('animationend', () => {
-      setBeats(copy)
-
-      if (copy.length > 0) {
-        setSelectedBeat(copy[copy.length - 1])
-      } else {
-        setSelectedBeat(undefined)
-      }
-
-      return undefined
-    })
-  }
-
-  const onBeatChordClick = (beat: Beat) => {
-    if (state !== 'editing') return
-
-    const selected = false //beat.id === selectedBeat?.id
-
-    if (selected) setSelectedBeat(undefined)
-    else setSelectedBeat(beat)
-  }
-
   useEffect(() => {
     if (state !== 'playing') return
 
-    setSelectedBeat(beats[currentBeat])
+    // setSelectedBeat(beats[currentBeat])
   }, [currentBeat])
 
   return (
-    <div className={'w-auto overflow-hidden h-full'}>
+    <div className={'w-auto overflow-hidden h-full min-h-96'}>
       <ScrollContainer
         hideScrollbars={true}
         className={
@@ -95,24 +75,8 @@ export const ChordsEditor = () => {
             </button>
           </div>
         )}
-        {beats.map((beat, index) => {
-          return (
-            <BeatChord
-              key={beat.id}
-              showLines={index !== beats.length}
-              onDelete={ref => removeChord(index, ref)}
-              chord={getScaleChord(
-                selectedNote,
-                beat?.beatScale ?? selectedScale,
-                selectedMode,
-                beat.scaleDegree,
-                beat.scaleDegrees
-              )}
-              beat={beat}
-              selected={selectedBeat?.id === beat.id}
-              onClick={() => onBeatChordClick(beat)}
-            />
-          )
+        {beats.map(beat => {
+          return <BeatBar key={beat.id} beat={beat} />
         })}
         {beats.length > 0 && (
           <button

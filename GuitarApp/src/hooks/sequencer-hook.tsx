@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Note, Scale } from '../types/musical-terms'
 import * as Tone from 'tone'
 import { getTransport, Sampler, Synth } from 'tone'
@@ -55,15 +55,17 @@ export const useSequencer = (props: SequencerHookProps) => {
       },
       events: props.beats.map((beat, beatIndex) => {
         return [
-          ...beat.subdivisions.map((subdivision, subdivisionIndex) => ({
-            beat,
-            beatIndex,
-            subdivision,
-            subdivisionIndex,
-          })),
+          ...beat.bars.map(bar =>
+            bar.subdivisions.map((subdivision, subdivisionIndex) => ({
+              beat,
+              beatIndex,
+              subdivision,
+              subdivisionIndex,
+            }))
+          ),
         ]
       }),
-      subdivision: '1n',
+      subdivision: '4n',
     }).start()
 
     return () => {

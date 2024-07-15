@@ -59,12 +59,14 @@ export const InputWrapper: FC<InputWrapperProps> = ({
 }) => {
   return (
     <div className={'flex flex-col place-items-center gap-2'}>
-      <label
-        className={'text-center text-sm font-bold text-secondary-950'}
-        htmlFor={id}
-      >
-        {label}
-      </label>
+      {label && (
+        <label
+          className={'text-center text-sm font-bold text-secondary-950'}
+          htmlFor={id}
+        >
+          {label}
+        </label>
+      )}
       {children}
     </div>
   )

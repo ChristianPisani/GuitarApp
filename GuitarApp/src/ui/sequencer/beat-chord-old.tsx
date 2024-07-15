@@ -1,4 +1,4 @@
-﻿import React, {
+﻿/*import React, {
   ButtonHTMLAttributes,
   CSSProperties,
   DetailedHTMLProps,
@@ -16,7 +16,7 @@ import {
   ScaleDegree,
   scaleDegreeNotations,
 } from '../../data/chords'
-import { Beat, Bar, MusicContext } from '../../context/app-context'
+import { Beat, MusicContext } from '../../context/app-context'
 import { ScalePicker } from '../scale-picker/scale-picker'
 import { Button } from '../button/button'
 import { getScaleChord } from '../../utility/noteFunctions'
@@ -35,57 +35,101 @@ type BeatChordProps = {
 >
 
 type BeatBarProps = {
-  beat: Beat
+  beatId: number
 }
 
-export const BeatBar: FC<BeatBarProps> = ({ beat }) => {
+export const BeatBar: FC<BeatBarProps> = ({ beatId }) => {
+  const ref = useRef<HTMLDivElement>(null)
+  const [removed, setRemoved] = useState(false)
+
   const {
     beats,
-    setBeats,
+    selectedBeat,
+    selectedBarIndex,
     selectedNote,
     selectedMode,
     selectedScale,
-    updateBeat,
+    setSelectedBarIndex,
+    setSelectedBeat,
+    setBeats,
+    state,
   } = useContext(MusicContext)
 
-  const removeBar = (barIndex: number) => {
-    beat.bars.splice(barIndex, 1)
-    updateBeat(beat)
+  const beat = beats.find(beat => beat.id === beatId)
+
+  if (!beat) return null
+
+  const removeBar = (id: number, divRef?: HTMLDivElement) => {
+    const copy = [...beats]
+    const index = beats.findIndex(beat => beat.id === id)
+    copy.splice(index, 1)
+    setRemoved(true)
+
+    if (copy.length > 0) {
+      setSelectedBeat(copy[copy.length - 1])
+    }
+
+    // Want to animate out, so just wait until that is completed before actually deleting the element
+    divRef?.addEventListener('animationend', () => {
+      setBeats(copy)
+
+      if (copy.length > 0) {
+        setSelectedBeat(copy[copy.length - 1])
+      } else {
+        setSelectedBeat(undefined)
+      }
+
+      return undefined
+    })
   }
 
-  const removeBeat = () => {
-    const beatIndex = beats.indexOf(beat)
+  const onBeatBarClick = (beat: Beat, barIndex: number) => {
+    if (state !== 'editing') return
 
-    beats.splice(beatIndex, 1)
-    setBeats([...beats])
+    const isBeatSelected = beat.id === selectedBeat?.id
+    const isBarSelected =
+      beat.bars[barIndex]?.id === selectedBeat?.bars[barIndex]?.id
+
+    if (isBeatSelected) {
+      setSelectedBarIndex(barIndex)
+    } else {
+      setSelectedBeat(beat)
+      setSelectedBarIndex(barIndex)
+    }
   }
 
   return (
-    <div className={'grid place-items-center gap-4'}>
-      <div className={'flex gap-4 border-2 border-primary-100 p-8'}>
-        {beat.bars.map((bar, index) => {
-          const chord = getScaleChord(
-            selectedNote,
-            bar?.scale ?? selectedScale,
-            selectedMode,
-            bar.scaleDegree,
-            bar.chordExtensionScaleDegrees
-          )
-
+    <div
+      className={`grid place-items-center gap-4 ${
+        removed ? 'animation-fade-out' : 'animation-fade-in'
+      }`}
+      ref={ref}
+    >
+      <div className={'flex p-8 gap-8'}>
+        {beat.bars.map((bar, barIndex) => {
           return (
-            <div className={'p-4 grid flex-1 place-items-center gap-2'}>
-              <p className={'text-2xl font-bold'}>
-                {scaleDegreeNotations(bar.scaleDegree)}
-              </p>
-              <p className={'text-xl whitespace-nowrap'}>
-                {getChordName(chord, false)}
-              </p>
-              <button onClick={() => removeBar(index)}>Delete</button>
-            </div>
+            <BeatChord
+              key={bar.id}
+              showLines={barIndex !== beat.bars.length - 1}
+              onDelete={ref => null}
+              chord={getScaleChord(
+                selectedNote,
+                bar?.beatScale ?? selectedScale,
+                selectedMode,
+                bar.scaleDegree,
+                bar.scaleDegrees
+              )}
+              beat={beat}
+              beatBarId={barIndex}
+              selected={selectedBeat?.bars[selectedBarIndex ?? 0].id === bar.id}
+              onClick={() => onBeatBarClick(beat, barIndex)}
+            />
           )
         })}
       </div>
-      <button onClick={removeBeat}>Delete</button>
+      <button onClick={() => removeBar(beatId, ref.current ?? undefined)}>
+        Remove
+      </button>
     </div>
   )
 }
@@ -267,17 +311,18 @@ export const BeatChord = (props: BeatChordProps) => {
             <ScalePicker
               bgColor={'bg-primary-100 text-fuchsia-950 border-fuchsia-200'}
               onChange={scale => {
-                beat.bars[beatBarId].scale = scale
+                beat.bars[beatBarId].beatScale = scale
                 updateBeat(beat)
               }}
-              selectedScale={beat.bars[beatBarId].scale}
+              selectedScale={beat.bars[beatBarId].beatScale}
               defaultValue={'Change scale'}
             />
           )}
 
-          {(state === 'playing' || !selected) && beat.bars[beatBarId].scale && (
-            <p>{beat.bars[beatBarId]?.scale?.name}</p>
-          )}
+          {(state === 'playing' || !selected) &&
+            beat.bars[beatBarId].beatScale && (
+              <p>{beat.bars[beatBarId]?.beatScale?.name}</p>
+            )}
 
           {state === 'editing' && selected && (
             <>
@@ -302,3 +347,4 @@ export const BeatChord = (props: BeatChordProps) => {
     </div>
   )
 }
+*/
