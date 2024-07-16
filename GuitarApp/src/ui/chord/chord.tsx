@@ -229,7 +229,8 @@ export const ChordVisualizerCustomChord: FC<
   numberOfFrets = 13,
   careAboutStringIndex = false,
 }) => {
-  const { selectedBeat } = useContext(MusicContext)
+  const { currentBeatIndex, beats } = useContext(MusicContext)
+  const selectedBeat = beats[currentBeatIndex]
 
   const frets = []
 
@@ -292,7 +293,8 @@ export const ChordVisualizerCustomChord: FC<
                     selectedNote.note.relativeIndex ===
                       currentNote.relativeIndex
                 )}
-                onionSkinned={selectedBeat?.subdivisions
+                onionSkinned={selectedBeat?.bars
+                  .flatMap(bar => bar.subdivisions)
                   .flatMap(subdivision => subdivision.notes)
                   ?.some(
                     selectedNote =>
@@ -378,7 +380,8 @@ export const ChordVisualizerCustomChord: FC<
                         selectedNote.note.relativeIndex ===
                           currentNote.relativeIndex
                     )}
-                    onionSkinned={selectedBeat?.subdivisions
+                    onionSkinned={selectedBeat?.bars
+                      .flatMap(bar => bar.subdivisions)
                       .flatMap(subdivision => subdivision.notes)
                       ?.some(
                         selectedNote =>

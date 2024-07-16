@@ -1,6 +1,5 @@
 import { BeatBar } from './beat-chord'
 import React, { useContext, useEffect } from 'react'
-import { getScaleChord } from '../../utility/noteFunctions'
 import { ScaleDegree } from '../../data/chords'
 import { ScrollContainer } from 'react-indiana-drag-scroll'
 import { Bar, MusicContext } from '../../context/app-context'
@@ -10,19 +9,7 @@ var BAR_ID = 0
 var BEAT_ID = 100000
 
 export const ChordsEditor = () => {
-  const {
-    beats,
-    selectedBeat,
-    setBeats,
-    setSelectedBeat,
-    selectedMode,
-    currentBeat,
-    state,
-    selectedScale,
-    selectedNote,
-    selectedBarIndex,
-    setSelectedBarIndex,
-  } = useContext(MusicContext)
+  const { beats, setBeats, currentBeatIndex, state } = useContext(MusicContext)
   const addChord = () => {
     const degree: ScaleDegree = 1
 
@@ -46,14 +33,7 @@ export const ChordsEditor = () => {
     }
 
     setBeats([...beats, newBeat])
-    setSelectedBeat(newBeat)
   }
-
-  useEffect(() => {
-    if (state !== 'playing') return
-
-    // setSelectedBeat(beats[currentBeat])
-  }, [currentBeat])
 
   return (
     <div className={'w-auto overflow-hidden h-full min-h-96'}>

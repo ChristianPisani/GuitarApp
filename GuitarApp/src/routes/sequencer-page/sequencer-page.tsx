@@ -89,10 +89,6 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
   const [selectedNote, setSelectedNote] = useState<Note>(allNotes[0])
   const [selectedScale, setSelectedScale] = useState<Scale>(majorScale)
   const [selectedMode, setSelectedMode] = useState<Mode>(1)
-  const [selectedBeat, setSelectedBeat] = useState<Beat | undefined>(undefined)
-  const [selectedBarIndex, setSelectedBarIndex] = useState<number | undefined>(
-    undefined
-  )
   const [beats, setBeats] = useState<Beat[]>([])
   const [state, setState] = useState<SequencerState>('editing')
   const [bpm, setBpm] = useState(130)
@@ -106,7 +102,6 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
     selectedScale,
     selectedMode,
     beats,
-    selectedBeat,
     state,
     bpm,
     effectNodes,
@@ -117,7 +112,6 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
 
     if (!loadedState) return
 
-    setSelectedBeat(loadedState.beats[0] ?? undefined)
     setSelectedNote(loadedState.selectedNote ?? allNotes[0])
     setSelectedScale(loadedState.selectedScale ?? majorScale)
     setSelectedMode(loadedState.selectedMode ?? 1)
@@ -237,8 +231,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
 
     const currentAmountOfSubdivisions = beat.bars[barIndex].subdivisions.length
 
-    if (!selectedBeat || currentAmountOfSubdivisions >= maxAmountOfSubdivisions)
-      return
+    if (currentAmountOfSubdivisions >= maxAmountOfSubdivisions) return
 
     beat.bars[barIndex].subdivisions.push(getDefaultSubdivision())
     updateBeat(beat)
@@ -274,11 +267,11 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
         setSelectedMode,
         setSelectedScale,
         setBeats,
-        setSelectedBeat,
         setState,
-        setSelectedBarIndex,
-        selectedBarIndex,
-        currentBeat: sequencer.currentBeat,
+        setCurrentBarIndex: sequencer.setCurrentBar,
+        currentBarIndex: sequencer.currentBar,
+        currentBeatIndex: sequencer.currentBeat,
+        setCurrentBeat: sequencer.setCurrentBeat,
         currentSubdivision: sequencer.currentSubdivision,
         setCurrentSubdivision: sequencer.setCurrentSubdivision,
         removeSubdivision,

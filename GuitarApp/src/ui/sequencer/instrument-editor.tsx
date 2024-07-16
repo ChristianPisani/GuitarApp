@@ -25,13 +25,10 @@ import { playNotes } from '../../utility/instrumentFunctions'
 
 export const InstrumentEditor = () => {
   const {
-    selectedBeat,
-    selectedBarIndex,
-    setSelectedBarIndex,
-    state,
-    setState,
     beats,
-    setBeats,
+    currentBeatIndex,
+    currentBarIndex,
+    setCurrentBarIndex,
     selectedNote,
     selectedScale,
     selectedMode,
@@ -44,16 +41,13 @@ export const InstrumentEditor = () => {
     instrument,
   } = useContext(MusicContext)
 
-  const [notes, setNotes] = useState<StringNote[]>([])
-
-  const [currentTrackIndex, setCurrentTrackIndex] = useState(1)
-
-  const currentBar = selectedBeat?.bars[selectedBarIndex ?? 0]
+  const currentBeat = beats[currentBeatIndex]
+  const currentBar = currentBeat?.bars[currentBarIndex ?? 0]
   const subdivision = currentBar?.subdivisions[currentSubdivision]
 
   const currentAmountOfSubdivisions = currentBar?.subdivisions.length ?? 0
   const selectedChord =
-    selectedBeat && currentBar
+    currentBeat && currentBar
       ? getScaleChord(
           selectedNote,
           currentBar?.scale ?? selectedScale,
@@ -63,25 +57,22 @@ export const InstrumentEditor = () => {
         )
       : undefined
 
-  useEffect(() => {
-    /*if (!selectedBeat) {
+  const getNotes = () => {
+    if (!currentBeat || !currentBar) {
       return
     }
 
     const chordNotes = getChordNotes(
       getScaleChord(
         selectedNote,
-        currentBeatSubdivisionTODONAMETHIS?.scale ?? selectedScale,
+        currentBar?.scale ?? selectedScale,
         selectedMode,
-        currentBeatSubdivisionTODONAMETHIS.scaleDegree
+        currentBar.scaleDegree
       )
     )
 
-    const notes = currentBeatSubdivisionTODONAMETHIS.subdivisions[
-      Math.min(
-        selectedSubdivision,
-        currentBeatSubdivisionTODONAMETHIS.subdivisions.length - 1
-      )
+    return currentBar.subdivisions[
+      Math.min(currentSubdivision, currentBar.subdivisions.length - 1)
     ]?.notes
       ?.map(note => {
         const scaleNote = chordNotes[note.index]
@@ -95,9 +86,9 @@ export const InstrumentEditor = () => {
         }
       })
       .filter(note => !!note)
+  }
 
-    setNotes([...notes] ?? [])*/
-  }, [selectedBeat, beats, selectedScale])
+  const notes = getNotes()
 
   useEffect(() => {
     // setSelectedSubdivision(currentSubdivision)
@@ -113,32 +104,32 @@ export const InstrumentEditor = () => {
   }
 
   const doRemoveSubdivision = (barIndex: number) => {
-    if (!selectedBeat) return
+    if (!currentBeat) return
 
     setCurrentSubdivision(c =>
       Math.min((currentBar?.subdivisions.length ?? 1) - 1, c)
     )
 
-    removeSubdivision(selectedBeat, barIndex)
+    removeSubdivision(currentBeat, barIndex)
   }
 
   const toggleNote = (note: Note, stringIndex: number) => {
-    /*if (!selectedBeat) return
+    if (!currentBeat || !currentBar) return
 
     const chordNotes = getChordNotes(
       getScaleChord(
         selectedNote,
-        currentBeatSubdivisionTODONAMETHIS?.scale ?? selectedScale,
+        currentBar?.scale ?? selectedScale,
         selectedMode,
-        currentBeatSubdivisionTODONAMETHIS?.scaleDegree ?? 1
+        currentBar?.scaleDegree ?? 1
       )
     )
     const chordIndex = chordNotes.findIndex(chordNote =>
       notesAreEqual(chordNote, note, false)
     )
 
-    const noteIndex = currentBeatSubdivisionTODONAMETHIS.subdivisions[
-      selectedSubdivision
+    const noteIndex = currentBar.subdivisions[
+      currentSubdivision
     ].notes?.findIndex(
       subDivisionNote =>
         subDivisionNote.index === chordIndex &&
@@ -147,16 +138,14 @@ export const InstrumentEditor = () => {
     )
     const hasNote = noteIndex !== -1
 
-    const stringAlreadyHasNoteIndex =
-      currentBeatSubdivisionTODONAMETHIS.subdivisions[
-        selectedSubdivision
-      ].notes.findIndex(
-        subdivisionNote => subdivisionNote.string === stringIndex
-      )
+    const stringAlreadyHasNoteIndex = currentBar.subdivisions[
+      currentSubdivision
+    ].notes.findIndex(subdivisionNote => subdivisionNote.string === stringIndex)
     if (stringAlreadyHasNoteIndex !== -1) {
-      currentBeatSubdivisionTODONAMETHIS.subdivisions[
-        selectedSubdivision
-      ].notes?.splice(stringAlreadyHasNoteIndex, 1)
+      currentBar.subdivisions[currentSubdivision].notes?.splice(
+        stringAlreadyHasNoteIndex,
+        1
+      )
     }
 
     if (!hasNote) {
@@ -169,17 +158,15 @@ export const InstrumentEditor = () => {
 
       instrument && playNotes(instrument, [note])
 
-      currentBeatSubdivisionTODONAMETHIS?.subdivisions[
-        selectedSubdivision
-      ].notes?.push(noteToPush)
+      currentBar?.subdivisions[currentSubdivision].notes?.push(noteToPush)
     }
 
-    updateBeat(selectedBeat)*/
+    updateBeat(currentBeat)
   }
 
   const changeSubdivision = (barIndex: number, subdivisionIndex: number) => {
     setCurrentSubdivision(subdivisionIndex)
-    setSelectedBarIndex(barIndex)
+    setCurrentBarIndex(barIndex)
   }
 
   return (
@@ -200,6 +187,14 @@ export const InstrumentEditor = () => {
             selected instrument
           </p>
         )}
+        <ChordVisualizerFullChord
+          chord={selectedChord}
+          strings={standardTuningNotes()}
+          showNoteIndex={false}
+          selectedNotes={notes}
+          onClickNote={toggleNote}
+        />
+        <h3>{currentBar?.id}</h3>
 
         {selectedChord && (
           <>
@@ -208,12 +203,12 @@ export const InstrumentEditor = () => {
                 <ChevronLeftRounded />
               </button>
               <div className={'grid cols-1 gap-2'}>
-                {selectedBeat?.bars.map((bar, barIndex) => (
+                {currentBeat?.bars.map((bar, barIndex) => (
                   <div className={'flex gap-2 max-w-48 flex-wrap items-center'}>
                     <div className={'flex gap-2'}>
                       <button
                         onClick={() =>
-                          selectedBeat && doRemoveSubdivision(barIndex)
+                          currentBeat && doRemoveSubdivision(barIndex)
                         }
                         className={
                           'hover:scale-105 active:scale-95 rounded-full'
@@ -223,7 +218,7 @@ export const InstrumentEditor = () => {
                       </button>
                       <button
                         onClick={() =>
-                          selectedBeat && addSubdivision(selectedBeat, barIndex)
+                          currentBeat && addSubdivision(currentBeat, barIndex)
                         }
                         className={
                           'hover:scale-105 active:scale-95 rounded-full'
@@ -268,10 +263,10 @@ export const InstrumentEditor = () => {
                       className={`border-2 border-gray-950 rounded text-md grid place-items-center w-10 transition
                       h-10 ${selected ? 'shadow-accent transform scale-110 font-bold' : ''}`}
                       onClick={() =>
-                        selectedBeat &&
+                        currentBeat &&
                         toggleInterval(
-                          selectedBeat,
-                          currentSubdivision % selectedBeat.bars.length,
+                          currentBeat,
+                          currentSubdivision % currentBeat.bars.length,
                           intervalIndex as ScaleDegree
                         )
                       }
@@ -300,11 +295,11 @@ export const InstrumentEditor = () => {
               max={2}
               step={0.1}
               onSlide={value => {
-                if (!subdivision || !selectedBeat) return
+                if (!subdivision || !currentBeat) return
 
                 subdivision.velocity = value
 
-                updateBeat(selectedBeat)
+                updateBeat(currentBeat)
               }}
             />
             <RangeSlider
@@ -314,11 +309,11 @@ export const InstrumentEditor = () => {
               max={1}
               step={0.1}
               onSlide={value => {
-                if (!subdivision || !selectedBeat) return
+                if (!subdivision || !currentBeat) return
 
                 subdivision.sustain = value
 
-                updateBeat(selectedBeat)
+                updateBeat(currentBeat)
               }}
             />
             <RangeSlider
@@ -328,11 +323,11 @@ export const InstrumentEditor = () => {
               max={0.1}
               step={0.01}
               onSlide={value => {
-                if (!subdivision || !selectedBeat) return
+                if (!subdivision || !currentBeat) return
 
                 subdivision.strumSpeed = value
 
-                updateBeat(selectedBeat)
+                updateBeat(currentBeat)
               }}
             />
           </div>

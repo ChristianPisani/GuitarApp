@@ -42,18 +42,19 @@ type BeatBarProps = {
 export const BeatBar: FC<BeatBarProps> = ({ beat }) => {
   const {
     beats,
-    selectedBeat,
-    setSelectedBeat,
+    currentBeatIndex,
+    setCurrentBeat,
     setBeats,
     selectedNote,
     selectedMode,
     selectedScale,
-    selectedBarIndex,
-    setSelectedBarIndex,
+    currentBarIndex,
+    setCurrentBarIndex,
     updateBeat,
   } = useContext(MusicContext)
 
-  const currentBar = selectedBeat?.bars[selectedBarIndex ?? 0]
+  const currentBeat = beats[currentBeatIndex]
+  const currentBar = currentBeat?.bars[currentBarIndex ?? 0]
 
   const removeBar = (barIndex: number) => {
     beat.bars.splice(barIndex, 1)
@@ -80,7 +81,7 @@ export const BeatBar: FC<BeatBarProps> = ({ beat }) => {
     updateBeat(beat)
   }
 
-  const isSelectedBeat = beat.id === selectedBeat?.id
+  const isSelectedBeat = beat.id === currentBeat?.id
 
   return (
     <div className={'grid place-items-center gap-4'}>
@@ -94,11 +95,11 @@ export const BeatBar: FC<BeatBarProps> = ({ beat }) => {
               bar.scaleDegree,
               bar.chordExtensionScaleDegrees
             )
-            const isSelectedBar = selectedBarIndex === index && isSelectedBeat
+            const isSelectedBar = currentBarIndex === index && isSelectedBeat
 
             const selectBar = () => {
-              setSelectedBarIndex(index)
-              setSelectedBeat(beat)
+              setCurrentBarIndex(index)
+              setCurrentBeat(beats.indexOf(beat))
             }
 
             return (
@@ -130,7 +131,7 @@ export const BeatBar: FC<BeatBarProps> = ({ beat }) => {
                   const scaleDegree = (scaleDegreeIndex + 1) as ScaleDegree
                   const isSelectedScaleDegree =
                     scaleDegree ===
-                    selectedBeat?.bars[selectedBarIndex ?? 0]?.scaleDegree
+                    currentBeat?.bars[currentBarIndex ?? 0]?.scaleDegree
 
                   return (
                     <button

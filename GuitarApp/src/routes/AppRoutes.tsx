@@ -1,6 +1,5 @@
 ﻿import React from 'react'
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
-import { FretboardVisualization } from './fretboard-visualization/FretboardVisualization'
 import { Header } from '../ui/header/header'
 import { SequencerPage } from './sequencer-page/sequencer-page'
 import { ChordsEditor } from '../ui/sequencer/chords-editor'
@@ -17,10 +16,6 @@ export const AppRoutes = () => {
         </>
       ),
       children: [
-        {
-          path: 'visualization',
-          element: <FretboardVisualization />,
-        },
         {
           path: '',
           element: <SequencerPage />,

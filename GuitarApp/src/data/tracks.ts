@@ -585,7 +585,7 @@ const playingGod = {
   bpm: 130,
   effectNodes: [],
 }
-export const defaultTracks = [
+export const defaultTracks: { name: string; track: any | undefined }[] = [
   //{ name: 'Simple open chord progression', track: simpleOpenChordsProgression },
   //{ name: 'Playing God', track: playingGod },
 ]

@@ -51,15 +51,14 @@ interface MusicContextProps {
   setSelectedMode: Dispatch<SetStateAction<Mode>>
   beats: Beat[]
   setBeats: Dispatch<SetStateAction<Beat[]>>
-  selectedBeat: Beat | undefined
-  setSelectedBeat: Dispatch<SetStateAction<Beat | undefined>>
-  selectedBarIndex: number | undefined
-  setSelectedBarIndex: Dispatch<SetStateAction<number | undefined>>
+  currentBarIndex: number
+  setCurrentBarIndex: Dispatch<SetStateAction<number>>
 
   state: SequencerState
   setState: (state: SequencerState) => void
 
-  currentBeat: number
+  currentBeatIndex: number
+  setCurrentBeat: Dispatch<SetStateAction<number>>
   currentSubdivision: number
   setCurrentSubdivision: Dispatch<SetStateAction<number>>
   addSubdivision: (beat: Beat, barIndex: number) => void
@@ -81,19 +80,18 @@ export const MusicContext = createContext<MusicContextProps>({
   bpm: 130,
   setBpm: () => undefined,
   beats: [],
-  selectedBeat: undefined,
   setSelectedScale: () => null,
   setSelectedNote: () => null,
   setSelectedMode: () => null,
   setBeats: () => null,
-  setSelectedBeat: () => null,
-  selectedBarIndex: undefined,
-  setSelectedBarIndex: () => undefined,
+  currentBarIndex: 0,
+  setCurrentBarIndex: () => undefined,
 
   state: 'editing',
   setState: () => null,
 
-  currentBeat: 0,
+  currentBeatIndex: 0,
+  setCurrentBeat: () => null,
   currentSubdivision: 0,
   setCurrentSubdivision: () => null,
 

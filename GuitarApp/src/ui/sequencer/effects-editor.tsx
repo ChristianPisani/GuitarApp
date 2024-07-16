@@ -1,17 +1,9 @@
-import { BeatChord } from './beat-chord'
-import React, { FC, useContext, useEffect, useState } from 'react'
-import { getScaleChord } from '../../utility/noteFunctions'
-import { ScaleDegree } from '../../data/chords'
+import React, { FC, useContext, useState } from 'react'
 import { ScrollContainer } from 'react-indiana-drag-scroll'
-import { Beat, MusicContext } from '../../context/app-context'
-import { getDefaultSubdivision } from '../../utility/sequencer-utilities'
-import {
-  EffectNode,
-  EffectType,
-} from '../../routes/sequencer-page/sequencer-page'
+import { MusicContext } from '../../context/app-context'
+import { EffectType } from '../../routes/sequencer-page/sequencer-page'
 import { effectTypes } from '../../data/effects'
 import { Button } from '../button/button'
-import { RangeSlider } from '../input/range-slider'
 import { Distortion, JCReverb, Phaser, Reverb } from 'tone'
 import { ReverbEditor } from '../effect-editors/reverb-editor'
 import { DistortionEditor } from '../effect-editors/distortion-editor'

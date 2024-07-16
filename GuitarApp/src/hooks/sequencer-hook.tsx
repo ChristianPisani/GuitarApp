@@ -20,6 +20,7 @@ type SequencerHookProps = {
 
 export const useSequencer = (props: SequencerHookProps) => {
   const [currentBeat, setCurrentBeat] = useState(0)
+  const [currentBar, setCurrentBar] = useState(0)
   const [currentSubdivision, setCurrentSubdivision] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
 
@@ -44,10 +45,11 @@ export const useSequencer = (props: SequencerHookProps) => {
     const sequence = new Tone.Sequence({
       callback: function (
         time,
-        { beat, beatIndex, subdivision, subdivisionIndex }
+        { beat, beatIndex, barIndex, subdivision, subdivisionIndex }
       ) {
         Tone.getDraw().schedule(() => {
           setCurrentBeat(beatIndex)
+          setCurrentBar(barIndex)
           setCurrentSubdivision(subdivisionIndex)
         }, time)
 
@@ -55,17 +57,18 @@ export const useSequencer = (props: SequencerHookProps) => {
       },
       events: props.beats.map((beat, beatIndex) => {
         return [
-          ...beat.bars.map(bar =>
+          ...beat.bars.map((bar, barIndex) =>
             bar.subdivisions.map((subdivision, subdivisionIndex) => ({
               beat,
               beatIndex,
+              barIndex,
               subdivision,
               subdivisionIndex,
             }))
           ),
         ]
       }),
-      subdivision: '4n',
+      subdivision: '1n',
     }).start()
 
     return () => {
@@ -81,7 +84,10 @@ export const useSequencer = (props: SequencerHookProps) => {
     startBeat,
     stopBeat,
     currentBeat,
+    setCurrentBeat,
     currentSubdivision,
+    currentBar,
+    setCurrentBar,
     setCurrentSubdivision,
   }
 }
