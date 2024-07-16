@@ -42,8 +42,7 @@ export const SequencerUi: FC<SequencerUiProps> = ({
       className={`grid min-h-[500px] w-full flex-1 md:grid-cols-[2fr_5fr] grid-cols-1 gap-2
         bg-secondary-950 p-2`}
     >
-      <div></div>
-      {/*<InstrumentEditor />*/}
+      <InstrumentEditor />
       <div
         className={
           'flex flex-col justify-between gap-4 max-w-full overflow-hidden'

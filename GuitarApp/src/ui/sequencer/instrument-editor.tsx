@@ -26,6 +26,8 @@ import { playNotes } from '../../utility/instrumentFunctions'
 export const InstrumentEditor = () => {
   const {
     selectedBeat,
+    selectedBarIndex,
+    setSelectedBarIndex,
     state,
     setState,
     beats,
@@ -34,6 +36,7 @@ export const InstrumentEditor = () => {
     selectedScale,
     selectedMode,
     currentSubdivision,
+    setCurrentSubdivision,
     addSubdivision,
     removeSubdivision,
     updateBeat,
@@ -41,27 +44,27 @@ export const InstrumentEditor = () => {
     instrument,
   } = useContext(MusicContext)
 
-  const [selectedSubdivision, setSelectedSubdivision] = useState(0)
   const [notes, setNotes] = useState<StringNote[]>([])
 
   const [currentTrackIndex, setCurrentTrackIndex] = useState(1)
 
-  // Map out each subdivision with all related info
-  const beatSubdivisions =
-    selectedBeat?.bars?.flatMap(bar =>
-      bar.subdivisions?.map(subdivision => ({ ...bar, subdivision }))
-    ) ?? []
+  const currentBar = selectedBeat?.bars[selectedBarIndex ?? 0]
+  const subdivision = currentBar?.subdivisions[currentSubdivision]
 
-  const subdivision = beatSubdivisions[selectedSubdivision]?.subdivision
-  const currentBeatSubdivisionTODONAMETHIS =
-    beatSubdivisions[selectedSubdivision]
+  const currentAmountOfSubdivisions = currentBar?.subdivisions.length ?? 0
+  const selectedChord =
+    selectedBeat && currentBar
+      ? getScaleChord(
+          selectedNote,
+          currentBar?.scale ?? selectedScale,
+          selectedMode,
+          currentBar.scaleDegree,
+          currentBar.chordExtensionScaleDegrees
+        )
+      : undefined
 
   useEffect(() => {
-    setSelectedSubdivision(0)
-  }, [selectedBeat])
-
-  useEffect(() => {
-    if (!selectedBeat) {
+    /*if (!selectedBeat) {
       return
     }
 
@@ -93,45 +96,34 @@ export const InstrumentEditor = () => {
       })
       .filter(note => !!note)
 
-    setNotes([...notes] ?? [])
-  }, [selectedBeat, selectedSubdivision, beats, selectedScale])
+    setNotes([...notes] ?? [])*/
+  }, [selectedBeat, beats, selectedScale])
 
   useEffect(() => {
-    setSelectedSubdivision(currentSubdivision)
+    // setSelectedSubdivision(currentSubdivision)
   }, [currentSubdivision])
 
-  const currentAmountOfSubdivisions =
-    currentBeatSubdivisionTODONAMETHIS?.subdivisions.length ?? 0
-
-  const selectedChord = selectedBeat
-    ? getScaleChord(
-        selectedNote,
-        currentBeatSubdivisionTODONAMETHIS?.scale ?? selectedScale,
-        selectedMode,
-        currentBeatSubdivisionTODONAMETHIS.scaleDegree,
-        currentBeatSubdivisionTODONAMETHIS.chordExtensionScaleDegrees
-      )
-    : undefined
-
   const gotoNextSubdivision = () => {
-    setSelectedSubdivision(
-      Math.min(currentAmountOfSubdivisions - 1, selectedSubdivision + 1)
-    )
+    //setSelectedSubdivision(
+    //  Math.min(currentAmountOfSubdivisions - 1, selectedSubdivision + 1)
+    //)
   }
   const gotoPreviousSubdivision = () => {
-    setSelectedSubdivision(Math.max(0, selectedSubdivision - 1))
+    //setSelectedSubdivision(Math.max(0, selectedSubdivision - 1))
   }
 
-  const doRemoveSubdivision = (beat: Beat) => {
-    setSelectedSubdivision(c =>
-      Math.min(currentBeatSubdivisionTODONAMETHIS.subdivisions.length - 1, c)
+  const doRemoveSubdivision = (barIndex: number) => {
+    if (!selectedBeat) return
+
+    setCurrentSubdivision(c =>
+      Math.min((currentBar?.subdivisions.length ?? 1) - 1, c)
     )
 
-    removeSubdivision(beat, beat.bars.length - 1)
+    removeSubdivision(selectedBeat, barIndex)
   }
 
   const toggleNote = (note: Note, stringIndex: number) => {
-    if (!selectedBeat) return
+    /*if (!selectedBeat) return
 
     const chordNotes = getChordNotes(
       getScaleChord(
@@ -182,7 +174,12 @@ export const InstrumentEditor = () => {
       ].notes?.push(noteToPush)
     }
 
-    updateBeat(selectedBeat)
+    updateBeat(selectedBeat)*/
+  }
+
+  const changeSubdivision = (barIndex: number, subdivisionIndex: number) => {
+    setCurrentSubdivision(subdivisionIndex)
+    setSelectedBarIndex(barIndex)
   }
 
   return (
@@ -190,25 +187,6 @@ export const InstrumentEditor = () => {
       className={`grid grid-rows-[1fr_auto] gap-8 rounded-l-2xl rounded-r-lg bg-primary-50
         relative z-0`}
     >
-      <div
-        className={
-          'absolute right-[100%] top-8 flex flex-col gap-2 justify-end items-end z-[-1]'
-        }
-      >
-        {Array.from({ length: 4 }).map((_, index) => (
-          <button
-            onClick={() => setCurrentTrackIndex(index)}
-            className={`${
-              index === currentTrackIndex
-                ? 'font-bold border-secondary-950 pr-12'
-                : 'border-transparent hover:bg-gray-50'
-            } bg-primary-50 border-8 px-8 py-4
-            rounded-l-3xl border-r-0 w-fit whitespace-nowrap transition-all`}
-          >
-            <p className={'text-lg'}>Track {index}</p>
-          </button>
-        ))}
-      </div>
       <div
         className={`flex w-full flex-col place-items-center justify-center rounded-3xl p-8 shadow-xl
           gap-4`}
@@ -222,59 +200,57 @@ export const InstrumentEditor = () => {
             selected instrument
           </p>
         )}
-        <ChordVisualizerFullChord
-          chord={selectedChord}
-          strings={standardTuningNotes()}
-          showNoteIndex={false}
-          selectedNotes={notes}
-          onClickNote={toggleNote}
-        />
+
         {selectedChord && (
           <>
             <div className={'flex gap-2 justify-between w-full items-center'}>
               <button onClick={gotoPreviousSubdivision}>
                 <ChevronLeftRounded />
               </button>
-              <div className={'flex gap-2 max-w-48 flex-wrap items-center'}>
-                {currentBeatSubdivisionTODONAMETHIS?.subdivisions.map(
-                  (subdivision, index) => (
-                    <button
-                      className={`rounded-full border-2 border-secondary-950 w-4 h-4 ${
-                        selectedSubdivision === index ? 'bg-secondary-950' : ''
-                      }`}
-                      onClick={() => setSelectedSubdivision(index)}
-                    ></button>
-                  )
-                )}
+              <div className={'grid cols-1 gap-2'}>
+                {selectedBeat?.bars.map((bar, barIndex) => (
+                  <div className={'flex gap-2 max-w-48 flex-wrap items-center'}>
+                    <div className={'flex gap-2'}>
+                      <button
+                        onClick={() =>
+                          selectedBeat && doRemoveSubdivision(barIndex)
+                        }
+                        className={
+                          'hover:scale-105 active:scale-95 rounded-full'
+                        }
+                      >
+                        <RemoveCircleOutline />
+                      </button>
+                      <button
+                        onClick={() =>
+                          selectedBeat && addSubdivision(selectedBeat, barIndex)
+                        }
+                        className={
+                          'hover:scale-105 active:scale-95 rounded-full'
+                        }
+                      >
+                        <AddCircleOutlined />
+                      </button>
+                    </div>
+                    {bar.subdivisions.map((subdivision, subdivisionIndex) => (
+                      <button
+                        className={`rounded-full border-2 border-secondary-950 w-4 h-4 ${
+                          currentBar?.id === bar.id &&
+                          currentSubdivision === subdivisionIndex
+                            ? 'bg-secondary-950'
+                            : ''
+                        }`}
+                        onClick={() =>
+                          changeSubdivision(barIndex, subdivisionIndex)
+                        }
+                      ></button>
+                    ))}
+                  </div>
+                ))}
               </div>
               <button onClick={gotoNextSubdivision}>
                 <ChevronRightRounded />
               </button>
-            </div>
-            <div className={'flex gap-4'}>
-              <h3>
-                Subdivisions ({selectedSubdivision + 1}/
-                {currentAmountOfSubdivisions})
-              </h3>
-              <div className={'flex gap-2'}>
-                <button
-                  onClick={() =>
-                    selectedBeat && doRemoveSubdivision(selectedBeat)
-                  }
-                  className={'hover:scale-105 active:scale-95 rounded-full'}
-                >
-                  <RemoveCircleOutline />
-                </button>
-                <button
-                  onClick={() =>
-                    selectedBeat &&
-                    addSubdivision(selectedBeat, selectedBeat.bars.length - 1)
-                  }
-                  className={'hover:scale-105 active:scale-95 rounded-full'}
-                >
-                  <AddCircleOutlined />
-                </button>
-              </div>
             </div>
             <div className={'flex flex-col items-center gap-4'}>
               <h3>Intervals</h3>
@@ -283,10 +259,9 @@ export const InstrumentEditor = () => {
                   // TOOD: Not sure if this will work with all scales. Should find a better way to handle intervals generally.
                   const intervalIndex = index + 1
 
-                  const selected =
-                    currentBeatSubdivisionTODONAMETHIS?.chordExtensionScaleDegrees?.some(
-                      interval => interval === intervalIndex
-                    )
+                  const selected = currentBar?.chordExtensionScaleDegrees?.some(
+                    interval => interval === intervalIndex
+                  )
 
                   return (
                     <button
@@ -296,7 +271,7 @@ export const InstrumentEditor = () => {
                         selectedBeat &&
                         toggleInterval(
                           selectedBeat,
-                          selectedSubdivision % selectedBeat.bars.length,
+                          currentSubdivision % selectedBeat.bars.length,
                           intervalIndex as ScaleDegree
                         )
                       }

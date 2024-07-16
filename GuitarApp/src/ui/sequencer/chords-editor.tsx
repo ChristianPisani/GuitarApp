@@ -1,9 +1,9 @@
-import { BeatBar, BeatChord } from './beat-chord'
-import React, { createRef, useContext, useEffect } from 'react'
+import { BeatBar } from './beat-chord'
+import React, { useContext, useEffect } from 'react'
 import { getScaleChord } from '../../utility/noteFunctions'
 import { ScaleDegree } from '../../data/chords'
 import { ScrollContainer } from 'react-indiana-drag-scroll'
-import { MusicContext } from '../../context/app-context'
+import { Bar, MusicContext } from '../../context/app-context'
 import { getDefaultSubdivision } from '../../utility/sequencer-utilities'
 
 var BAR_ID = 0
@@ -28,12 +28,12 @@ export const ChordsEditor = () => {
 
     const defaultBeatBar = () => ({
       scaleDegree: degree,
-      scaleDegrees: [1, 2, 3] as ScaleDegree[],
+      chordExtensionScaleDegrees: [1, 2, 3] as ScaleDegree[],
       subdivisions: [getDefaultSubdivision()],
       id: BAR_ID++,
     })
 
-    const bars: BeatBar[] = [
+    const bars: Bar[] = [
       defaultBeatBar(),
       defaultBeatBar(),
       defaultBeatBar(),

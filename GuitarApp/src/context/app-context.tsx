@@ -61,6 +61,7 @@ interface MusicContextProps {
 
   currentBeat: number
   currentSubdivision: number
+  setCurrentSubdivision: Dispatch<SetStateAction<number>>
   addSubdivision: (beat: Beat, barIndex: number) => void
   removeSubdivision: (beat: Beat, barIndex: number) => void
   updateBeat: (beat: Beat) => void
@@ -94,6 +95,7 @@ export const MusicContext = createContext<MusicContextProps>({
 
   currentBeat: 0,
   currentSubdivision: 0,
+  setCurrentSubdivision: () => null,
 
   addSubdivision: beat => undefined,
   removeSubdivision: beat => undefined,

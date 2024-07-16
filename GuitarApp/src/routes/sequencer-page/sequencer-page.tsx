@@ -280,6 +280,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
         selectedBarIndex,
         currentBeat: sequencer.currentBeat,
         currentSubdivision: sequencer.currentSubdivision,
+        setCurrentSubdivision: sequencer.setCurrentSubdivision,
         removeSubdivision,
         addSubdivision,
         updateBeat,

@@ -77,5 +77,11 @@ export const useSequencer = (props: SequencerHookProps) => {
     getTransport().bpm.rampTo(props.bpm)
   }, [props.bpm])
 
-  return { startBeat, stopBeat, currentBeat, currentSubdivision }
+  return {
+    startBeat,
+    stopBeat,
+    currentBeat,
+    currentSubdivision,
+    setCurrentSubdivision,
+  }
 }
