@@ -10,7 +10,7 @@ import { FC, useEffect, useState } from 'react'
 import { Mode, Note, Scale } from '../../types/musical-terms'
 import { majorScale } from '../../data/scales'
 import { SequencerUi } from '../../ui/sequencer/sequencer-ui'
-import { Beat, MusicContext, SequencerState } from '../../context/app-context'
+import { Bar, MusicContext, SequencerState } from '../../context/app-context'
 import { useSequencer } from '../../hooks/sequencer-hook'
 import { acousticGuitar } from '../../utility/instruments'
 import { playNotes } from '../../utility/instrumentFunctions'
@@ -89,7 +89,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
   const [selectedNote, setSelectedNote] = useState<Note>(allNotes[0])
   const [selectedScale, setSelectedScale] = useState<Scale>(majorScale)
   const [selectedMode, setSelectedMode] = useState<Mode>(1)
-  const [beats, setBeats] = useState<Beat[]>([])
+  const [bars, setBars] = useState<Bar[]>([])
   const [state, setState] = useState<SequencerState>('editing')
   const [bpm, setBpm] = useState(130)
   const [effectNodes, setEffectNodes] = useState<EffectNode[]>([])
@@ -101,7 +101,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
     selectedNote,
     selectedScale,
     selectedMode,
-    beats,
+    bars,
     state,
     bpm,
     effectNodes,
@@ -115,7 +115,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
     setSelectedNote(loadedState.selectedNote ?? allNotes[0])
     setSelectedScale(loadedState.selectedScale ?? majorScale)
     setSelectedMode(loadedState.selectedMode ?? 1)
-    setBeats(loadedState.beats ?? [])
+    setBars(loadedState.beats ?? [])
     setBpm(loadedState.bpm ?? 130)
     setEffectNodes(loadedState.effects ?? [])
   }, [saveState])
@@ -171,9 +171,9 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
       const notes = subdivision.notes.map(beatNote => {
         const scaleChord = getScaleChord(
           selectedNote,
-          beat.bars[beatIndex].scale ?? selectedScale,
+          beat.beats[beatIndex].scale ?? selectedScale,
           selectedMode,
-          beat.bars[beatIndex].scaleDegree
+          beat.beats[beatIndex].scaleDegree
         )
         const chordNotes = getChordNotes(scaleChord)
         const chordNote = chordNotes[beatNote.index]
@@ -204,50 +204,50 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
         subdivision.velocity
       )
     },
-    beats,
+    beats: bars,
     selectedNote,
     selectedScale,
     bpm,
   })
 
-  const updateBeat = (beat: Beat) => {
-    const beatIndex = beats.findIndex(b => b.id === beat.id)
-    beats[beatIndex] = beat
-    setBeats([...beats])
+  const updateBeat = (beat: Bar) => {
+    const beatIndex = bars.findIndex(b => b.id === beat.id)
+    bars[beatIndex] = beat
+    setBars([...bars])
   }
 
-  const removeSubdivision = (beat: Beat, barIndex: number) => {
-    const currentAmountOfSubdivisions = beat.bars[barIndex].subdivisions.length
+  const removeSubdivision = (beat: Bar, barIndex: number) => {
+    const currentAmountOfSubdivisions = beat.beats[barIndex].subdivisions.length
 
     if (currentAmountOfSubdivisions <= 1) return
 
-    beat.bars[barIndex].subdivisions.splice(-1, 1)
+    beat.beats[barIndex].subdivisions.splice(-1, 1)
 
     updateBeat(beat)
   }
 
-  const addSubdivision = (beat: Beat, barIndex: number) => {
-    const maxAmountOfSubdivisions = beat.bars.length * 8
+  const addSubdivision = (beat: Bar, barIndex: number) => {
+    const maxAmountOfSubdivisions = beat.beats.length * 8
 
-    const currentAmountOfSubdivisions = beat.bars[barIndex].subdivisions.length
+    const currentAmountOfSubdivisions = beat.beats[barIndex].subdivisions.length
 
     if (currentAmountOfSubdivisions >= maxAmountOfSubdivisions) return
 
-    beat.bars[barIndex].subdivisions.push(getDefaultSubdivision())
+    beat.beats[barIndex].subdivisions.push(getDefaultSubdivision())
     updateBeat(beat)
   }
 
   const toggleInterval = (
-    beat: Beat,
+    beat: Bar,
     barIndex: number,
     interval: ScaleDegree
   ) => {
     const index =
-      beat.bars[barIndex].chordExtensionScaleDegrees.indexOf(interval)
+      beat.beats[barIndex].chordExtensionScaleDegrees.indexOf(interval)
     if (index === -1) {
-      beat.bars[barIndex].chordExtensionScaleDegrees.push(interval)
+      beat.beats[barIndex].chordExtensionScaleDegrees.push(interval)
     } else {
-      beat.bars[barIndex].chordExtensionScaleDegrees.splice(index, 1)
+      beat.beats[barIndex].chordExtensionScaleDegrees.splice(index, 1)
     }
     updateBeat(beat)
   }
@@ -266,17 +266,17 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
         setSelectedNote,
         setSelectedMode,
         setSelectedScale,
-        setBeats,
+        setBars: setBars,
         setState,
-        setCurrentBarIndex: sequencer.setCurrentBar,
-        currentBarIndex: sequencer.currentBar,
-        currentBeatIndex: sequencer.currentBeat,
-        setCurrentBeat: sequencer.setCurrentBeat,
+        setCurrentBeatIndex: sequencer.setCurrentBar,
+        currentBeatIndex: sequencer.currentBar,
+        currentBarIndex: sequencer.currentBeat,
+        setCurrentBar: sequencer.setCurrentBeat,
         currentSubdivision: sequencer.currentSubdivision,
         setCurrentSubdivision: sequencer.setCurrentSubdivision,
         removeSubdivision,
         addSubdivision,
-        updateBeat,
+        updateBar: updateBeat,
         setBpm,
         toggleInterval,
         setEffectNodes,
@@ -290,7 +290,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
         }
       >
         <div className={'flex gap-8 my-8'}>
-          <h3>Beats: {beats.length}</h3>
+          <h3>Beats: {bars.length}</h3>
           <button
             className={
               'rounded-full px-8 py-4 bg-primary-200 hover:bg-primary-400'
@@ -317,7 +317,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
           </select>
           <h4>
             Subdivisions:
-            {beats[sequencer.currentBeat]?.bars?.flatMap(
+            {bars[sequencer.currentBeat]?.beats?.flatMap(
               bar => bar.subdivisions
             )?.length ?? 0}
           </h4>

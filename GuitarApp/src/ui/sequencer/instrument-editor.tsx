@@ -13,7 +13,7 @@ import {
 } from '@mui/icons-material'
 import { Select } from '../input/inputs'
 import { useContext, useEffect, useState } from 'react'
-import { Beat, MusicContext } from '../../context/app-context'
+import { Bar, MusicContext } from '../../context/app-context'
 import {
   getChordNotes,
   getScaleChord,
@@ -25,10 +25,10 @@ import { playNotes } from '../../utility/instrumentFunctions'
 
 export const InstrumentEditor = () => {
   const {
-    beats,
-    currentBeatIndex,
+    bars,
     currentBarIndex,
-    setCurrentBarIndex,
+    currentBeatIndex,
+    setCurrentBeatIndex,
     selectedNote,
     selectedScale,
     selectedMode,
@@ -36,13 +36,13 @@ export const InstrumentEditor = () => {
     setCurrentSubdivision,
     addSubdivision,
     removeSubdivision,
-    updateBeat,
+    updateBar,
     toggleInterval,
     instrument,
   } = useContext(MusicContext)
 
-  const currentBeat = beats[currentBeatIndex]
-  const currentBar = currentBeat?.bars[currentBarIndex ?? 0]
+  const currentBeat = bars[currentBarIndex]
+  const currentBar = currentBeat?.beats[currentBeatIndex ?? 0]
   const subdivision = currentBar?.subdivisions[currentSubdivision]
 
   const currentAmountOfSubdivisions = currentBar?.subdivisions.length ?? 0
@@ -161,12 +161,12 @@ export const InstrumentEditor = () => {
       currentBar?.subdivisions[currentSubdivision].notes?.push(noteToPush)
     }
 
-    updateBeat(currentBeat)
+    updateBar(currentBeat)
   }
 
   const changeSubdivision = (barIndex: number, subdivisionIndex: number) => {
     setCurrentSubdivision(subdivisionIndex)
-    setCurrentBarIndex(barIndex)
+    setCurrentBeatIndex(barIndex)
   }
 
   return (
@@ -203,7 +203,7 @@ export const InstrumentEditor = () => {
                 <ChevronLeftRounded />
               </button>
               <div className={'grid cols-1 gap-2'}>
-                {currentBeat?.bars.map((bar, barIndex) => (
+                {currentBeat?.beats.map((bar, barIndex) => (
                   <div className={'flex gap-2 max-w-48 flex-wrap items-center'}>
                     <div className={'flex gap-2'}>
                       <button
@@ -266,7 +266,7 @@ export const InstrumentEditor = () => {
                         currentBeat &&
                         toggleInterval(
                           currentBeat,
-                          currentSubdivision % currentBeat.bars.length,
+                          currentBeatIndex,
                           intervalIndex as ScaleDegree
                         )
                       }
@@ -299,7 +299,7 @@ export const InstrumentEditor = () => {
 
                 subdivision.velocity = value
 
-                updateBeat(currentBeat)
+                updateBar(currentBeat)
               }}
             />
             <RangeSlider
@@ -313,7 +313,7 @@ export const InstrumentEditor = () => {
 
                 subdivision.sustain = value
 
-                updateBeat(currentBeat)
+                updateBar(currentBeat)
               }}
             />
             <RangeSlider
@@ -327,7 +327,7 @@ export const InstrumentEditor = () => {
 
                 subdivision.strumSpeed = value
 
-                updateBeat(currentBeat)
+                updateBar(currentBeat)
               }}
             />
           </div>

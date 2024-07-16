@@ -16,7 +16,7 @@ import {
   ScaleDegree,
   scaleDegreeNotations,
 } from '../../data/chords'
-import { Beat, Bar, MusicContext } from '../../context/app-context'
+import { Bar, Beat, MusicContext } from '../../context/app-context'
 import { ScalePicker } from '../scale-picker/scale-picker'
 import { Button } from '../button/button'
 import { getScaleChord } from '../../utility/noteFunctions'
@@ -24,7 +24,7 @@ import { availableScales } from '../../data/scales'
 
 type BeatChordProps = {
   showLines: boolean
-  beat: Beat
+  beat: Bar
   beatBarId: number
   onDelete?: (ref?: HTMLDivElement) => void
   chord: Chord
@@ -36,70 +36,70 @@ type BeatChordProps = {
 >
 
 type BeatBarProps = {
-  beat: Beat
+  bar: Bar
 }
 
-export const BeatBar: FC<BeatBarProps> = ({ beat }) => {
+export const BarComponent: FC<BeatBarProps> = ({ bar }) => {
   const {
-    beats,
-    currentBeatIndex,
-    setCurrentBeat,
-    setBeats,
+    bars,
+    currentBarIndex,
+    setCurrentBar,
+    setBars,
     selectedNote,
     selectedMode,
     selectedScale,
-    currentBarIndex,
-    setCurrentBarIndex,
-    updateBeat,
+    currentBeatIndex,
+    setCurrentBeatIndex,
+    updateBar,
   } = useContext(MusicContext)
 
-  const currentBeat = beats[currentBeatIndex]
-  const currentBar = currentBeat?.bars[currentBarIndex ?? 0]
+  const currentBar = bars[currentBarIndex]
+  const currentBeat = currentBar?.beats[currentBeatIndex ?? 0]
 
-  const removeBar = (barIndex: number) => {
-    beat.bars.splice(barIndex, 1)
-    if (beat.bars.length === 0) removeBeat()
-    updateBeat(beat)
+  const removeBeat = (beatIndex: number) => {
+    bar.beats.splice(beatIndex, 1)
+    if (bar.beats.length === 0) removeBar()
+    updateBar(bar)
   }
 
-  const removeBeat = () => {
-    const beatIndex = beats.indexOf(beat)
+  const removeBar = () => {
+    const barIndex = bars.indexOf(bar)
 
-    beats.splice(beatIndex, 1)
-    setBeats([...beats])
+    bars.splice(barIndex, 1)
+    setBars([...bars])
   }
 
   const updateScaleDegree = (newScaleDegree: ScaleDegree) => {
-    if (!currentBar) return
-    currentBar.scaleDegree = newScaleDegree
-    updateBeat(beat)
+    if (!currentBeat) return
+    currentBeat.scaleDegree = newScaleDegree
+    updateBar(bar)
   }
 
   const updateScale = (newScale: Scale | undefined) => {
-    if (!currentBar) return
-    currentBar.scale = newScale
-    updateBeat(beat)
+    if (!currentBeat) return
+    currentBeat.scale = newScale
+    updateBar(bar)
   }
 
-  const isSelectedBeat = beat.id === currentBeat?.id
+  const isSelectedBar = bar.id === currentBar?.id
 
   return (
     <div className={'grid place-items-center gap-4'}>
       <div className={'grid gap-4 border-2 border-primary-100 p-8'}>
         <div className={'flex gap-4'}>
-          {beat.bars.map((bar, index) => {
+          {bar.beats.map((beat, index) => {
             const chord = getScaleChord(
               selectedNote,
-              bar?.scale ?? selectedScale,
+              beat?.scale ?? selectedScale,
               selectedMode,
-              bar.scaleDegree,
-              bar.chordExtensionScaleDegrees
+              beat.scaleDegree,
+              beat.chordExtensionScaleDegrees
             )
-            const isSelectedBar = currentBarIndex === index && isSelectedBeat
+            const isSelectedBeat = currentBeatIndex === index && isSelectedBar
 
             const selectBar = () => {
-              setCurrentBarIndex(index)
-              setCurrentBeat(beats.indexOf(beat))
+              setCurrentBeatIndex(index)
+              setCurrentBar(bars.indexOf(bar))
             }
 
             return (
@@ -107,22 +107,22 @@ export const BeatBar: FC<BeatBarProps> = ({ beat }) => {
                 onClick={() => selectBar()}
                 className={'p-4 grid flex-1 place-items-center gap-2'}
               >
-                <div className={`${isSelectedBar ? 'glow' : ''}`}>
+                <div className={`${isSelectedBeat ? 'glow' : ''}`}>
                   <p className={'text-3xl font-bold'}>
-                    {scaleDegreeNotations(bar.scaleDegree)}
+                    {scaleDegreeNotations(beat.scaleDegree)}
                   </p>
                   <p className={'text-xl whitespace-nowrap'}>
                     {getChordName(chord, false)}
                   </p>
-                  <p>{bar.scale?.name}</p>
+                  <p>{beat.scale?.name}</p>
                 </div>
-                <button onClick={() => removeBar(index)}>Delete</button>
+                <button onClick={() => removeBeat(index)}>Delete</button>
               </button>
             )
           })}
         </div>
 
-        {isSelectedBeat && (
+        {isSelectedBar && (
           <>
             <div className={'flex gap-2 w-full justify-around'}>
               {Array(7)
@@ -131,7 +131,7 @@ export const BeatBar: FC<BeatBarProps> = ({ beat }) => {
                   const scaleDegree = (scaleDegreeIndex + 1) as ScaleDegree
                   const isSelectedScaleDegree =
                     scaleDegree ===
-                    currentBeat?.bars[currentBarIndex ?? 0]?.scaleDegree
+                    currentBar?.beats[currentBeatIndex ?? 0]?.scaleDegree
 
                   return (
                     <button
@@ -144,7 +144,7 @@ export const BeatBar: FC<BeatBarProps> = ({ beat }) => {
                 })}
             </div>
             <select
-              value={currentBar?.scale?.name}
+              value={currentBeat?.scale?.name}
               onChange={e =>
                 updateScale(
                   availableScales.find(scale => scale.name === e.target.value)
@@ -158,7 +158,7 @@ export const BeatBar: FC<BeatBarProps> = ({ beat }) => {
           </>
         )}
       </div>
-      <button onClick={removeBeat}>Delete</button>
+      <button onClick={removeBar}>Delete</button>
     </div>
   )
 }

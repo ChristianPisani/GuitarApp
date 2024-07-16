@@ -25,7 +25,7 @@ export interface Subdivision {
   sustain: number
 }
 
-export interface Bar {
+export interface Beat {
   scaleDegree: ScaleDegree
   chordExtensionScaleDegrees: ScaleDegree[]
   subdivisions: Subdivision[]
@@ -33,9 +33,9 @@ export interface Bar {
   id: number
 }
 
-export interface Beat {
+export interface Bar {
   id: number
-  bars: Bar[]
+  beats: Beat[]
 }
 
 export type SequencerState = 'playing' | 'paused' | 'stopped' | 'editing'
@@ -49,23 +49,23 @@ interface MusicContextProps {
   setBpm: Dispatch<SetStateAction<number>>
   selectedMode: Mode
   setSelectedMode: Dispatch<SetStateAction<Mode>>
-  beats: Beat[]
-  setBeats: Dispatch<SetStateAction<Beat[]>>
-  currentBarIndex: number
-  setCurrentBarIndex: Dispatch<SetStateAction<number>>
+  bars: Bar[]
+  setBars: Dispatch<SetStateAction<Bar[]>>
+  currentBeatIndex: number
+  setCurrentBeatIndex: Dispatch<SetStateAction<number>>
 
   state: SequencerState
   setState: (state: SequencerState) => void
 
-  currentBeatIndex: number
-  setCurrentBeat: Dispatch<SetStateAction<number>>
+  currentBarIndex: number
+  setCurrentBar: Dispatch<SetStateAction<number>>
   currentSubdivision: number
   setCurrentSubdivision: Dispatch<SetStateAction<number>>
-  addSubdivision: (beat: Beat, barIndex: number) => void
-  removeSubdivision: (beat: Beat, barIndex: number) => void
-  updateBeat: (beat: Beat) => void
+  addSubdivision: (beat: Bar, barIndex: number) => void
+  removeSubdivision: (beat: Bar, barIndex: number) => void
+  updateBar: (beat: Bar) => void
 
-  toggleInterval: (beat: Beat, barIndex: number, interval: ScaleDegree) => void
+  toggleInterval: (bar: Bar, beatIndex: number, interval: ScaleDegree) => void
 
   effectNodes: EffectNode[]
   setEffectNodes: (effectNodes: EffectNode[]) => void
@@ -79,26 +79,26 @@ export const MusicContext = createContext<MusicContextProps>({
   selectedMode: 1,
   bpm: 130,
   setBpm: () => undefined,
-  beats: [],
+  bars: [],
   setSelectedScale: () => null,
   setSelectedNote: () => null,
   setSelectedMode: () => null,
-  setBeats: () => null,
-  currentBarIndex: 0,
-  setCurrentBarIndex: () => undefined,
+  setBars: () => null,
+  currentBeatIndex: 0,
+  setCurrentBeatIndex: () => undefined,
 
   state: 'editing',
   setState: () => null,
 
-  currentBeatIndex: 0,
-  setCurrentBeat: () => null,
+  currentBarIndex: 0,
+  setCurrentBar: () => null,
   currentSubdivision: 0,
   setCurrentSubdivision: () => null,
 
   addSubdivision: beat => undefined,
   removeSubdivision: beat => undefined,
 
-  updateBeat: beat => undefined,
+  updateBar: beat => undefined,
 
   toggleInterval: (beat, interval) => undefined,
 
