@@ -5,14 +5,14 @@ import { getTransport, Sampler, Synth } from 'tone'
 import { Bar, Subdivision } from '../context/app-context'
 
 type SequencerHookProps = {
-  onBeat: (
-    beat: Bar,
-    beatIndex: number,
+  onTime: (
+    bar: Bar,
+    barIndex: number,
     subdivision: Subdivision,
     subdivisionIndex: number
   ) => void
   instrument: Sampler | Synth
-  beats: Bar[]
+  bars: Bar[]
   selectedNote: Note
   selectedScale: Scale
   bpm: number
@@ -37,7 +37,7 @@ export const useSequencer = (props: SequencerHookProps) => {
   }
 
   useEffect(() => {
-    if (!isPlaying || props.beats.length === 0) {
+    if (!isPlaying || props.bars.length === 0) {
       return
     }
 
@@ -53,18 +53,20 @@ export const useSequencer = (props: SequencerHookProps) => {
           setCurrentSubdivision(subdivisionIndex)
         }, time)
 
-        props.onBeat(beat, beatIndex, subdivision, subdivisionIndex)
+        props.onTime(beat, beatIndex, subdivision, subdivisionIndex)
       },
-      events: props.beats.map((beat, beatIndex) => {
+      events: props.bars.map((bar, beatIndex) => {
         return [
-          ...beat.beats.map((bar, barIndex) =>
-            bar.subdivisions.map((subdivision, subdivisionIndex) => ({
-              beat,
-              beatIndex,
-              barIndex,
-              subdivision,
-              subdivisionIndex,
-            }))
+          ...bar.beats.map((beat, barIndex) =>
+            beat.subdivisions
+              .slice(0, bar.timeSignature)
+              .map((subdivision, subdivisionIndex) => ({
+                beat: bar,
+                beatIndex,
+                barIndex,
+                subdivision,
+                subdivisionIndex,
+              }))
           ),
         ]
       }),
@@ -74,7 +76,7 @@ export const useSequencer = (props: SequencerHookProps) => {
     return () => {
       sequence.dispose()
     }
-  }, [props.beats.length, isPlaying])
+  }, [props.bars.length, isPlaying])
 
   useEffect(() => {
     getTransport().bpm.rampTo(props.bpm)

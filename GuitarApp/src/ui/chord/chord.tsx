@@ -299,7 +299,7 @@ export const ChordVisualizerCustomChord: FC<
                   ?.some(
                     selectedNote =>
                       notesAreEqual(
-                        chordNotes[selectedNote.index].note,
+                        chordNotes[selectedNote.index]?.note,
                         currentNote,
                         false
                       ) &&
@@ -386,7 +386,7 @@ export const ChordVisualizerCustomChord: FC<
                       ?.some(
                         selectedNote =>
                           notesAreEqual(
-                            chordNotes[selectedNote.index].note,
+                            chordNotes[selectedNote.index]?.note,
                             currentNote,
                             false
                           ) &&

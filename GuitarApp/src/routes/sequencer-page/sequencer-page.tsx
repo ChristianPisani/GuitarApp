@@ -167,7 +167,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
 
   const sequencer = useSequencer({
     instrument: acousticGuitar,
-    onBeat: (beat, beatIndex, subdivision, subdivisionIndex) => {
+    onTime: (beat, beatIndex, subdivision, subdivisionIndex) => {
       const notes = subdivision.notes.map(beatNote => {
         const scaleChord = getScaleChord(
           selectedNote,
@@ -204,7 +204,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
         subdivision.velocity
       )
     },
-    beats: bars,
+    bars: bars,
     selectedNote,
     selectedScale,
     bpm,

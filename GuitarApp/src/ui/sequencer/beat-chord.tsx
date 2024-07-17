@@ -21,6 +21,8 @@ import { ScalePicker } from '../scale-picker/scale-picker'
 import { Button } from '../button/button'
 import { getScaleChord } from '../../utility/noteFunctions'
 import { availableScales } from '../../data/scales'
+import { useTrackEditor } from '../../hooks/track-editor-hook'
+import { defaultBeat } from '../../utility/sequencer-utilities'
 
 type BeatChordProps = {
   showLines: boolean
@@ -55,30 +57,17 @@ export const BarComponent: FC<BeatBarProps> = ({ bar }) => {
 
   const currentBar = bars[currentBarIndex]
   const currentBeat = currentBar?.beats[currentBeatIndex ?? 0]
+  const {
+    removeBeat,
+    removeBar,
+    updateScale,
+    updateScaleDegree,
+    changeTimeSignature,
+  } = useTrackEditor()
 
-  const removeBeat = (beatIndex: number) => {
-    bar.beats.splice(beatIndex, 1)
-    if (bar.beats.length === 0) removeBar()
-    updateBar(bar)
-  }
-
-  const removeBar = () => {
-    const barIndex = bars.indexOf(bar)
-
-    bars.splice(barIndex, 1)
-    setBars([...bars])
-  }
-
-  const updateScaleDegree = (newScaleDegree: ScaleDegree) => {
-    if (!currentBeat) return
-    currentBeat.scaleDegree = newScaleDegree
-    updateBar(bar)
-  }
-
-  const updateScale = (newScale: Scale | undefined) => {
-    if (!currentBeat) return
-    currentBeat.scale = newScale
-    updateBar(bar)
+  const addBeat = () => {
+    currentBar.beats.push(defaultBeat())
+    updateBar(currentBar)
   }
 
   const isSelectedBar = bar.id === currentBar?.id
@@ -86,7 +75,7 @@ export const BarComponent: FC<BeatBarProps> = ({ bar }) => {
   return (
     <div className={'grid place-items-center gap-4'}>
       <div className={'grid gap-4 border-2 border-primary-100 p-8'}>
-        <div className={'flex gap-4'}>
+        <div className={'flex gap-4 items-center'}>
           {bar.beats.map((beat, index) => {
             const chord = getScaleChord(
               selectedNote,
@@ -116,10 +105,20 @@ export const BarComponent: FC<BeatBarProps> = ({ bar }) => {
                   </p>
                   <p>{beat.scale?.name}</p>
                 </div>
-                <button onClick={() => removeBeat(index)}>Delete</button>
+                <button onClick={() => removeBeat(bar, index)}>Delete</button>
               </button>
             )
           })}
+          {bars.length > 0 && (
+            <button
+              onClick={addBeat}
+              className={
+                'text-3xl border-primary-100 border-2 p-4 rounded-full aspect-square h-16'
+              }
+            >
+              +
+            </button>
+          )}
         </div>
 
         {isSelectedBar && (
@@ -135,7 +134,7 @@ export const BarComponent: FC<BeatBarProps> = ({ bar }) => {
 
                   return (
                     <button
-                      onClick={() => updateScaleDegree(scaleDegree)}
+                      onClick={() => updateScaleDegree(bar, scaleDegree)}
                       className={isSelectedScaleDegree ? 'glow' : ''}
                     >
                       {scaleDegreeNotations(scaleDegree)}
@@ -147,6 +146,7 @@ export const BarComponent: FC<BeatBarProps> = ({ bar }) => {
               value={currentBeat?.scale?.name}
               onChange={e =>
                 updateScale(
+                  bar,
                   availableScales.find(scale => scale.name === e.target.value)
                 )
               }
@@ -155,10 +155,26 @@ export const BarComponent: FC<BeatBarProps> = ({ bar }) => {
                 <option value={scale?.name}>{scale?.name}</option>
               ))}
             </select>
+            <p>
+              {bar.beats.length}/{bar.timeSignature * 4}
+            </p>
+            Change time signature:
+            <select
+              value={bar.timeSignature}
+              onChange={e => changeTimeSignature(bar, Number(e.target.value))}
+            >
+              <option value={1}>4n</option>
+              <option value={2}>8n</option>
+              <option value={3}>12n</option>
+              <option value={4}>16n</option>
+              <option value={5}>20n</option>
+              <option value={8}>32n</option>
+              <option value={16}>64n</option>
+            </select>
           </>
         )}
       </div>
-      <button onClick={removeBar}>Delete</button>
+      <button onClick={() => removeBar(bar)}>Delete</button>
     </div>
   )
 }

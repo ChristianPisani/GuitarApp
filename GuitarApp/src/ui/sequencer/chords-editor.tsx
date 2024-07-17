@@ -3,23 +3,11 @@ import React, { useContext, useEffect } from 'react'
 import { ScaleDegree } from '../../data/chords'
 import { ScrollContainer } from 'react-indiana-drag-scroll'
 import { Beat, MusicContext } from '../../context/app-context'
-import { getDefaultSubdivision } from '../../utility/sequencer-utilities'
-
-var BAR_ID = 0
-var BEAT_ID = 100000
+import { createNewBar, defaultBeat } from '../../utility/sequencer-utilities'
 
 export const ChordsEditor = () => {
   const { bars, setBars, currentBarIndex, state } = useContext(MusicContext)
   const addChord = () => {
-    const degree: ScaleDegree = 1
-
-    const defaultBeat = () => ({
-      scaleDegree: degree,
-      chordExtensionScaleDegrees: [1, 2, 3] as ScaleDegree[],
-      subdivisions: [getDefaultSubdivision()],
-      id: BAR_ID++,
-    })
-
     const beats: Beat[] = [
       defaultBeat(),
       defaultBeat(),
@@ -27,10 +15,7 @@ export const ChordsEditor = () => {
       defaultBeat(),
     ]
 
-    const newBar = {
-      id: BEAT_ID++,
-      beats,
-    }
+    const newBar = createNewBar(beats)
 
     setBars([...bars, newBar])
   }

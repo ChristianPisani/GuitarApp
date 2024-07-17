@@ -35,6 +35,7 @@ export interface Beat {
 
 export interface Bar {
   id: number
+  timeSignature: number
   beats: Beat[]
 }
 
