@@ -59,9 +59,9 @@ interface MusicContextProps {
   setState: (state: SequencerState) => void
 
   currentBarIndex: number
-  setCurrentBar: Dispatch<SetStateAction<number>>
-  currentSubdivision: number
-  setCurrentSubdivision: Dispatch<SetStateAction<number>>
+  setCurrentBarIndex: Dispatch<SetStateAction<number>>
+  currentSubdivisionIndex: number
+  setCurrentSubdivisionIndex: Dispatch<SetStateAction<number>>
   addSubdivision: (beat: Bar, barIndex: number) => void
   removeSubdivision: (beat: Bar, barIndex: number) => void
   updateBar: (beat: Bar) => void
@@ -92,9 +92,9 @@ export const MusicContext = createContext<MusicContextProps>({
   setState: () => null,
 
   currentBarIndex: 0,
-  setCurrentBar: () => null,
-  currentSubdivision: 0,
-  setCurrentSubdivision: () => null,
+  setCurrentBarIndex: () => null,
+  currentSubdivisionIndex: 0,
+  setCurrentSubdivisionIndex: () => null,
 
   addSubdivision: beat => undefined,
   removeSubdivision: beat => undefined,

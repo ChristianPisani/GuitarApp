@@ -22,152 +22,36 @@ import {
 import { Note, StringNote } from '../../types/musical-terms'
 import { RangeSlider } from '../input/range-slider'
 import { playNotes } from '../../utility/instrumentFunctions'
+import { useTrackEditor } from '../../hooks/track-editor-hook'
+import { useKeyboardShortcuts } from '../../hooks/keyboard-shortcuts-hook'
 
 export const InstrumentEditor = () => {
   const {
     bars,
     currentBarIndex,
     currentBeatIndex,
-    setCurrentBeatIndex,
-    selectedNote,
     selectedScale,
-    selectedMode,
-    currentSubdivision,
-    setCurrentSubdivision,
-    addSubdivision,
-    removeSubdivision,
+    currentSubdivisionIndex,
     updateBar,
     toggleInterval,
-    instrument,
   } = useContext(MusicContext)
+
+  const {
+    gotoPreviousSubdivision,
+    gotoNextSubdivision,
+    changeSubdivision,
+    toggleNote,
+    getCurrentBeatNotes,
+    getCurrentBeatChord,
+  } = useTrackEditor()
 
   const currentBar = bars[currentBarIndex]
   const currentBeat = currentBar?.beats[currentBeatIndex ?? 0]
-  const subdivision = currentBeat?.subdivisions[currentSubdivision]
+  const subdivision = currentBeat?.subdivisions[currentSubdivisionIndex]
 
-  const currentAmountOfSubdivisions = currentBeat?.subdivisions.length ?? 0
-  const selectedChord =
-    currentBar && currentBeat
-      ? getScaleChord(
-          selectedNote,
-          currentBeat?.scale ?? selectedScale,
-          selectedMode,
-          currentBeat.scaleDegree,
-          currentBeat.chordExtensionScaleDegrees
-        )
-      : undefined
-
-  const getNotes = () => {
-    if (!currentBar || !currentBeat) {
-      return
-    }
-
-    const chordNotes = getChordNotes(
-      getScaleChord(
-        selectedNote,
-        currentBeat?.scale ?? selectedScale,
-        selectedMode,
-        currentBeat.scaleDegree
-      )
-    )
-
-    return currentBeat.subdivisions[
-      Math.min(currentSubdivision, currentBeat.subdivisions.length - 1)
-    ]?.notes
-      ?.map(note => {
-        const scaleNote = chordNotes[note.index]
-        return {
-          note: {
-            ...scaleNote,
-            pitch: note.pitch,
-            relativeIndex: note.relativeIndex,
-          },
-          stringIndex: note.string ?? 1,
-        }
-      })
-      .filter(note => !!note)
-  }
-
-  const notes = getNotes()
-
-  useEffect(() => {
-    // setSelectedSubdivision(currentSubdivision)
-  }, [currentSubdivision])
-
-  const gotoNextSubdivision = () => {
-    //setSelectedSubdivision(
-    //  Math.min(currentAmountOfSubdivisions - 1, selectedSubdivision + 1)
-    //)
-  }
-  const gotoPreviousSubdivision = () => {
-    //setSelectedSubdivision(Math.max(0, selectedSubdivision - 1))
-  }
-
-  const doRemoveSubdivision = (barIndex: number) => {
-    if (!currentBar) return
-
-    setCurrentSubdivision(c =>
-      Math.min((currentBeat?.subdivisions.length ?? 1) - 1, c)
-    )
-
-    removeSubdivision(currentBar, barIndex)
-  }
-
-  const toggleNote = (note: Note, stringIndex: number) => {
-    if (!currentBar || !currentBeat) return
-
-    const chordNotes = getChordNotes(
-      getScaleChord(
-        selectedNote,
-        currentBeat?.scale ?? selectedScale,
-        selectedMode,
-        currentBeat?.scaleDegree ?? 1
-      )
-    )
-    const chordIndex = chordNotes.findIndex(chordNote =>
-      notesAreEqual(chordNote, note, false)
-    )
-
-    const noteIndex = currentBeat.subdivisions[
-      currentSubdivision
-    ].notes?.findIndex(
-      subDivisionNote =>
-        subDivisionNote.index === chordIndex &&
-        subDivisionNote.pitch === note.pitch &&
-        subDivisionNote.string === stringIndex
-    )
-    const hasNote = noteIndex !== -1
-
-    const stringAlreadyHasNoteIndex = currentBeat.subdivisions[
-      currentSubdivision
-    ].notes.findIndex(subdivisionNote => subdivisionNote.string === stringIndex)
-    if (stringAlreadyHasNoteIndex !== -1) {
-      currentBeat.subdivisions[currentSubdivision].notes?.splice(
-        stringAlreadyHasNoteIndex,
-        1
-      )
-    }
-
-    if (!hasNote) {
-      const noteToPush = {
-        string: stringIndex,
-        index: chordIndex,
-        pitch: note.pitch,
-        relativeIndex: note.relativeIndex ?? 0,
-      }
-
-      instrument && playNotes(instrument, [note])
-
-      currentBeat?.subdivisions[currentSubdivision].notes?.push(noteToPush)
-    }
-
-    updateBar(currentBar)
-  }
-
-  const changeSubdivision = (barIndex: number, subdivisionIndex: number) => {
-    setCurrentSubdivision(subdivisionIndex)
-    setCurrentBeatIndex(barIndex)
-  }
+  const selectedChord = getCurrentBeatChord()
+  const notes = getCurrentBeatNotes()
+  useKeyboardShortcuts()
 
   return (
     <div
@@ -213,7 +97,7 @@ export const InstrumentEditor = () => {
                         <button
                           className={`rounded-full outline-2 outline-secondary-950 w-4 h-4 ${
                             currentBeat?.id === beat.id &&
-                            currentSubdivision === subdivisionIndex
+                            currentSubdivisionIndex === subdivisionIndex
                               ? 'bg-secondary-950'
                               : subdivision.notes.length > 0
                                 ? 'bg-secondary-700'

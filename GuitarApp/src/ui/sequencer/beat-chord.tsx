@@ -45,7 +45,7 @@ export const BarComponent: FC<BeatBarProps> = ({ bar }) => {
   const {
     bars,
     currentBarIndex,
-    setCurrentBar,
+    setCurrentBarIndex,
     setBars,
     selectedNote,
     selectedMode,
@@ -88,7 +88,7 @@ export const BarComponent: FC<BeatBarProps> = ({ bar }) => {
 
             const selectBar = () => {
               setCurrentBeatIndex(index)
-              setCurrentBar(bars.indexOf(bar))
+              setCurrentBarIndex(bars.indexOf(bar))
             }
 
             return (
@@ -155,25 +155,21 @@ export const BarComponent: FC<BeatBarProps> = ({ bar }) => {
                 <option value={scale?.name}>{scale?.name}</option>
               ))}
             </select>
-            <p>
-              {bar.beats.length}/{bar.timeSignature * 4}
-            </p>
-            Change time signature:
-            <select
+            Change subdivisions per beat:
+            <input
+              type={'number'}
+              min={1}
+              max={16}
               value={bar.timeSignature}
               onChange={e => changeTimeSignature(bar, Number(e.target.value))}
-            >
-              <option value={1}>4n</option>
-              <option value={2}>8n</option>
-              <option value={3}>12n</option>
-              <option value={4}>16n</option>
-              <option value={5}>20n</option>
-              <option value={8}>32n</option>
-              <option value={16}>64n</option>
-            </select>
+            ></input>
           </>
         )}
       </div>
+      <p>
+        Time signature: {bar.timeSignature * bar.beats.length}/
+        {bar.beats.length}
+      </p>
       <button onClick={() => removeBar(bar)}>Delete</button>
     </div>
   )

@@ -5,7 +5,7 @@ import { MusicContext } from '../../context/app-context'
 export const AnimatedString: FC<{ stringIndex: number }> = ({
   stringIndex,
 }) => {
-  const { currentBarIndex, bars, currentSubdivision, currentBeatIndex } =
+  const { currentBarIndex, bars, currentSubdivisionIndex, currentBeatIndex } =
     useContext(MusicContext)
   const [animate, setAnimate] = useState(false)
   const selectedBeat = bars[currentBarIndex]
@@ -13,12 +13,12 @@ export const AnimatedString: FC<{ stringIndex: number }> = ({
   useEffect(() => {
     if (
       selectedBeat?.beats[currentBeatIndex].subdivisions[
-        currentSubdivision
+        currentSubdivisionIndex
       ].notes.some(note => note.string === stringIndex)
     ) {
       setAnimate(true)
     }
-  }, [currentSubdivision])
+  }, [currentSubdivisionIndex])
 
   useEffect(() => {
     if (animate) setAnimate(false)
