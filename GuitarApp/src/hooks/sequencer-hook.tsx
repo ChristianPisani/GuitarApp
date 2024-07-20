@@ -55,7 +55,7 @@ export const useSequencer = (props: SequencerHookProps) => {
 
         props.onTime(beat, beatIndex, subdivision, subdivisionIndex)
       },
-      events: props.bars.map((bar, beatIndex) => {
+      events: props.bars.flatMap((bar, beatIndex) => {
         return [
           ...bar.beats.map((beat, barIndex) =>
             beat.subdivisions
@@ -70,7 +70,7 @@ export const useSequencer = (props: SequencerHookProps) => {
           ),
         ]
       }),
-      subdivision: '1n',
+      subdivision: '4n',
     }).start()
 
     return () => {
