@@ -19,9 +19,9 @@ type SequencerHookProps = {
 }
 
 export const useSequencer = (props: SequencerHookProps) => {
-  const [currentBeat, setCurrentBeat] = useState(0)
-  const [currentBar, setCurrentBar] = useState(0)
-  const [currentSubdivision, setCurrentSubdivision] = useState(0)
+  const [currentBarIndex, setCurrentBarIndex] = useState(0)
+  const [currentBeatIndex, setCurrentBeatIndex] = useState(0)
+  const [currentSubdivisionIndex, setCurrentSubdivisionIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
 
   const startBeat = async () => {
@@ -48,22 +48,22 @@ export const useSequencer = (props: SequencerHookProps) => {
         { beat, beatIndex, barIndex, subdivision, subdivisionIndex }
       ) {
         Tone.getDraw().schedule(() => {
-          setCurrentBeat(beatIndex)
-          setCurrentBar(barIndex)
-          setCurrentSubdivision(subdivisionIndex)
+          setCurrentBarIndex(barIndex)
+          setCurrentBeatIndex(beatIndex)
+          setCurrentSubdivisionIndex(subdivisionIndex)
         }, time)
 
         props.onTime(beat, beatIndex, subdivision, subdivisionIndex)
       },
-      events: props.bars.flatMap((bar, beatIndex) => {
+      events: props.bars.flatMap((bar, barIndex) => {
         return [
-          ...bar.beats.map((beat, barIndex) =>
+          ...bar.beats.map((beat, beatIndex) =>
             beat.subdivisions
               .slice(0, bar.timeSignature)
               .map((subdivision, subdivisionIndex) => ({
                 beat: bar,
-                beatIndex,
-                barIndex,
+                barIndex: barIndex,
+                beatIndex: beatIndex,
                 subdivision,
                 subdivisionIndex,
               }))
@@ -85,11 +85,11 @@ export const useSequencer = (props: SequencerHookProps) => {
   return {
     startBeat,
     stopBeat,
-    currentBeat,
-    setCurrentBeat,
-    currentSubdivision,
-    currentBar,
-    setCurrentBar,
-    setCurrentSubdivision,
+    currentBarIndex: currentBarIndex,
+    setCurrentBarIndex: setCurrentBarIndex,
+    currentSubdivisionIndex: currentSubdivisionIndex,
+    currentBeatIndex: currentBeatIndex,
+    setCurrentBeatIndex: setCurrentBeatIndex,
+    setCurrentSubdivisionIndex: setCurrentSubdivisionIndex,
   }
 }

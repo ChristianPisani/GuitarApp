@@ -1,22 +1,7 @@
-﻿import {
-  FC,
-  Key,
-  Ref,
-  useCallback,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react'
+﻿import { Key, useCallback, useContext, useEffect, useState } from 'react'
 import { MusicContext, Subdivision } from '../context/app-context'
 import { getDefaultSubdivision } from '../utility/sequencer-utilities'
 import { useTrackEditor } from './track-editor-hook'
-
-type KeyPressProps = {
-  keys: Key[]
-  callBack: () => undefined
-}
 
 export const useKeyboardShortcuts = () => {
   const [copiedValue, setCopiedValue] = useState<Subdivision | undefined>()

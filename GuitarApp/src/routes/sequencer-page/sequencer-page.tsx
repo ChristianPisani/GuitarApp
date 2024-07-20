@@ -268,12 +268,12 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
         setSelectedScale,
         setBars: setBars,
         setState,
-        setCurrentBeatIndex: sequencer.setCurrentBar,
-        currentBeatIndex: sequencer.currentBar,
-        currentBarIndex: sequencer.currentBeat,
-        setCurrentBarIndex: sequencer.setCurrentBeat,
-        currentSubdivisionIndex: sequencer.currentSubdivision,
-        setCurrentSubdivisionIndex: sequencer.setCurrentSubdivision,
+        setCurrentBeatIndex: sequencer.setCurrentBeatIndex,
+        currentBeatIndex: sequencer.currentBeatIndex,
+        currentBarIndex: sequencer.currentBarIndex,
+        setCurrentBarIndex: sequencer.setCurrentBarIndex,
+        currentSubdivisionIndex: sequencer.currentSubdivisionIndex,
+        setCurrentSubdivisionIndex: sequencer.setCurrentSubdivisionIndex,
         removeSubdivision,
         addSubdivision,
         updateBar: updateBeat,
@@ -317,12 +317,12 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
           </select>
           <h4>
             Subdivisions:
-            {bars[sequencer.currentBeat]?.beats?.flatMap(
+            {bars[sequencer.currentBarIndex]?.beats?.flatMap(
               bar => bar.subdivisions
             )?.length ?? 0}
           </h4>
           <h3>
-            {sequencer.currentBeat}:{sequencer.currentSubdivision}
+            {sequencer.currentBarIndex}:{sequencer.currentSubdivisionIndex}
           </h3>
         </div>
         <SequencerUi sequencerMode={sequencerMode}>
