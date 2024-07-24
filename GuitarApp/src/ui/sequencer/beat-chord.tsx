@@ -155,20 +155,21 @@ export const BarComponent: FC<BeatBarProps> = ({ bar }) => {
                 <option value={scale?.name}>{scale?.name}</option>
               ))}
             </select>
-            Change subdivisions per beat:
-            <input
-              type={'number'}
-              min={1}
-              max={16}
+            Change time signature
+            <select
               value={bar.timeSignature}
               onChange={e => changeTimeSignature(bar, Number(e.target.value))}
-            ></input>
+            >
+              <option value={4}>4</option>
+              <option value={8}>8</option>
+              <option value={16}>16</option>
+              <option value={32}>32</option>
+            </select>
           </>
         )}
       </div>
       <p>
-        Time signature: {bar.timeSignature * bar.beats.length}/
-        {bar.beats.length}
+        Time signature: {bar.beats.length}/{bar.timeSignature}
       </p>
       <button onClick={() => removeBar(bar)}>Delete</button>
     </div>

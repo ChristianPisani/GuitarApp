@@ -79,7 +79,7 @@ export const useTrackEditor = () => {
 
   const gotoNextSubdivision = () => {
     setCurrentSubdivisionIndex(current => {
-      if (current >= currentBar.timeSignature - 1) {
+      if (current >= currentBeat?.subdivisions.length - 1) {
         goToNextBeat()
         if (currentBeatIndex < currentBar.beats.length - 1) {
           return 0
@@ -95,7 +95,7 @@ export const useTrackEditor = () => {
         goToPreviousBeat()
 
         if (currentBeatIndex > 0) {
-          return currentBar.timeSignature - 1
+          return currentBeat?.subdivisions.length - 1
         }
         return current
       }
@@ -103,9 +103,9 @@ export const useTrackEditor = () => {
     })
   }
 
-  const changeSubdivision = (barIndex: number, subdivisionIndex: number) => {
+  const changeSubdivision = (beatIndex: number, subdivisionIndex: number) => {
     setCurrentSubdivisionIndex(subdivisionIndex)
-    setCurrentBeatIndex(barIndex)
+    setCurrentBeatIndex(beatIndex)
   }
 
   const toggleNote = (note: Note, stringIndex: number) => {

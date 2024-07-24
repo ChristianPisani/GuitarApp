@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { Note, Scale } from '../types/musical-terms'
 import * as Tone from 'tone'
-import { getTransport, Sampler, Synth } from 'tone'
+import { getTransport, Loop, now, Sampler, Sequence, Synth, Time } from 'tone'
 import { Bar, Subdivision } from '../context/app-context'
+import { TimeSignature } from 'tone/build/esm/core/type/Units'
+import { get } from 'react-indiana-drag-scroll/dist/utils'
 
 type SequencerHookProps = {
   onTime: (
@@ -26,9 +28,6 @@ export const useSequencer = (props: SequencerHookProps) => {
 
   const startBeat = async () => {
     setIsPlaying(true)
-
-    await Tone.start()
-    getTransport().start()
   }
 
   const stopBeat = () => {
@@ -42,39 +41,68 @@ export const useSequencer = (props: SequencerHookProps) => {
     }
 
     // Create a new sequence from the beats
-    const sequence = new Tone.Sequence({
-      callback: function (
-        time,
-        { beat, beatIndex, barIndex, subdivision, subdivisionIndex }
-      ) {
-        Tone.getDraw().schedule(() => {
-          setCurrentBarIndex(barIndex)
-          setCurrentBeatIndex(beatIndex)
-          setCurrentSubdivisionIndex(subdivisionIndex)
-        }, time)
+    const sequences = props.bars.flatMap((bar, barIndex) => {
+      return new Tone.Sequence({
+        callback: function (
+          time,
+          { beat, beatIndex, barIndex, subdivision, subdivisionIndex }
+        ) {
+          Tone.getDraw().schedule(() => {
+            setCurrentBarIndex(barIndex)
+            setCurrentBeatIndex(beatIndex)
+            setCurrentSubdivisionIndex(subdivisionIndex)
+          }, time)
 
-        props.onTime(beat, beatIndex, subdivision, subdivisionIndex)
-      },
-      events: props.bars.flatMap((bar, barIndex) => {
-        return [
+          props.onTime(beat, beatIndex, subdivision, subdivisionIndex)
+        },
+        events: [
           ...bar.beats.map((beat, beatIndex) =>
-            beat.subdivisions
-              .slice(0, bar.timeSignature)
-              .map((subdivision, subdivisionIndex) => ({
-                beat: bar,
-                barIndex: barIndex,
-                beatIndex: beatIndex,
-                subdivision,
-                subdivisionIndex,
-              }))
+            beat.subdivisions.map((subdivision, subdivisionIndex) => ({
+              beat: bar,
+              barIndex: barIndex,
+              beatIndex: beatIndex,
+              subdivision,
+              subdivisionIndex,
+            }))
           ),
-        ]
-      }),
-      subdivision: '4n',
-    }).start()
+        ],
+        subdivision: `${bar.timeSignature}n`,
+        humanize: true,
+      })
+    })
+
+    const getDuration = (sequence: Sequence) => {
+      return (
+        sequence.events.length * Tone.Time(sequence.subdivision).toSeconds()
+      )
+    }
+
+    const totalDuration = sequences.reduce(
+      (duration, seq) => duration + getDuration(seq),
+      0
+    )
+
+    const transport = getTransport()
+    transport.loopStart = 0
+    transport.loopEnd = totalDuration
+
+    let start = 0.1
+    const loop = new Loop(time => {
+      console.log(time)
+
+      sequences.forEach((sequence, sequenceIndex) => {
+        const duration = getDuration(sequence)
+        sequence.start(start).stop(start + duration)
+
+        start += duration
+      })
+    }, totalDuration).start()
+
+    transport.start()
 
     return () => {
-      sequence.dispose()
+      sequences.forEach(sequence => sequence.dispose())
+      loop.dispose()
     }
   }, [props.bars.length, isPlaying])
 

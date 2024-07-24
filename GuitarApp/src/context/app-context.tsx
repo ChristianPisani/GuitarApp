@@ -62,8 +62,8 @@ interface MusicContextProps {
   setCurrentBarIndex: Dispatch<SetStateAction<number>>
   currentSubdivisionIndex: number
   setCurrentSubdivisionIndex: Dispatch<SetStateAction<number>>
-  addSubdivision: (beat: Bar, barIndex: number) => void
-  removeSubdivision: (beat: Bar, barIndex: number) => void
+  addSubdivision: (barIndex: number, beatIndex: number) => void
+  removeSubdivision: (barIndex: number, beatIndex: number) => void
   updateBar: (beat: Bar) => void
 
   toggleInterval: (bar: Bar, beatIndex: number, interval: ScaleDegree) => void

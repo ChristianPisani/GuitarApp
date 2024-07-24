@@ -14,16 +14,14 @@ export const getDefaultSubdivision = (): Subdivision => ({
 export const defaultBeat = (): Beat => ({
   scaleDegree: 1,
   chordExtensionScaleDegrees: [1, 2, 3] as ScaleDegree[],
-  subdivisions: Array.from({ length: 64 / 4 }).map(() =>
-    getDefaultSubdivision()
-  ),
+  subdivisions: [getDefaultSubdivision()],
   id: BAR_ID++,
 })
 
 export const createNewBar = (beats: Beat[]) => {
   return {
     id: BEAT_ID++,
-    timeSignature: 2,
+    timeSignature: 4,
     beats,
   }
 }

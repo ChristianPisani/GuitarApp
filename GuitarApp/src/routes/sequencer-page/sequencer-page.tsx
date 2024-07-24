@@ -210,31 +210,28 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
     bpm,
   })
 
-  const updateBeat = (beat: Bar) => {
-    const beatIndex = bars.findIndex(b => b.id === beat.id)
-    bars[beatIndex] = beat
+  const updateBar = (bar: Bar) => {
+    const beatIndex = bars.findIndex(b => b.id === bar.id)
+    bars[beatIndex] = bar
     setBars([...bars])
   }
 
-  const removeSubdivision = (beat: Bar, barIndex: number) => {
-    const currentAmountOfSubdivisions = beat.beats[barIndex].subdivisions.length
+  const removeSubdivision = (barIndex: number, beatIndex: number) => {
+    const bar = bars[barIndex]
+    const currentAmountOfSubdivisions = bar.beats[beatIndex].subdivisions.length
 
     if (currentAmountOfSubdivisions <= 1) return
 
-    beat.beats[barIndex].subdivisions.splice(-1, 1)
+    bar.beats[beatIndex].subdivisions.splice(-1, 1)
 
-    updateBeat(beat)
+    updateBar(bar)
   }
 
-  const addSubdivision = (beat: Bar, barIndex: number) => {
-    const maxAmountOfSubdivisions = beat.beats.length * 8
+  const addSubdivision = (barIndex: number, beatIndex: number) => {
+    const bar = bars[barIndex]
 
-    const currentAmountOfSubdivisions = beat.beats[barIndex].subdivisions.length
-
-    if (currentAmountOfSubdivisions >= maxAmountOfSubdivisions) return
-
-    beat.beats[barIndex].subdivisions.push(getDefaultSubdivision())
-    updateBeat(beat)
+    bar.beats[beatIndex].subdivisions.push(getDefaultSubdivision())
+    updateBar(bar)
   }
 
   const toggleInterval = (
@@ -249,7 +246,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
     } else {
       beat.beats[barIndex].chordExtensionScaleDegrees.splice(index, 1)
     }
-    updateBeat(beat)
+    updateBar(beat)
   }
 
   useEffect(() => {
@@ -276,7 +273,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
         setCurrentSubdivisionIndex: sequencer.setCurrentSubdivisionIndex,
         removeSubdivision,
         addSubdivision,
-        updateBar: updateBeat,
+        updateBar: updateBar,
         setBpm,
         toggleInterval,
         setEffectNodes,

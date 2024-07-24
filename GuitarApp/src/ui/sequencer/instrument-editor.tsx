@@ -1,4 +1,4 @@
-import {
+﻿import {
   getChordName,
   ScaleDegree,
   scaleDegreeNotations,
@@ -34,6 +34,9 @@ export const InstrumentEditor = () => {
     currentSubdivisionIndex,
     updateBar,
     toggleInterval,
+    addSubdivision,
+    removeSubdivision,
+    state,
   } = useContext(MusicContext)
 
   const {
@@ -89,32 +92,48 @@ export const InstrumentEditor = () => {
               <button onClick={gotoPreviousSubdivision}>
                 <ChevronLeftRounded />
               </button>
-              <div
-                className={'flex flex-wrap items-center justify-center gap-2'}
-              >
-                {currentBar?.beats.map((beat, barIndex) => (
-                  <div className={'flex gap-2 flex-wrap items-center'}>
-                    {beat.subdivisions
-                      .slice(0, currentBar.timeSignature)
-                      .map((subdivision, subdivisionIndex) => (
+              <div className={'flex flex-wrap items-start justify-start gap-2'}>
+                {currentBar?.beats.map((beat, beatIndex) => (
+                  <div className={'flex flex-col gap-2 flex-wrap items-center'}>
+                    {state === 'editing' && (
+                      <>
                         <button
-                          className={`rounded-full outline-2 outline-secondary-950 w-4 h-4 ${
-                            currentBeat?.id === beat.id &&
-                            currentSubdivisionIndex === subdivisionIndex
-                              ? 'bg-secondary-950'
-                              : subdivision.notes.length > 0
-                                ? 'bg-secondary-700'
-                                : ''
-                          } ${
-                            subdivisionIndex === 0
-                              ? 'transform scale-110 outline-double'
-                              : 'outline-dotted'
-                          }`}
                           onClick={() =>
-                            changeSubdivision(barIndex, subdivisionIndex)
+                            addSubdivision(currentBarIndex, beatIndex)
                           }
-                        ></button>
-                      ))}
+                        >
+                          <AddCircleOutlined />
+                        </button>
+                        <button
+                          onClick={() =>
+                            removeSubdivision(currentBarIndex, beatIndex)
+                          }
+                        >
+                          <RemoveCircleOutline />
+                        </button>
+                      </>
+                    )}
+                    {beat.subdivisions.map((subdivision, subdivisionIndex) => (
+                      <button
+                        className={`rounded-full outline-2 outline-secondary-950 w-4 h-4 ${
+                          currentBeat?.id === beat.id &&
+                          ((currentBeatIndex === beatIndex &&
+                            subdivisionIndex === 0) ||
+                            currentSubdivisionIndex === subdivisionIndex)
+                            ? 'bg-secondary-950'
+                            : subdivision.notes.length > 0
+                              ? 'bg-secondary-700'
+                              : ''
+                        } ${
+                          subdivisionIndex === 0
+                            ? 'transform scale-110 outline-double'
+                            : 'outline-dotted'
+                        }`}
+                        onClick={() =>
+                          changeSubdivision(beatIndex, subdivisionIndex)
+                        }
+                      ></button>
+                    ))}
                   </div>
                 ))}
               </div>
