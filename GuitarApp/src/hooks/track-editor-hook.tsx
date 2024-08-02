@@ -105,8 +105,8 @@ export const useTrackEditor = () => {
       if (current <= 0) {
         goToPreviousBeat()
 
-        if (currentSectionIndex > 0) {
-          return currentSection?.subdivisions.length - 1
+        if (currentBeatIndex > 0) {
+          return currentBar.beats[currentBeatIndex - 1]?.sections.length - 1
         }
         return current
       }
