@@ -24,6 +24,8 @@ import { RangeSlider } from '../input/range-slider'
 import { playNotes } from '../../utility/instrumentFunctions'
 import { useTrackEditor } from '../../hooks/track-editor-hook'
 import { useKeyboardShortcuts } from '../../hooks/keyboard-shortcuts-hook'
+import { IntervalEditor } from './elements/interval-editor'
+import { SubdivisionEditor } from './elements/subdivision-editor'
 
 export const InstrumentEditor = () => {
   const {
@@ -40,17 +42,14 @@ export const InstrumentEditor = () => {
   } = useContext(MusicContext)
 
   const {
-    gotoPreviousSubdivision,
-    gotoNextSubdivision,
-    changeSubdivision,
     toggleNote,
     getCurrentBeatNotes,
     getCurrentBeatChord,
+    currentSubdivision,
+    currentSection,
+    currentBeat,
+    currentBar,
   } = useTrackEditor()
-
-  const currentBar = bars[currentBarIndex]
-  const currentBeat = currentBar?.beats[currentBeatIndex ?? 0]
-  const subdivision = currentBeat?.subdivisions[currentSubdivisionIndex]
 
   const selectedChord = getCurrentBeatChord()
   const notes = getCurrentBeatNotes()
@@ -58,7 +57,7 @@ export const InstrumentEditor = () => {
 
   return (
     <div
-      className={`grid grid-rows-[1fr_auto] gap-8 rounded-l-2xl rounded-r-lg bg-primary-50
+      className={`grid grid-rows-[1fr_auto] gap-8 rounded-l-2xl rounded-r-lg bg-primary-100
         relative z-0`}
     >
       <div
@@ -88,94 +87,12 @@ export const InstrumentEditor = () => {
 
         {selectedChord && (
           <>
-            <div className={'flex gap-2 justify-between w-full items-center'}>
-              <button onClick={gotoPreviousSubdivision}>
-                <ChevronLeftRounded />
-              </button>
-              <div className={'flex flex-wrap items-start justify-start gap-2'}>
-                {currentBar?.beats.map((beat, beatIndex) => (
-                  <div className={'flex flex-col gap-2 flex-wrap items-center'}>
-                    {state === 'editing' && (
-                      <>
-                        <button
-                          onClick={() =>
-                            addSubdivision(currentBarIndex, beatIndex)
-                          }
-                        >
-                          <AddCircleOutlined />
-                        </button>
-                        <button
-                          onClick={() =>
-                            removeSubdivision(currentBarIndex, beatIndex)
-                          }
-                        >
-                          <RemoveCircleOutline />
-                        </button>
-                      </>
-                    )}
-                    {beat.subdivisions.map((subdivision, subdivisionIndex) => (
-                      <button
-                        className={`rounded-full outline-2 outline-secondary-950 w-4 h-4 ${
-                          currentBeat?.id === beat.id &&
-                          ((currentBeatIndex === beatIndex &&
-                            subdivisionIndex === 0) ||
-                            currentSubdivisionIndex === subdivisionIndex)
-                            ? 'bg-secondary-950'
-                            : subdivision.notes.length > 0
-                              ? 'bg-secondary-700'
-                              : ''
-                        } ${
-                          subdivisionIndex === 0
-                            ? 'transform scale-110 outline-double'
-                            : 'outline-dotted'
-                        }`}
-                        onClick={() =>
-                          changeSubdivision(beatIndex, subdivisionIndex)
-                        }
-                      ></button>
-                    ))}
-                  </div>
-                ))}
-              </div>
-              <button onClick={gotoNextSubdivision}>
-                <ChevronRightRounded />
-              </button>
-            </div>
-            <div className={'flex flex-col items-center gap-4'}>
-              <h3>Intervals</h3>
-              <div className={'flex gap-2'}>
-                {selectedScale.intervals.map((_, index) => {
-                  // TOOD: Not sure if this will work with all scales. Should find a better way to handle intervals generally.
-                  const intervalIndex = index + 1
-
-                  const selected =
-                    currentBeat?.chordExtensionScaleDegrees?.some(
-                      interval => interval === intervalIndex
-                    )
-
-                  return (
-                    <button
-                      className={`border-2 border-gray-950 rounded text-md grid place-items-center w-10 transition
-                      h-10 ${selected ? 'shadow-accent transform scale-110 font-bold' : ''}`}
-                      onClick={() =>
-                        currentBar &&
-                        toggleInterval(
-                          currentBar,
-                          currentBeatIndex,
-                          intervalIndex as ScaleDegree
-                        )
-                      }
-                    >
-                      {intervalIndex}
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
+            <SubdivisionEditor />
+            <IntervalEditor />
           </>
         )}
       </div>
-      {subdivision && (
+      {currentSubdivision && (
         <div
           className={
             'flex flex-col items-center justify-start gap-2 px-4 pt-0 pb-8'
@@ -185,42 +102,42 @@ export const InstrumentEditor = () => {
           <div className={'w-full grid grid-cols-2 place-items-center gap-4'}>
             <RangeSlider
               label={'Velocity'}
-              value={subdivision?.velocity}
+              value={currentSubdivision?.velocity}
               min={0}
               max={2}
               step={0.1}
               onSlide={value => {
-                if (!subdivision || !currentBar) return
+                if (!currentSubdivision || !currentBar) return
 
-                subdivision.velocity = value
+                currentSubdivision.velocity = value
 
                 updateBar(currentBar)
               }}
             />
             <RangeSlider
               label={'Sustain'}
-              value={subdivision?.sustain}
+              value={currentSubdivision?.sustain}
               min={0}
               max={1}
               step={0.1}
               onSlide={value => {
-                if (!subdivision || !currentBar) return
+                if (!currentSubdivision || !currentBar) return
 
-                subdivision.sustain = value
+                currentSubdivision.sustain = value
 
                 updateBar(currentBar)
               }}
             />
             <RangeSlider
               label={'Strum speed'}
-              value={subdivision?.strumSpeed}
+              value={currentSubdivision?.strumSpeed}
               min={0}
               max={0.1}
               step={0.01}
               onSlide={value => {
-                if (!subdivision || !currentBar) return
+                if (!currentSubdivision || !currentBar) return
 
-                subdivision.strumSpeed = value
+                currentSubdivision.strumSpeed = value
 
                 updateBar(currentBar)
               }}

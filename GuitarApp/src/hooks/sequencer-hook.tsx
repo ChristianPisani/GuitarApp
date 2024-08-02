@@ -2,7 +2,7 @@
 import { Note, Scale } from '../types/musical-terms'
 import * as Tone from 'tone'
 import { getTransport, Loop, now, Sampler, Sequence, Synth, Time } from 'tone'
-import { Bar, Subdivision } from '../context/app-context'
+import { Bar, BeatSection, Subdivision } from '../context/app-context'
 import { TimeSignature } from 'tone/build/esm/core/type/Units'
 import { get } from 'react-indiana-drag-scroll/dist/utils'
 
@@ -23,6 +23,7 @@ type SequencerHookProps = {
 export const useSequencer = (props: SequencerHookProps) => {
   const [currentBarIndex, setCurrentBarIndex] = useState(0)
   const [currentBeatIndex, setCurrentBeatIndex] = useState(0)
+  const [currentSectionIndex, setCurrentSectionIndex] = useState(0)
   const [currentSubdivisionIndex, setCurrentSubdivisionIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
 
@@ -45,11 +46,19 @@ export const useSequencer = (props: SequencerHookProps) => {
       return new Tone.Sequence({
         callback: function (
           time,
-          { beat, beatIndex, barIndex, subdivision, subdivisionIndex }
+          {
+            beat,
+            beatIndex,
+            barIndex,
+            subdivision,
+            subdivisionIndex,
+            sectionIndex,
+          }
         ) {
           Tone.getDraw().schedule(() => {
             setCurrentBarIndex(barIndex)
             setCurrentBeatIndex(beatIndex)
+            setCurrentSectionIndex(sectionIndex)
             setCurrentSubdivisionIndex(subdivisionIndex)
           }, time)
 
@@ -57,13 +66,17 @@ export const useSequencer = (props: SequencerHookProps) => {
         },
         events: [
           ...bar.beats.map((beat, beatIndex) =>
-            beat.subdivisions.map((subdivision, subdivisionIndex) => ({
-              beat: bar,
-              barIndex: barIndex,
-              beatIndex: beatIndex,
-              subdivision,
-              subdivisionIndex,
-            }))
+            beat.sections.map((section, sectionIndex) =>
+              section.subdivisions.map((subdivision, subdivisionIndex) => ({
+                beat: bar,
+                barIndex: barIndex,
+                beatIndex: beatIndex,
+                subdivision,
+                subdivisionIndex,
+                section,
+                sectionIndex,
+              }))
+            )
           ),
         ],
         subdivision: `${bar.timeSignature}n`,
@@ -113,11 +126,13 @@ export const useSequencer = (props: SequencerHookProps) => {
   return {
     startBeat,
     stopBeat,
-    currentBarIndex: currentBarIndex,
-    setCurrentBarIndex: setCurrentBarIndex,
-    currentSubdivisionIndex: currentSubdivisionIndex,
-    currentBeatIndex: currentBeatIndex,
-    setCurrentBeatIndex: setCurrentBeatIndex,
-    setCurrentSubdivisionIndex: setCurrentSubdivisionIndex,
+    currentBarIndex,
+    setCurrentBarIndex,
+    currentSubdivisionIndex,
+    currentBeatIndex,
+    setCurrentBeatIndex,
+    setCurrentSubdivisionIndex,
+    currentSectionIndex,
+    setCurrentSectionIndex,
   }
 }

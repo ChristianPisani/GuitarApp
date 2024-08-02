@@ -216,21 +216,32 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
     setBars([...bars])
   }
 
-  const removeSubdivision = (barIndex: number, beatIndex: number) => {
+  const removeSubdivision = (
+    barIndex: number,
+    beatIndex: number,
+    sectionIndex: number
+  ) => {
     const bar = bars[barIndex]
-    const currentAmountOfSubdivisions = bar.beats[beatIndex].subdivisions.length
+    const currentAmountOfSubdivisions =
+      bar.beats[beatIndex].sections[sectionIndex].subdivisions.length
 
     if (currentAmountOfSubdivisions <= 1) return
 
-    bar.beats[beatIndex].subdivisions.splice(-1, 1)
+    bar.beats[beatIndex].sections[sectionIndex].subdivisions.splice(-1, 1)
 
     updateBar(bar)
   }
 
-  const addSubdivision = (barIndex: number, beatIndex: number) => {
+  const addSubdivision = (
+    barIndex: number,
+    beatIndex: number,
+    sectionIndex: number
+  ) => {
     const bar = bars[barIndex]
 
-    bar.beats[beatIndex].subdivisions.push(getDefaultSubdivision())
+    bar.beats[beatIndex].sections[sectionIndex].subdivisions.push(
+      getDefaultSubdivision()
+    )
     updateBar(bar)
   }
 
@@ -277,6 +288,8 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
         setBpm,
         toggleInterval,
         setEffectNodes,
+        currentSectionIndex: sequencer.currentSectionIndex,
+        setCurrentSectionIndex: sequencer.setCurrentSectionIndex,
         instrument,
         ...savableState,
       }}
@@ -298,7 +311,7 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
           </button>
           <select
             defaultValue={loadedTrackName}
-            className={'bg-primary-50 p-4'}
+            className={'bg-primary-100 p-4'}
             onChange={e => loadTrack(e.target.value)}
           >
             {new Array(localStorage.length)
@@ -312,15 +325,6 @@ export const SequencerPage: FC<SequencerPageProps> = ({}) => {
                 )
               })}
           </select>
-          <h4>
-            Subdivisions:
-            {bars[sequencer.currentBarIndex]?.beats?.flatMap(
-              bar => bar.subdivisions
-            )?.length ?? 0}
-          </h4>
-          <h3>
-            {sequencer.currentBarIndex}:{sequencer.currentSubdivisionIndex}
-          </h3>
         </div>
         <SequencerUi sequencerMode={sequencerMode}>
           <Outlet />

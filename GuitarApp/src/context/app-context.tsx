@@ -25,10 +25,12 @@ export interface Subdivision {
   sustain: number
 }
 
+export type BeatSection = { subdivisions: Subdivision[] }
+
 export interface Beat {
   scaleDegree: ScaleDegree
   chordExtensionScaleDegrees: ScaleDegree[]
-  subdivisions: Subdivision[]
+  sections: BeatSection[]
   scale?: Scale
   id: number
 }
@@ -62,8 +64,18 @@ interface MusicContextProps {
   setCurrentBarIndex: Dispatch<SetStateAction<number>>
   currentSubdivisionIndex: number
   setCurrentSubdivisionIndex: Dispatch<SetStateAction<number>>
-  addSubdivision: (barIndex: number, beatIndex: number) => void
-  removeSubdivision: (barIndex: number, beatIndex: number) => void
+  currentSectionIndex: number
+  setCurrentSectionIndex: Dispatch<SetStateAction<number>>
+  addSubdivision: (
+    barIndex: number,
+    beatIndex: number,
+    sectionIndex: number
+  ) => void
+  removeSubdivision: (
+    barIndex: number,
+    beatIndex: number,
+    sectionIndex: number
+  ) => void
   updateBar: (beat: Bar) => void
 
   toggleInterval: (bar: Bar, beatIndex: number, interval: ScaleDegree) => void
@@ -87,6 +99,8 @@ export const MusicContext = createContext<MusicContextProps>({
   setBars: () => null,
   currentBeatIndex: 0,
   setCurrentBeatIndex: () => undefined,
+  currentSectionIndex: 0,
+  setCurrentSectionIndex: () => undefined,
 
   state: 'editing',
   setState: () => null,

@@ -58,17 +58,13 @@ export const BarComponent: FC<BeatBarProps> = ({ bar }) => {
   const currentBar = bars[currentBarIndex]
   const currentBeat = currentBar?.beats[currentBeatIndex ?? 0]
   const {
+    addBeat,
     removeBeat,
     removeBar,
     updateScale,
     updateScaleDegree,
     changeTimeSignature,
   } = useTrackEditor()
-
-  const addBeat = () => {
-    currentBar.beats.push(defaultBeat())
-    updateBar(currentBar)
-  }
 
   const isSelectedBar = bar.id === currentBar?.id
 
@@ -121,7 +117,7 @@ export const BarComponent: FC<BeatBarProps> = ({ bar }) => {
           )}
         </div>
 
-        {isSelectedBar && (
+        {/*isSelectedBar && (
           <>
             <div className={'flex gap-2 w-full justify-around'}>
               {Array(7)
@@ -166,10 +162,12 @@ export const BarComponent: FC<BeatBarProps> = ({ bar }) => {
               <option value={32}>32</option>
             </select>
           </>
-        )}
+        )*/}
       </div>
       <p>
-        Time signature: {bar.beats.length}/{bar.timeSignature}
+        Time signature:{' '}
+        {bar.beats.reduce((length, beat) => beat.sections.length + length, 0)}/
+        {bar.timeSignature}
       </p>
       <button onClick={() => removeBar(bar)}>Delete</button>
     </div>

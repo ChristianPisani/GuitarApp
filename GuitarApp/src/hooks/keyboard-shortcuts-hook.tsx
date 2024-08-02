@@ -10,6 +10,7 @@ export const useKeyboardShortcuts = () => {
         subdivisionIndex: number
         barIndex: number
         beatIndex: number
+        sectionIndex: number
       })
     | undefined
   >()
@@ -19,23 +20,27 @@ export const useKeyboardShortcuts = () => {
     currentBeatIndex,
     currentSubdivisionIndex,
     currentBarIndex,
+    currentSectionIndex,
     updateBar,
   } = useContext(MusicContext)
 
-  const { gotoPreviousSubdivision, gotoNextSubdivision } = useTrackEditor()
-
-  const currentBar = bars[currentBarIndex]
-  const currentBeat = currentBar?.beats[currentBeatIndex]
-  const currentSubdivision = currentBeat?.subdivisions[currentSubdivisionIndex]
+  const {
+    gotoPreviousSubdivision,
+    gotoNextSubdivision,
+    currentBar,
+    currentSubdivision,
+    currentSection,
+  } = useTrackEditor()
 
   const clearSubdivision = (
     barIndex: number,
     beatIndex: number,
+    sectionIndex: number,
     subdivisionIndex: number
   ) => {
     const bar = bars[barIndex]
 
-    bar.beats[beatIndex].subdivisions[subdivisionIndex] =
+    bar.beats[beatIndex].sections[sectionIndex].subdivisions[subdivisionIndex] =
       getDefaultSubdivision()
 
     updateBar(bar)
@@ -52,17 +57,21 @@ export const useKeyboardShortcuts = () => {
           subdivisionIndex: currentSubdivisionIndex,
           barIndex: currentBarIndex,
           beatIndex: currentBeatIndex,
+          sectionIndex: currentSectionIndex,
         })
       }
       if (event.ctrlKey && event.key === 'v' && copiedValue && !cutValue) {
-        currentBeat.subdivisions[currentSubdivisionIndex] = { ...copiedValue }
+        currentSection.subdivisions[currentSubdivisionIndex] = {
+          ...copiedValue,
+        }
         updateBar(currentBar)
       }
       if (event.ctrlKey && event.key === 'v' && cutValue) {
-        currentBeat.subdivisions[currentSubdivisionIndex] = { ...cutValue }
+        currentSection.subdivisions[currentSubdivisionIndex] = { ...cutValue }
         clearSubdivision(
           cutValue.barIndex,
           cutValue.beatIndex,
+          cutValue.sectionIndex,
           cutValue.subdivisionIndex
         )
         setCutValue(undefined)
@@ -71,6 +80,7 @@ export const useKeyboardShortcuts = () => {
         clearSubdivision(
           currentBarIndex,
           currentBeatIndex,
+          currentSectionIndex,
           currentSubdivisionIndex
         )
       }

@@ -1,6 +1,7 @@
 ﻿import { Canvas } from '../canvas/canvas'
 import { FC, useContext, useEffect, useState } from 'react'
 import { MusicContext } from '../../context/app-context'
+import { useTrackEditor } from '../../hooks/track-editor-hook'
 
 export const AnimatedString: FC<{ stringIndex: number }> = ({
   stringIndex,
@@ -8,14 +9,11 @@ export const AnimatedString: FC<{ stringIndex: number }> = ({
   const { currentBarIndex, bars, currentSubdivisionIndex, currentBeatIndex } =
     useContext(MusicContext)
   const [animate, setAnimate] = useState(false)
-  const selectedBeat = bars[currentBarIndex]
+
+  const { currentSubdivision } = useTrackEditor()
 
   useEffect(() => {
-    if (
-      selectedBeat?.beats[currentBeatIndex].subdivisions[
-        currentSubdivisionIndex
-      ].notes.some(note => note.string === stringIndex)
-    ) {
+    if (currentSubdivision?.notes.some(note => note.string === stringIndex)) {
       setAnimate(true)
     }
   }, [currentSubdivisionIndex])

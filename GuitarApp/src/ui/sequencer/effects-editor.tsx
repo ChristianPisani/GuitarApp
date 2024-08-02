@@ -184,8 +184,8 @@ export const EffectsEditor = () => {
           <>
             {effectTypes().map(effectType => (
               <div
-                className={`bg-primary-50 rounded p-6 max-h-64 text-secondary-950 flex flex-col gap-8 h-full
-                  select-none justify-between`}
+                className={`bg-primary-100 rounded p-6 max-h-64 text-secondary-950 flex flex-col gap-8
+                  h-full select-none justify-between`}
               >
                 <div>
                   <h2 className={'mb-2'}>{effectType.name}</h2>

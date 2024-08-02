@@ -39,20 +39,20 @@ export const SequencerUi: FC<SequencerUiProps> = ({
 
   return (
     <div
-      className={`grid min-h-[500px] w-full flex-1 md:grid-cols-[2fr_5fr] grid-cols-1 gap-2
-        bg-secondary-950 p-2`}
+      className={
+        'grid min-h-[500px] w-full flex-1 md:grid-cols-[2fr_5fr] grid-cols-1 gap-2 p-2'
+      }
     >
       <InstrumentEditor />
       <div
-        className={
-          'flex flex-col justify-between gap-4 max-w-full overflow-hidden'
-        }
+        className={`flex flex-col justify-between bg-primary-100 rounded-2xl gap-4 max-w-full
+          overflow-hidden`}
       >
-        <div className={'flex gap-8 px-8 py-7 text-primary-100 items-center'}>
-          <h2 className={'text-primary-100'}>Mode</h2>
+        <div className={'text-secondary-950 flex gap-8 px-8 py-7 items-center'}>
+          <h2>Mode</h2>
           <Link
             to={'chords'}
-            className={`text-2xl ${sequencerMode === 'Chords' && 'font-bold text-primary-50'}`}
+            className={`text-2xl ${sequencerMode === 'Chords' && 'font-bold'}`}
           >
             Chords
           </Link>
@@ -65,8 +65,8 @@ export const SequencerUi: FC<SequencerUiProps> = ({
         </div>
         {children}
         <div
-          className={`flex flex-col place-items-start gap-8 rounded-lg rounded-br-2xl bg-primary-50
-            p-8`}
+          className={`flex flex-col border-t-2 border-primary-950 place-items-start gap-8
+            rounded-bl-lg rounded-br-2xl bg-primary-100 p-8`}
         >
           <div className={'flex gap-4'}>
             {state !== 'playing' && (

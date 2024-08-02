@@ -1,13 +1,14 @@
 ﻿import { ScaleDegree } from '../data/chords'
 import { Note, Scale } from '../types/musical-terms'
 import { useContext } from 'react'
-import { Bar, MusicContext } from '../context/app-context'
+import { Bar, Beat, MusicContext } from '../context/app-context'
 import {
   getChordNotes,
   getScaleChord,
   notesAreEqual,
 } from '../utility/noteFunctions'
 import { playNotes } from '../utility/instrumentFunctions'
+import { createNewBar, defaultBeat } from '../utility/sequencer-utilities'
 
 export const useTrackEditor = () => {
   const {
@@ -23,10 +24,20 @@ export const useTrackEditor = () => {
     selectedMode,
     selectedScale,
     currentSubdivisionIndex,
+    currentSectionIndex,
+    setCurrentSectionIndex,
   } = useContext(MusicContext)
 
   const currentBar = bars[currentBarIndex]
   const currentBeat = currentBar?.beats[currentBeatIndex ?? 0]
+  const currentSection = currentBeat?.sections[currentSectionIndex]
+  const currentSubdivision =
+    currentSection?.subdivisions[currentSubdivisionIndex]
+
+  const addBeat = () => {
+    currentBar.beats.push(defaultBeat())
+    updateBar(currentBar)
+  }
 
   const removeBeat = (bar: Bar, beatIndex: number) => {
     bar.beats.splice(beatIndex, 1)
@@ -77,11 +88,37 @@ export const useTrackEditor = () => {
     })
   }
 
-  const gotoNextSubdivision = () => {
-    setCurrentSubdivisionIndex(current => {
-      if (current >= currentBeat?.subdivisions.length - 1) {
+  const goToNextSection = () => {
+    setCurrentSectionIndex(current => {
+      if (current >= currentBeat?.sections.length - 1) {
         goToNextBeat()
         if (currentBeatIndex < currentBar.beats.length - 1) {
+          return 0
+        }
+        return current
+      }
+      return current + 1
+    })
+  }
+  const goToPreviousSection = () => {
+    setCurrentSectionIndex(current => {
+      if (current <= 0) {
+        goToPreviousBeat()
+
+        if (currentSectionIndex > 0) {
+          return currentSection?.subdivisions.length - 1
+        }
+        return current
+      }
+      return current - 1
+    })
+  }
+
+  const gotoNextSubdivision = () => {
+    setCurrentSubdivisionIndex(current => {
+      if (current >= currentSection?.subdivisions.length - 1) {
+        goToNextSection()
+        if (currentSectionIndex < currentBeat?.sections.length - 1) {
           return 0
         }
         return current
@@ -92,10 +129,13 @@ export const useTrackEditor = () => {
   const gotoPreviousSubdivision = () => {
     setCurrentSubdivisionIndex(current => {
       if (current <= 0) {
-        goToPreviousBeat()
+        goToPreviousSection()
 
-        if (currentBeatIndex > 0) {
-          return currentBeat?.subdivisions.length - 1
+        if (currentSectionIndex > 0) {
+          return (
+            currentBeat?.sections[currentSectionIndex - 1]?.subdivisions
+              .length - 1
+          )
         }
         return current
       }
@@ -103,7 +143,12 @@ export const useTrackEditor = () => {
     })
   }
 
-  const changeSubdivision = (beatIndex: number, subdivisionIndex: number) => {
+  const changeSubdivision = (
+    beatIndex: number,
+    sectionIndex: number,
+    subdivisionIndex: number
+  ) => {
+    setCurrentSectionIndex(sectionIndex)
     setCurrentSubdivisionIndex(subdivisionIndex)
     setCurrentBeatIndex(beatIndex)
   }
@@ -123,7 +168,7 @@ export const useTrackEditor = () => {
       notesAreEqual(chordNote, note, false)
     )
 
-    const noteIndex = currentBeat.subdivisions[
+    const noteIndex = currentSection.subdivisions[
       currentSubdivisionIndex
     ].notes?.findIndex(
       subDivisionNote =>
@@ -133,11 +178,11 @@ export const useTrackEditor = () => {
     )
     const hasNote = noteIndex !== -1
 
-    const stringAlreadyHasNoteIndex = currentBeat.subdivisions[
+    const stringAlreadyHasNoteIndex = currentSection.subdivisions[
       currentSubdivisionIndex
     ].notes.findIndex(subdivisionNote => subdivisionNote.string === stringIndex)
     if (stringAlreadyHasNoteIndex !== -1) {
-      currentBeat.subdivisions[currentSubdivisionIndex].notes?.splice(
+      currentSection.subdivisions[currentSubdivisionIndex].notes?.splice(
         stringAlreadyHasNoteIndex,
         1
       )
@@ -153,7 +198,9 @@ export const useTrackEditor = () => {
 
       instrument && playNotes(instrument, [note])
 
-      currentBeat?.subdivisions[currentSubdivisionIndex].notes?.push(noteToPush)
+      currentSection?.subdivisions[currentSubdivisionIndex].notes?.push(
+        noteToPush
+      )
     }
 
     updateBar(currentBar)
@@ -173,8 +220,8 @@ export const useTrackEditor = () => {
       )
     )
 
-    return currentBeat.subdivisions[
-      Math.min(currentSubdivisionIndex, currentBeat.subdivisions.length - 1)
+    return currentSection.subdivisions[
+      Math.min(currentSubdivisionIndex, currentSection.subdivisions.length - 1)
     ]?.notes
       ?.map(note => {
         const scaleNote = chordNotes[note.index]
@@ -202,7 +249,17 @@ export const useTrackEditor = () => {
       : undefined
   }
 
+  const addBar = () => {
+    const beats: Beat[] = [defaultBeat()]
+
+    const newBar = createNewBar(beats)
+
+    setBars([...bars, newBar])
+  }
+
   return {
+    addBar,
+    addBeat,
     removeBeat,
     removeBar,
     updateScaleDegree,
@@ -214,5 +271,9 @@ export const useTrackEditor = () => {
     toggleNote,
     getCurrentBeatNotes,
     getCurrentBeatChord,
+    currentBeat,
+    currentBar,
+    currentSubdivision,
+    currentSection,
   }
 }

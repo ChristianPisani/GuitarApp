@@ -11,10 +11,19 @@ export const getDefaultSubdivision = (): Subdivision => ({
   strumSpeed: 0.02,
 })
 
+export const getDefaultSection = () => ({
+  subdivisions: [getDefaultSubdivision()],
+})
+
 export const defaultBeat = (): Beat => ({
   scaleDegree: 1,
   chordExtensionScaleDegrees: [1, 2, 3] as ScaleDegree[],
-  subdivisions: [getDefaultSubdivision()],
+  sections: [
+    getDefaultSection(),
+    getDefaultSection(),
+    getDefaultSection(),
+    getDefaultSection(),
+  ],
   id: BAR_ID++,
 })
 

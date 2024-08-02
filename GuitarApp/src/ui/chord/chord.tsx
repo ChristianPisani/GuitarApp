@@ -294,6 +294,7 @@ export const ChordVisualizerCustomChord: FC<
                       currentNote.relativeIndex
                 )}
                 onionSkinned={selectedBeat?.beats
+                  .flatMap(bar => bar.sections)
                   .flatMap(bar => bar.subdivisions)
                   .flatMap(subdivision => subdivision.notes)
                   ?.some(
@@ -330,13 +331,13 @@ export const ChordVisualizerCustomChord: FC<
                 }
               >
                 {markedFrets[fret] && fret % 12 !== 0 && (
-                  <div className={'h-4 w-4 rounded-full bg-primary-50'} />
+                  <div className={'h-4 w-4 rounded-full bg-primary-100'} />
                 )}
                 {markedFrets[fret] && fret % 12 === 0 && (
                   <>
-                    <div className={'h-4 w-4 rounded-full bg-primary-50'} />
-                    <div className={'h-4 w-4 rounded-full bg-primary-50'} />
-                    <div className={'h-4 w-4 rounded-full bg-primary-50'} />
+                    <div className={'h-4 w-4 rounded-full bg-primary-100'} />
+                    <div className={'h-4 w-4 rounded-full bg-primary-100'} />
+                    <div className={'h-4 w-4 rounded-full bg-primary-100'} />
                   </>
                 )}
               </div>
@@ -381,6 +382,7 @@ export const ChordVisualizerCustomChord: FC<
                           currentNote.relativeIndex
                     )}
                     onionSkinned={selectedBeat?.beats
+                      .flatMap(bar => bar.sections)
                       .flatMap(bar => bar.subdivisions)
                       .flatMap(subdivision => subdivision.notes)
                       ?.some(
