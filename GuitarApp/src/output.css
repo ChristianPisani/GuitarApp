@@ -885,6 +885,10 @@ video {
   place-items: start;
 }
 
+.place-items-end {
+  place-items: end;
+}
+
 .place-items-center {
   place-items: center;
 }
@@ -895,6 +899,10 @@ video {
 
 .items-start {
   align-items: flex-start;
+}
+
+.items-end {
+  align-items: flex-end;
 }
 
 .items-center {
@@ -969,10 +977,6 @@ video {
   border-radius: 9999px;
 }
 
-.rounded-lg {
-  border-radius: 0.75rem;
-}
-
 .rounded-l-2xl {
   border-top-left-radius: 1rem;
   border-bottom-left-radius: 1rem;
@@ -983,12 +987,12 @@ video {
   border-bottom-right-radius: 0.75rem;
 }
 
-.rounded-br-2xl {
-  border-bottom-right-radius: 1rem;
-}
-
 .rounded-bl-lg {
   border-bottom-left-radius: 0.75rem;
+}
+
+.rounded-br-2xl {
+  border-bottom-right-radius: 1rem;
 }
 
 .border {
@@ -1046,19 +1050,19 @@ video {
   border-color: hsl(var(--primary-100) / var(--tw-border-opacity));
 }
 
-.border-secondary-950 {
-  --tw-border-opacity: 1;
-  border-color: hsl(var(--secondary-950) / var(--tw-border-opacity));
-}
-
 .border-primary-950 {
   --tw-border-opacity: 1;
   border-color: hsl(var(--primary-950) / var(--tw-border-opacity));
 }
 
-.border-primary-900 {
+.border-secondary-900 {
   --tw-border-opacity: 1;
-  border-color: hsl(var(--primary-900) / var(--tw-border-opacity));
+  border-color: hsl(var(--secondary-900) / var(--tw-border-opacity));
+}
+
+.border-secondary-950 {
+  --tw-border-opacity: 1;
+  border-color: hsl(var(--secondary-950) / var(--tw-border-opacity));
 }
 
 .bg-\[\#BA6210\] {
@@ -1119,6 +1123,11 @@ video {
 .bg-secondary-700 {
   --tw-bg-opacity: 1;
   background-color: hsl(var(--secondary-700) / var(--tw-bg-opacity));
+}
+
+.bg-secondary-900 {
+  --tw-bg-opacity: 1;
+  background-color: hsl(var(--secondary-900) / var(--tw-bg-opacity));
 }
 
 .bg-secondary-950 {
@@ -1287,19 +1296,9 @@ video {
   color: rgb(17 24 39 / var(--tw-text-opacity));
 }
 
-.text-primary-100 {
-  --tw-text-opacity: 1;
-  color: hsl(var(--primary-100) / var(--tw-text-opacity));
-}
-
 .text-primary-50 {
   --tw-text-opacity: 1;
   color: hsl(var(--primary-50) / var(--tw-text-opacity));
-}
-
-.text-primary-950 {
-  --tw-text-opacity: 1;
-  color: hsl(var(--primary-950) / var(--tw-text-opacity));
 }
 
 .text-secondary-950 {

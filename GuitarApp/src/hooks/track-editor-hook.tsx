@@ -1,14 +1,18 @@
 ﻿import { ScaleDegree } from '../data/chords'
 import { Note, Scale } from '../types/musical-terms'
 import { useContext } from 'react'
-import { Bar, Beat, MusicContext } from '../context/app-context'
+import { Bar, Beat, BeatSection, MusicContext } from '../context/app-context'
 import {
   getChordNotes,
   getScaleChord,
   notesAreEqual,
 } from '../utility/noteFunctions'
 import { playNotes } from '../utility/instrumentFunctions'
-import { createNewBar, defaultBeat } from '../utility/sequencer-utilities'
+import {
+  createNewBar,
+  defaultBeat,
+  getDefaultSection,
+} from '../utility/sequencer-utilities'
 
 export const useTrackEditor = () => {
   const {
@@ -34,8 +38,8 @@ export const useTrackEditor = () => {
   const currentSubdivision =
     currentSection?.subdivisions[currentSubdivisionIndex]
 
-  const addBeat = () => {
-    currentBar.beats.push(defaultBeat())
+  const addBeat = (bar: Bar) => {
+    bar.beats.push(defaultBeat())
     updateBar(currentBar)
   }
 
@@ -52,21 +56,51 @@ export const useTrackEditor = () => {
     setBars([...bars])
   }
 
-  const updateScaleDegree = (bar: Bar, newScaleDegree: ScaleDegree) => {
-    if (!currentBeat) return
-    currentBeat.scaleDegree = newScaleDegree
+  const shortenSection = (barId: number, beatIndex: number) => {
+    const barIndex = bars.findIndex(bar => bar.id === barId)
+
+    const bar = bars[barIndex]
+    const beat = bar?.beats[beatIndex]
+
+    if (beat?.sections?.length <= 1) {
+      removeBeat(bar, beatIndex)
+    }
+
+    beat?.sections?.splice(beat?.sections.length - 1, 1)
+    setBars([...bars])
+  }
+
+  const lengthenSection = (barId: number, beatIndex: number) => {
+    const barIndex = bars.findIndex(bar => bar.id === barId)
+
+    const beat = bars[barIndex]?.beats[beatIndex]
+    beat?.sections?.push(getDefaultSection())
+    setBars([...bars])
+  }
+
+  const updateScaleDegree = (
+    bar: Bar,
+    beatIndex: number,
+    newScaleDegree: ScaleDegree
+  ) => {
+    const beat = bar.beats[beatIndex]
+    if (!beat) return
+    beat.scaleDegree = newScaleDegree
     updateBar(bar)
   }
 
-  const updateScale = (bar: Bar, newScale: Scale | undefined) => {
-    if (!currentBeat) return
-    currentBeat.scale = newScale
+  const updateScale = (
+    bar: Bar,
+    beatIndex: number,
+    newScale: Scale | undefined
+  ) => {
+    const beat = bar.beats[beatIndex]
+    if (!beat) return
+    beat.scale = newScale
     updateBar(bar)
   }
 
   const changeTimeSignature = (bar: Bar, timeSignature: number) => {
-    if (!currentBeat) return
-
     bar.timeSignature = timeSignature
     updateBar(bar)
   }
@@ -207,7 +241,7 @@ export const useTrackEditor = () => {
   }
 
   const getCurrentBeatNotes = () => {
-    if (!currentBar || !currentBeat) {
+    if (!currentBar || !currentBeat || !currentSection) {
       return
     }
 
@@ -275,5 +309,7 @@ export const useTrackEditor = () => {
     currentBar,
     currentSubdivision,
     currentSection,
+    lengthenSection,
+    shortenSection,
   }
 }

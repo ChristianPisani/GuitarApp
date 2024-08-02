@@ -80,10 +80,6 @@ export const InstrumentEditor = () => {
           selectedNotes={notes}
           onClickNote={toggleNote}
         />
-        <h3>{currentBeat?.id}</h3>
-        <h3>
-          {currentBarIndex}:{currentBeatIndex}:{currentSubdivisionIndex}
-        </h3>
 
         {selectedChord && (
           <>

@@ -12,8 +12,8 @@ export const ChordsEditor = () => {
     <div className={'w-auto overflow-hidden h-full min-h-96'}>
       <ScrollContainer
         hideScrollbars={true}
-        className={`sequencer-chords p-16 gap-8 h-full text-secondary-950 bg-primary-100 relative
-          transition-all`}
+        className={`sequencer-chords p-16 ${state === 'editing' ? 'gap-8' : ''} h-full
+        text-secondary-950 bg-primary-100 relative transition-all`}
       >
         {bars.length === 0 && (
           <div className={'absolute left-16'}>
